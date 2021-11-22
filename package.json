@@ -5,7 +5,7 @@
     "node": ">12"
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3001",
     "build": "next build",
     "start": "next start",
     "test": "echo TODO",
@@ -19,10 +19,15 @@
     "gen:hook": "hygen hook new"
   },
   "dependencies": {
+    "@heroicons/react": "^1.0.5",
+    "clsx": "^1.1.1",
+    "dexie": "^3.2.0",
+    "nanocurrency": "^2.5.0",
     "next": "latest",
     "prettier": "^2.4.1",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "swr": "^1.0.1"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^3.1.1",
