@@ -1,19 +1,28 @@
 import qr from 'qrcode'
-import { RefObject, useEffect } from 'react'
+import { RefObject, useEffect, useRef } from 'react'
 import colors from 'tailwindcss/colors'
 
+import { usePreferences } from '../context/preferencesContext'
 import genTxnUrl from '../getTxnUrl'
+import { prefersDarkMode } from '../preferences/darkMode'
 
-const useDrawQrCode = (
-  canvasRef: RefObject<HTMLCanvasElement>,
-  { raw, address }: { raw?: string; address: string }
-) => {
+const useDrawQrCode = ({ raw, address }: { raw?: string; address: string }) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const {
+    preferences: { darkMode },
+  } = usePreferences()
   useEffect(() => {
     if (canvasRef.current === null) return
+
     qr.toCanvas(canvasRef.current, genTxnUrl({ address: address, raw }), {
-      color: { light: colors.violet['500'], dark: colors.white },
+      color: {
+        light: darkMode ? colors.coolGray['900'] : colors.white,
+        dark: colors.violet['500'],
+      },
     })
-  }, [raw, address, canvasRef])
+  }, [raw, address, canvasRef, darkMode])
+
+  return canvasRef
 }
 
 export default useDrawQrCode

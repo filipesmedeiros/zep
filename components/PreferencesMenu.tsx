@@ -26,7 +26,7 @@ const PreferencesMenu: FC<Props> = () => {
   return (
     <div className="relative z-20" ref={menuRef}>
       <button
-        className="w-8 p-1 rounded bg-purple-500 shadow-md text-white hover:cursor-pointer hover:bg-purple-400 transition-colors mb-3"
+        className="w-8 p-1 rounded bg-purple-500 shadow-md text-white dark:text-gray-900 hover:cursor-pointer hover:bg-purple-400 transition-colors mb-3 dark text-white:dark:text-gray-900"
         onClick={toggleMenu}
       >
         <CogIcon className="w-full" />
@@ -44,8 +44,8 @@ const PreferencesMenu: FC<Props> = () => {
             className={clsx(
               'p-1 rounded dark:hover:text-purple-300 transition-colors duration-100 w-full text-white',
               biometricsAuth
-                ? 'dark:text-purple-500 dark:bg-white dark:hover:text-purple-500 shadow-md hover:bg-purple-400 bg-white text-purple-500'
-                : 'hover:text-purple-500 bg-purple-500',
+                ? 'dark:text-purple-500 dark:bg-gray-900 dark:hover:text-purple-500 shadow-md hover:bg-purple-400 bg-purple-100 text-purple-500'
+                : 'hover:text-purple-500 bg-purple-500 dark:text-gray-900',
               showMenu ? 'hover:cursor-pointer' : 'cursor-default'
             )}
             onClick={() => {
@@ -62,8 +62,8 @@ const PreferencesMenu: FC<Props> = () => {
             className={clsx(
               'p-1 rounded dark:hover:text-purple-300 transition-colors duration-100 w-full text-white',
               darkMode
-                ? 'dark:text-purple-500 dark:bg-white dark:hover:text-purple-400 bg-white text-purple-500'
-                : 'hover:text-purple-500',
+                ? 'dark:text-purple-500 dark:bg-gray-900 dark:hover:text-purple-400 bg-gray-900 text-purple-500'
+                : 'hover:text-purple-500 dark:text-gray-900',
               showMenu ? 'hover:cursor-pointer' : 'cursor-default'
             )}
             onClick={() => {
@@ -78,9 +78,9 @@ const PreferencesMenu: FC<Props> = () => {
           <button
             disabled={!showMenu}
             className={clsx(
-              'p-1 rounded dark:hover:text-purple-300 transition-colors duration-100 w-full text-white',
+              'p-1 rounded dark:hover:text-purple-300 transition-colors duration-100 w-full text-white dark:text-gray-900',
               leftHanded
-                ? 'dark:text-purple-500 dark:bg-white dark:hover:text-purple-400 bg-white text-purple-500'
+                ? 'dark:text-purple-500 dark:bg-gray-900 dark:hover:text-purple-400 bg-gray-900 text-purple-500'
                 : 'hover:text-purple-500',
               showMenu ? 'hover:cursor-pointer' : 'cursor-default'
             )}

@@ -39,12 +39,18 @@ const BottomMenu: FC<Props> = ({ className }) => {
   }
 
   return (
-    <div className={clsx('flex w-full justify-between items-end', className)}>
+    <div
+      className={clsx(
+        'flex w-full justify-between items-end',
+        leftHanded ? 'flex-row-reverse' : 'flex-row',
+        className
+      )}
+    >
       <button
         className="bg-purple-500 p-1 h-12 rounded hover:bg-purple-400 shadow-lg"
         onClick={() => push('/dashboard')}
       >
-        <HomeIcon className="h-full text-white" />
+        <HomeIcon className="h-full text-white dark:text-gray-900" />
       </button>
 
       <div>
@@ -61,7 +67,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
             )}
           >
             <button className="bg-purple-500 p-1 h-7 rounded hover:bg-purple-400 shadow-lg">
-              <LibraryIcon className="h-full text-white" />
+              <LibraryIcon className="h-full text-white dark:text-gray-900" />
             </button>
             <div className="flex flex-col h-16 justify-between">
               <button
@@ -74,41 +80,41 @@ const BottomMenu: FC<Props> = ({ className }) => {
                 {confirmCopy ? (
                   <CheckIcon className="h-full text-purple-500" />
                 ) : (
-                  <DocumentDuplicateIcon className="h-full text-white" />
+                  <DocumentDuplicateIcon className="h-full text-white dark:text-gray-900" />
                 )}
               </button>
               <button className="bg-purple-500 p-1 h-7 rounded hover:bg-purple-400 shadow-lg">
-                <DownloadIcon className="h-full text-white" />
+                <DownloadIcon className="h-full text-white dark:text-gray-900" />
               </button>
             </div>
           </div>
 
           <div className="relative h-16">
             <button
-              className="bg-purple-500 absolute top-0 right-0 p-1 h-16 w-7 rounded-r hover:bg-purple-400 shadow-md translate-x-2/3"
+              className="bg-purple-500 absolute top-0 right-0 h-16 w-7 rounded-r hover:bg-purple-400 shadow-md translate-x-2/3"
               onClick={() => push('/readQrCode')}
             >
-              <UploadIcon className="h-full text-white w-full" />
+              <UploadIcon className="h-full text-white dark:text-gray-900 w-full" />
             </button>
 
             <div className="border-purple-500 border-t-2 border-b-2 py-1 px-3 h-16 shadow-lg">
-              <QrcodeIcon className="h-full text-purple-500 dark:text-white" />
+              <QrcodeIcon className="h-full text-purple-500 dark:text-purple-100" />
             </div>
 
             <button
-              className="bg-purple-500 absolute bottom-0 left-0 p-1 h-16 w-7 rounded-l hover:bg-purple-400 shadow-md -translate-x-2/3"
+              className="bg-purple-500 absolute bottom-0 left-0 h-16 w-7 rounded-l hover:bg-purple-400 shadow-md -translate-x-2/3"
               onClick={() => push('/myQrCode')}
             >
-              <DownloadIcon className="h-full text-white w-full" />
+              <DownloadIcon className="h-full text-white dark:text-gray-900 w-full" />
             </button>
           </div>
 
           <div className="flex flex-col h-16 justify-between">
             <button className="bg-purple-500 p-1 h-7 rounded hover:bg-purple-400 shadow-md">
-              <UploadIcon className="h-full text-white" />
+              <UploadIcon className="h-full text-white dark:text-gray-900" />
             </button>
             <button className="bg-purple-500 p-1 h-7 rounded hover:bg-purple-400 shadow-lg">
-              <RssIcon className="h-full text-white" />
+              <RssIcon className="h-full text-white dark:text-gray-900" />
             </button>
           </div>
         </div>

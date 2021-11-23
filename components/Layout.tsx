@@ -22,7 +22,7 @@ const Layout: FC<Props> = ({ children }) => {
 
   return (
     <div
-      className="dark:text-white dark:bg-gray-900 relative w-screen h-screen pt-4 pb-4 px-5 grid gap-4"
+      className="dark:text-white dark:bg-gray-900 relative w-screen h-screen pt-4 pb-4 px-5 grid justify-center gap-4"
       style={{
         gridTemplate:
           '"top-menu" auto "balance" auto "main" 1fr "transaction-menu" auto / 1fr',
@@ -36,12 +36,17 @@ const Layout: FC<Props> = ({ children }) => {
         )}
         style={{ gridArea: 'top-menu' }}
       >
-        <h1 className="font-extrabold text-2xl text-gray-900">zep</h1>
+        <h1 className="font-extrabold text-2xl text-gray-900 dark:text-purple-100">
+          zep
+        </h1>
         <PreferencesMenu />
       </header>
       {pathname !== '/' ? (
         <>
-          <div style={{ gridArea: 'balance' }}>
+          <div
+            className="flex place-self-center"
+            style={{ gridArea: 'balance' }}
+          >
             <Balance />
           </div>
           <main

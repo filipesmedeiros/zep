@@ -59,19 +59,20 @@ const Balance: FC<Props> = ({ className }) => {
   return (
     <div
       className={clsx(
-        'bg-purple-500 text-white py-4 px-7 rounded-lg shadow-lg',
+        'bg-purple-500 dark:text-gray-900 text-purple-100 py-4 px-7 rounded-lg shadow-lg',
         className
       )}
       onClick={() => togglePreference('showCurrencyDash')}
     >
       <h3 className="text-4xl text-center">
-        {showXnoBalance ? (
-          <>Ӿ {Number(xnoBalance).toFixed(2)}</>
-        ) : (
-          <>
-            Ӿ<span className="font-semibold">NO</span>
-          </>
-        )}
+        Ӿ
+        <span
+          className={clsx(
+            showXnoBalance ? 'font-medium dark:font-semibold' : 'font-semibold'
+          )}
+        >
+          {showXnoBalance ? <> {Number(xnoBalance).toFixed(2)}</> : 'NO'}
+        </span>
       </h3>
       {showFiatBalance && (
         <h3 className="text-xl text-center">
