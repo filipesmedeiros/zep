@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import { Unit, convert } from 'nanocurrency'
-import { FC } from 'react'
+import { FC, useMemo } from 'react'
 import useSWR from 'swr'
 
 import { useAddress } from '../lib/context/addressContext'
@@ -21,20 +21,22 @@ const Balance: FC<Props> = ({ className }) => {
 
   const { address } = useAddress()
 
+  const params = useMemo(
+    () => ({
+      method: 'POST',
+      headers: [['Content-Type', 'application/json']],
+      body: JSON.stringify({
+        action: 'account_balance',
+        account: address,
+      }),
+    }),
+    [address]
+  )
+
   const { data: account } = useSWR<{
     balance: string
     pending: string
-  }>(address !== undefined ? 'https://mynano.ninja/api/node' : null, {
-    fetcher: input =>
-      fetcher(input, {
-        method: 'POST',
-        headers: [['Content-Type', 'application/json']],
-        body: JSON.stringify({
-          action: 'account_balance',
-          account: address,
-        }),
-      }),
-  })
+  }>(address !== undefined ? ['https://mynano.ninja/api/node', params] : null)
 
   const {
     preferences: { showCurrencyDash },
