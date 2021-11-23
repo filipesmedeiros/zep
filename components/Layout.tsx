@@ -5,8 +5,9 @@ import { FC } from 'react'
 import { usePreferences } from '../lib/context/preferencesContext'
 import useDarkMode from '../lib/hooks/useDarkMode'
 import useMounted from '../lib/hooks/useMounted'
+import Balance from './Balance'
+import BottomMenu from './BottomMenu'
 import PreferencesMenu from './PreferencesMenu'
-import TransactionMenu from './TransactionMenu'
 
 export interface Props {}
 
@@ -24,7 +25,7 @@ const Layout: FC<Props> = ({ children }) => {
       className="dark:text-white dark:bg-gray-900 relative w-screen h-screen pt-4 pb-4 px-5 grid gap-4"
       style={{
         gridTemplate:
-          '"top-menu" auto "main" 1fr "transaction-menu" auto / 1fr',
+          '"top-menu" auto "balance" auto "main" 1fr "transaction-menu" auto / 1fr',
       }}
     >
       <header
@@ -35,15 +36,25 @@ const Layout: FC<Props> = ({ children }) => {
         )}
         style={{ gridArea: 'top-menu' }}
       >
-        <h1 className="font-extrabold text-2xl">⚡ zep</h1>
+        <h1 className="font-extrabold text-2xl">zep</h1>
         <PreferencesMenu />
       </header>
-      <main className="overflow-auto" style={{ gridArea: 'main' }}>
-        {children}
-      </main>
-      <div style={{ gridArea: 'transaction-menu' }}>
-        {pathname !== '/' && <TransactionMenu />}
-      </div>
+      {pathname !== '/' ? (
+        <>
+          <div style={{ gridArea: 'balance' }}>
+            <Balance />
+          </div>
+          <main
+            className="overflow-auto bg-purple-500 rounded-md border-t-8 border-b-8 border-purple-500 py-6 px-3"
+            style={{ gridArea: 'main' }}
+          >
+            {children}
+          </main>
+          <div style={{ gridArea: 'transaction-menu' }}>{<BottomMenu />}</div>
+        </>
+      ) : (
+        <main className="pt-32">{children}</main>
+      )}
     </div>
   )
 }

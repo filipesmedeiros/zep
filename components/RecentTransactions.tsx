@@ -4,6 +4,7 @@ import { Unit, convert } from 'nanocurrency'
 import { FC, useMemo } from 'react'
 import useSWR from 'swr'
 
+import { useAddress } from '../lib/context/addressContext'
 import fetcher from '../lib/fetcher'
 
 export interface Props {
@@ -17,18 +18,18 @@ const mockAddressBook: Record<string, { displayName: string }> = {
 }
 
 const RecentTransactions: FC<Props> = ({ className }) => {
+  const { address } = useAddress()
   const params = useMemo(
     () => ({
       method: 'POST',
       headers: [['Content-Type', 'application/json']],
       body: JSON.stringify({
         action: 'account_history',
-        account:
-          'nano_1nndpwon4wtxk3ay67mwirdjnk3iuffznfgqkcchammtk63yqamotiqfybnp',
+        account: address,
         count: 20,
       }),
     }),
-    []
+    [address]
   )
 
   const { data: history } = useSWR<{
@@ -39,7 +40,7 @@ const RecentTransactions: FC<Props> = ({ className }) => {
       hash: string
       amount: string
     }[]
-  }>(['https://mynano.ninja/api/node', params], {
+  }>(address !== undefined ? ['https://mynano.ninja/api/node', params] : null, {
     fetcher,
   })
 
@@ -59,13 +60,8 @@ const RecentTransactions: FC<Props> = ({ className }) => {
   }))
 
   return (
-    <div
-      className={clsx(
-        'flex flex-col gap-6 w-full items-center rounded py-6 px-3 bg-purple-500 border-t-8 border-b-8 border-purple-500 shadow',
-        className
-      )}
-    >
-      <h2 className="text-2xl font-semibold text-white">Recent transactions</h2>
+    <div className={clsx('flex flex-col gap-6 w-full items-center', className)}>
+      <h2 className="text-2xl font-semibold text-white">recent transactions</h2>
       <ol className="flex flex-col gap-4 w-full">
         {txns.map(txn => (
           <li

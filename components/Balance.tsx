@@ -3,6 +3,7 @@ import { Unit, convert } from 'nanocurrency'
 import { FC } from 'react'
 import useSWR from 'swr'
 
+import { useAddress } from '../lib/context/addressContext'
 import { usePreferences } from '../lib/context/preferencesContext'
 import fetcher from '../lib/fetcher'
 import { ShowCurrency } from '../lib/preferences/showCurrencyDash'
@@ -18,18 +19,19 @@ const Balance: FC<Props> = ({ className }) => {
     fetcher,
   })
 
+  const { address } = useAddress()
+
   const { data: account } = useSWR<{
     balance: string
     pending: string
-  }>('https://mynano.ninja/api/node', {
+  }>(address !== undefined ? 'https://mynano.ninja/api/node' : null, {
     fetcher: input =>
       fetcher(input, {
         method: 'POST',
         headers: [['Content-Type', 'application/json']],
         body: JSON.stringify({
           action: 'account_balance',
-          account:
-            'nano_1nndpwon4wtxk3ay67mwirdjnk3iuffznfgqkcchammtk63yqamotiqfybnp',
+          account: address,
         }),
       }),
   })
@@ -60,13 +62,19 @@ const Balance: FC<Props> = ({ className }) => {
       )}
       onClick={() => togglePreference('showCurrencyDash')}
     >
-      <h2 className="text-4xl text-center">
-        Ӿ {showXnoBalance && <>{Number(xnoBalance).toFixed(2)}</>}
-      </h2>
+      <h3 className="text-4xl text-center">
+        {showXnoBalance ? (
+          <>Ӿ {Number(xnoBalance).toFixed(2)}</>
+        ) : (
+          <>
+            Ӿ<span className="font-semibold">NO</span>
+          </>
+        )}
+      </h3>
       {showFiatBalance && (
-        <h2 className="text-xl text-center">
+        <h3 className="text-xl text-center">
           $ {(Number(xnoBalance) * xnoPrice.price).toFixed(2)}
-        </h2>
+        </h3>
       )}
     </div>
   )

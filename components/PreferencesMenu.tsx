@@ -24,7 +24,7 @@ const PreferencesMenu: FC<Props> = () => {
   } = usePreferences()
 
   return (
-    <div className={clsx('relative', leftHanded ? '' : '')} ref={menuRef}>
+    <div className="relative z-20" ref={menuRef}>
       <button
         className="w-8 p-1 rounded bg-purple-500 shadow-md text-white hover:cursor-pointer hover:bg-purple-400 transition-colors mb-3"
         onClick={toggleMenu}
@@ -34,7 +34,7 @@ const PreferencesMenu: FC<Props> = () => {
       <ul
         role="menu"
         className={clsx(
-          'transition-all flex flex-col gap-2 absolute w-8',
+          'transition-all flex flex-col gap-2 absolute w-10 bg-purple-500 p-1 rounded shadow-lg -translate-x-1',
           showMenu ? 'opacity-100' : 'opacity-0 -translate-y-2'
         )}
       >
@@ -42,10 +42,10 @@ const PreferencesMenu: FC<Props> = () => {
           <button
             disabled={!showMenu}
             className={clsx(
-              'p-1 rounded dark:hover:text-purple-300 transition-colors duration-100 w-full',
+              'p-1 rounded dark:hover:text-purple-300 transition-colors duration-100 w-full text-white',
               biometricsAuth
-                ? 'dark:text-purple-500 dark:bg-white dark:hover:text-purple-500 bg-purple-500 shadow-md text-white hover:bg-purple-400'
-                : 'hover:text-purple-500',
+                ? 'dark:text-purple-500 dark:bg-white dark:hover:text-purple-500 shadow-md hover:bg-purple-400 bg-white text-purple-500'
+                : 'hover:text-purple-500 bg-purple-500',
               showMenu ? 'hover:cursor-pointer' : 'cursor-default'
             )}
             onClick={() => {
@@ -60,9 +60,9 @@ const PreferencesMenu: FC<Props> = () => {
           <button
             disabled={!showMenu}
             className={clsx(
-              'p-1 rounded dark:hover:text-purple-300 transition-colors duration-100 w-full',
+              'p-1 rounded dark:hover:text-purple-300 transition-colors duration-100 w-full text-white',
               darkMode
-                ? 'dark:text-purple-500 dark:bg-white dark:hover:text-purple-400'
+                ? 'dark:text-purple-500 dark:bg-white dark:hover:text-purple-400 bg-white text-purple-500'
                 : 'hover:text-purple-500',
               showMenu ? 'hover:cursor-pointer' : 'cursor-default'
             )}
@@ -78,9 +78,9 @@ const PreferencesMenu: FC<Props> = () => {
           <button
             disabled={!showMenu}
             className={clsx(
-              'p-1 rounded dark:hover:text-purple-300 transition-colors duration-100 w-full',
+              'p-1 rounded dark:hover:text-purple-300 transition-colors duration-100 w-full text-white',
               leftHanded
-                ? 'dark:text-purple-500 dark:bg-white dark:hover:text-purple-400'
+                ? 'dark:text-purple-500 dark:bg-white dark:hover:text-purple-400 bg-white text-purple-500'
                 : 'hover:text-purple-500',
               showMenu ? 'hover:cursor-pointer' : 'cursor-default'
             )}
