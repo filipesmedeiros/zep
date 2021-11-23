@@ -91,8 +91,8 @@ const BottomMenu: FC<Props> = ({ className }) => {
               <UploadIcon className="h-full text-white w-full" />
             </button>
 
-            <div className="border-purple-500 border-t-2 border-b-2 py-1 px-3 h-16 hover:bg-purple-400 shadow-lg">
-              <QrcodeIcon className="h-full text-white" />
+            <div className="border-purple-500 border-t-2 border-b-2 py-1 px-3 h-16 shadow-lg">
+              <QrcodeIcon className="h-full text-purple-500 dark:text-white" />
             </div>
 
             <button

@@ -36,7 +36,7 @@ const Layout: FC<Props> = ({ children }) => {
         )}
         style={{ gridArea: 'top-menu' }}
       >
-        <h1 className="font-extrabold text-2xl">zep</h1>
+        <h1 className="font-extrabold text-2xl text-gray-900">zep</h1>
         <PreferencesMenu />
       </header>
       {pathname !== '/' ? (

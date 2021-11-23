@@ -1,9 +1,6 @@
 {
   "license": "MIT",
-  "private": false,
-  "engines": {
-    "node": ">12"
-  },
+  "private": true,
   "scripts": {
     "dev": "next dev -p 3001",
     "build": "next build",

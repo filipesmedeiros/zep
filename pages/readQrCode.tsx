@@ -57,7 +57,7 @@ const ReadQrCode: NextPage = () => {
 
   return (
     <div className="flex flex-col gap-4 items-center justify-center w-full h-full">
-      <h1 className="text-3xl font-semibold text-center">scan!</h1>
+      <h1 className="text-3xl font-semibold text-center text-white">scan!</h1>
       <video
         className={clsx('rounded-md shadow-md', !videoLive ? 'hidden' : null)}
         ref={videoRef}

@@ -12,7 +12,9 @@ const MyQrCode: NextPage = () => {
 
   return (
     <div className="grid gap-4 place-content-center h-full w-full">
-      <h1 className="text-3xl font-semibold text-center">get scanned!</h1>
+      <h1 className="text-3xl font-semibold text-center text-white">
+        get scanned!
+      </h1>
       <canvas className="!w-80 !h-80" ref={canvasRef} />
     </div>
   )
