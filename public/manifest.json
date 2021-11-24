@@ -1,6 +1,6 @@
 {
-  "short_name": "Weather",
-  "name": "Weather: Do I need an umbrella?",
+  "short_name": "zep",
+  "name": "zep: nano wallet",
   "icons": [
     {
       "src": "/images/icon-big.svg",
@@ -29,5 +29,5 @@
   "display": "fullscreen",
   "scope": "/",
   "theme_color": "#8a5cf6",
-  "description": "Weather forecast information"
+  "description": "nano wallet | like lightning"
 }

@@ -1,28 +1,12 @@
 import cbor from 'cbor'
-import { AES } from 'crypto-js'
-import {
-  deriveAddress,
-  derivePublicKey,
-  deriveSecretKey,
-  generateSeed,
-} from 'nanocurrency'
 
-import { addAddress } from './db/addresses'
 import { addCryptoAsset, getCryptoAsset } from './db/cryptoAssets'
-import {
-  EncryptedSeedId,
-  addEncryptedSeed,
-  getEncryptedSeed,
-} from './db/encryptedSeeds'
 
 // with help from the incredible https://webauthn.guide/#authentication
 
 export const registerBiometrics = async () => {
   const challenge = await getCryptoAsset('challenge')
-  if (challenge === undefined) {
-    // ? todo
-    throw new Error('challenge_not_found')
-  }
+  if (challenge === undefined) throw new Error('challenge_not_found')
 
   const createCredentialDefaultArgs: CredentialCreationOptions = {
     publicKey: {
@@ -65,41 +49,15 @@ export const registerBiometrics = async () => {
   const credentialIdLength = dataView.getUint16(0)
   const credentialId = authData.slice(55, 55 + credentialIdLength)
   await addCryptoAsset('credentialId', credentialId)
-
-  const newSeed = await generateSeed()
-  console.log(newSeed)
-
-  const {
-    // @ts-expect-error
-    response: { signature: sig },
-  } = await checkBiometrics()
-  const encryptedSeed = AES.encrypt(newSeed, sig.toString()).toString()
-  await addEncryptedSeed('os', encryptedSeed)
-  console.log({ encryptedSeed })
-
-  const firstAddress = deriveAddress(
-    derivePublicKey(deriveSecretKey(newSeed, 0)),
-    {
-      useNanoPrefix: true,
-    }
-  )
-  console.log({ firstAddress })
-  addAddress(0, firstAddress)
 }
 
 export const checkBiometrics = async () => {
-  const challenge = await getCryptoAsset('challenge')
-  if (challenge === undefined) {
-    // ? todo
-    throw new Error('challenge_not_found')
-  }
-
-  const credentialId = await getCryptoAsset('credentialId')
-
-  if (credentialId === undefined) {
-    await registerBiometrics()
-    return
-  }
+  const [challenge, credentialId] = await Promise.all([
+    getCryptoAsset('challenge'),
+    getCryptoAsset('credentialId'),
+  ])
+  if (challenge === undefined) throw new Error('challenge_not_found')
+  if (credentialId === undefined) throw new Error('credentialId_not_found')
 
   const getCredentialParams: CredentialRequestOptions = {
     publicKey: {
@@ -117,6 +75,5 @@ export const checkBiometrics = async () => {
     mediation: 'required',
   }
 
-  const challengeResponse = await navigator.credentials.get(getCredentialParams)
-  return challengeResponse
+  return navigator.credentials.get(getCredentialParams)
 }

@@ -1,4 +1,3 @@
-import clsx from 'clsx'
 import type { NextPage } from 'next'
 
 import RecentTransactions from '../components/RecentTransactions'

@@ -61,7 +61,7 @@ const NumPad: FC<Props> = ({ onNumPress, onDelete, onFingerprintPress }) => {
         <button
           className={clsx(
             'hover:bg-purple-50 hover:text-purple-600 active:bg-purple-100 transition-colors duration-100 rounded',
-            activeKey === num + 1 ? 'bg-purple-100' : null
+            { 'bg-purple-100': activeKey === num + 1 }
           )}
           key={num}
           onClick={() => onNumPress(num + 1)}
@@ -82,8 +82,7 @@ const NumPad: FC<Props> = ({ onNumPress, onDelete, onFingerprintPress }) => {
       <button
         className={clsx(
           'hover:bg-purple-50 hover:text-purple-600 active:bg-purple-100 transition-colors duration-100 rounded',
-          activeKey === 0 ? 'bg-purple-100' : null,
-          biometricsAuth ? 'col-start-2' : null
+          { 'bg-purple-100': activeKey === 0, 'col-start-2': biometricsAuth }
         )}
         onClick={() => onNumPress(0)}
       >
@@ -93,7 +92,7 @@ const NumPad: FC<Props> = ({ onNumPress, onDelete, onFingerprintPress }) => {
         onClick={onDelete}
         className={clsx(
           'flex justify-center items-center hover:bg-purple-50 hover:text-purple-600 active:bg-purple-100 transition-colors rounded',
-          activeKey === -1 ? 'bg-purple-100' : null
+          { 'bg-purple-100': activeKey === -1 }
         )}
       >
         <BackspaceIcon className="w-7" />

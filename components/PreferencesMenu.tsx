@@ -10,6 +10,7 @@ import colors from 'tailwindcss/colors'
 
 import { usePreferences } from '../lib/context/preferencesContext'
 import useClickAway from '../lib/hooks/useClickAway'
+import useIsiOS from '../lib/hooks/useIsiOS'
 
 export interface Props {}
 
@@ -23,6 +24,8 @@ const PreferencesMenu: FC<Props> = () => {
     preferences: { darkMode, biometricsAuth, leftHanded },
     togglePreference,
   } = usePreferences()
+
+  const isiOS = useIsiOS()
 
   return (
     <div className="relative z-20 justify-center" ref={menuRef}>
@@ -44,24 +47,26 @@ const PreferencesMenu: FC<Props> = () => {
           boxShadow: `${colors.coolGray[900]} 0px 2px 15px`,
         }}
       >
-        <li role="menuitem">
-          <button
-            disabled={!showMenu}
-            className={clsx(
-              'p-1 rounded dark:hover:text-purple-300 transition-colors duration-100 w-full text-white',
-              biometricsAuth
-                ? 'dark:text-purple-400 dark:bg-gray-900 dark:hover:text-purple-400 shadow-md hover:bg-purple-400 bg-purple-100 text-purple-400'
-                : 'hover:text-purple-400 bg-purple-400 dark:text-gray-900',
-              showMenu ? 'hover:cursor-pointer' : 'cursor-default'
-            )}
-            onClick={() => {
-              togglePreference('biometricsAuth')
-              setShowMenu(false)
-            }}
-          >
-            <FingerPrintIcon className="h-full" />
-          </button>
-        </li>
+        {!isiOS && (
+          <li role="menuitem">
+            <button
+              disabled={!showMenu}
+              className={clsx(
+                'p-1 rounded dark:hover:text-purple-300 transition-colors duration-100 w-full text-white',
+                biometricsAuth
+                  ? 'dark:text-purple-400 dark:bg-gray-900 dark:hover:text-purple-400 shadow-md hover:bg-purple-400 bg-purple-100 text-purple-400'
+                  : 'hover:text-purple-400 bg-purple-400 dark:text-gray-900',
+                showMenu ? 'hover:cursor-pointer' : 'cursor-default'
+              )}
+              onClick={() => {
+                togglePreference('biometricsAuth')
+                setShowMenu(false)
+              }}
+            >
+              <FingerPrintIcon className="h-full" />
+            </button>
+          </li>
+        )}
         <li role="menuitem">
           <button
             disabled={!showMenu}

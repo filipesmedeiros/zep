@@ -3,7 +3,7 @@ import { RefObject, useEffect, useRef } from 'react'
 import colors from 'tailwindcss/colors'
 
 import { usePreferences } from '../context/preferencesContext'
-import genTxnUrl from '../getTxnUrl'
+import genTxnUrl from '../nano/getTxnUrl'
 import { prefersDarkMode } from '../preferences/darkMode'
 
 const useDrawQrCode = ({ raw, address }: { raw?: string; address: string }) => {
