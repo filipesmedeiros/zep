@@ -1,10 +1,9 @@
-import Dexie from 'dexie'
 import { useRouter } from 'next/dist/client/router'
 import { useEffect } from 'react'
 
 import PinPad from '../components/PinPad'
 import { checkBiometrics, registerBiometrics } from '../lib/biometrics'
-import { removeKey } from '../lib/keyStore'
+import { EncryptedSeedId, removeEncryptedSeed } from '../lib/db/encryptedSeeds'
 import { prefersBiometricsAuth } from '../lib/preferences/biometricsAuth'
 
 const Landing = () => {
@@ -16,7 +15,7 @@ const Landing = () => {
           await checkBiometrics()
           push('/dashboard')
         } catch {
-          removeKey()
+          removeEncryptedSeed(EncryptedSeedId.Os)
           await registerBiometrics()
           push('/dashboard')
         }

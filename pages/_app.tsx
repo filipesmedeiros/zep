@@ -5,10 +5,8 @@ import 'tailwindcss/tailwind.css'
 
 import Layout from '../components/Layout'
 import { AddressProvider } from '../lib/context/addressContext'
-import {
-  PreferencesProvider,
-  usePreferences,
-} from '../lib/context/preferencesContext'
+import { PreferencesProvider } from '../lib/context/preferencesContext'
+import { addChallenge, hasChallenge } from '../lib/db/challenges'
 import fetcher from '../lib/fetcher'
 import '../styles/global.css'
 
@@ -21,6 +19,15 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
     } else {
       console.log('no service worker')
     }
+
+    const setupOsChallenge = async () => {
+      const randomBytes = new Uint8Array(32)
+      crypto.getRandomValues(randomBytes)
+      if (!(await hasChallenge('osChallenge')))
+        addChallenge('osChallenge', randomBytes)
+    }
+
+    setupOsChallenge()
   }, [])
 
   return (

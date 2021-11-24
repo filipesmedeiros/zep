@@ -1,4 +1,5 @@
-import { addKey, getKey } from './keyStore'
+import { getChallenge } from './db/challenges'
+import { EncryptedSeedId, getEncryptedSeed } from './db/encryptedSeeds'
 
 export const registerBiometrics = async () => {
   const randomBytes = new Uint8Array(32)
@@ -29,27 +30,30 @@ export const registerBiometrics = async () => {
     createCredentialDefaultArgs
   )
   // @ts-expect-error not implemented by ts yet
-  addKey(credential!.rawId)
+  return addKey(credential!.rawId)
 }
 
 export const checkBiometrics = async () => {
-  const randomBytes = new Uint8Array(32)
-  crypto.getRandomValues(randomBytes)
-
-  const key = await getKey()
-
-  if (key === undefined) {
-    await registerBiometrics()
-    return
+  const challenge = await getChallenge('osChallenge')
+  if (challenge === undefined) {
+    // ? todo
+    throw new Error()
   }
 
-  const getCredentialDefaultArgs: CredentialRequestOptions = {
+  const encryptedSeed = await getEncryptedSeed(EncryptedSeedId.Os)
+
+  if (encryptedSeed === undefined) {
+    // todo
+    throw new Error()
+  }
+
+  const getCredentialParams: CredentialRequestOptions = {
     publicKey: {
       timeout: 60000,
-      challenge: randomBytes,
+      challenge: challenge.challenge,
       allowCredentials: [
         {
-          id: key.key,
+          id: encryptedSeed.encryptedSeed,
           transports: ['internal'] as AuthenticatorTransport[],
           type: 'public-key' as 'public-key',
         },
@@ -57,5 +61,8 @@ export const checkBiometrics = async () => {
       userVerification: 'preferred',
     },
   }
-  return navigator.credentials.get(getCredentialDefaultArgs)
+
+  const challengeResponse = await navigator.credentials.get(getCredentialParams)
+  console.log(challengeResponse)
+  return challengeResponse
 }
