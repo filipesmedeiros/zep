@@ -19,15 +19,6 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
     } else {
       console.log('no service worker')
     }
-
-    const setupOsChallenge = async () => {
-      const randomBytes = new Uint8Array(32)
-      crypto.getRandomValues(randomBytes)
-      if (!(await hasChallenge('osChallenge')))
-        addChallenge('osChallenge', randomBytes)
-    }
-
-    setupOsChallenge()
   }, [])
 
   return (

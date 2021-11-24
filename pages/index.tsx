@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 
 import PinPad from '../components/PinPad'
 import { checkBiometrics, registerBiometrics } from '../lib/biometrics'
+import { addChallenge, hasChallenge } from '../lib/db/challenges'
 import { EncryptedSeedId, removeEncryptedSeed } from '../lib/db/encryptedSeeds'
 import { prefersBiometricsAuth } from '../lib/preferences/biometricsAuth'
 
@@ -23,6 +24,17 @@ const Landing = () => {
       auth()
     }
   }, [push])
+
+  useEffect(() => {
+    const setupOsChallenge = async () => {
+      const randomBytes = new Uint8Array(32)
+      crypto.getRandomValues(randomBytes)
+      if (!(await hasChallenge('osChallenge')))
+        addChallenge('osChallenge', randomBytes)
+    }
+
+    setupOsChallenge()
+  }, [])
 
   return (
     <main className="flex flex-col items-center justify-evenly h-full w-full">

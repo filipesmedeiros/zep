@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "next dev -p 3001",
     "build": "next build",
+    "export": "next export",
     "start": "next start -p 3001",
     "test": "echo TODO",
     "lint": "next lint",
@@ -17,6 +18,7 @@
   },
   "dependencies": {
     "@heroicons/react": "^1.0.5",
+    "cbor": "^8.1.0",
     "clsx": "^1.1.1",
     "dexie": "^3.2.0",
     "jsqr": "^1.4.0",

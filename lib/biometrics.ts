@@ -1,9 +1,14 @@
+import cbor from 'cbor'
+
 import { getChallenge } from './db/challenges'
 import { EncryptedSeedId, getEncryptedSeed } from './db/encryptedSeeds'
 
 export const registerBiometrics = async () => {
-  const randomBytes = new Uint8Array(32)
-  crypto.getRandomValues(randomBytes)
+  const challenge = await getChallenge('osChallenge')
+  if (challenge === undefined) {
+    // ? todo
+    throw new Error('challenge_not_found')
+  }
 
   const createCredentialDefaultArgs: CredentialCreationOptions = {
     publicKey: {
@@ -19,9 +24,12 @@ export const registerBiometrics = async () => {
           alg: -7,
         },
       ],
-      attestation: 'direct' as AttestationConveyancePreference,
       timeout: 30000,
-      challenge: randomBytes,
+      challenge: challenge.challenge,
+      authenticatorSelection: {
+        authenticatorAttachment: 'platform',
+        userVerification: 'required',
+      },
     },
   }
 
@@ -29,22 +37,28 @@ export const registerBiometrics = async () => {
   const credential = await navigator.credentials.create(
     createCredentialDefaultArgs
   )
-  // @ts-expect-error not implemented by ts yet
-  return addKey(credential!.rawId)
+
+  // @ts-expect-error ts hasn't implemented
+  const decoded = cbor.decode(credential!.response.attestationObject)
+
+  console.log(decoded)
+
+  // // @ts-expect-error not implemented by ts yet
+  // return addEncryptedSeed(EncryptedSeedId.Os, credential!.rawId)
 }
 
 export const checkBiometrics = async () => {
   const challenge = await getChallenge('osChallenge')
   if (challenge === undefined) {
     // ? todo
-    throw new Error()
+    throw new Error('challenge_not_found')
   }
 
   const encryptedSeed = await getEncryptedSeed(EncryptedSeedId.Os)
 
   if (encryptedSeed === undefined) {
-    // todo
-    throw new Error()
+    await registerBiometrics()
+    return
   }
 
   const getCredentialParams: CredentialRequestOptions = {
@@ -53,16 +67,15 @@ export const checkBiometrics = async () => {
       challenge: challenge.challenge,
       allowCredentials: [
         {
-          id: encryptedSeed.encryptedSeed,
+          id: new Uint8Array(),
           transports: ['internal'] as AuthenticatorTransport[],
           type: 'public-key' as 'public-key',
         },
       ],
-      userVerification: 'preferred',
+      userVerification: 'required',
     },
   }
 
   const challengeResponse = await navigator.credentials.get(getCredentialParams)
-  console.log(challengeResponse)
   return challengeResponse
 }
