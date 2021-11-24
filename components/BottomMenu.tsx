@@ -1,23 +1,23 @@
 import {
-  ArrowLeftIcon,
-  CameraIcon,
   CheckIcon,
-  ClipboardCopyIcon,
   DocumentDuplicateIcon,
   DownloadIcon,
   HomeIcon,
+  KeyIcon,
   LibraryIcon,
   QrcodeIcon,
   RssIcon,
-  ShareIcon,
   UploadIcon,
 } from '@heroicons/react/solid'
 import clsx from 'clsx'
+import { AES, enc } from 'crypto-js'
 import { useRouter } from 'next/router'
 import { FC, useState } from 'react'
 
+import { checkBiometrics } from '../lib/biometrics'
 import { useAddress } from '../lib/context/addressContext'
 import { usePreferences } from '../lib/context/preferencesContext'
+import { getEncryptedSeed } from '../lib/db/encryptedSeeds'
 
 export interface Props {
   className?: string
@@ -30,12 +30,21 @@ const BottomMenu: FC<Props> = ({ className }) => {
   const { push, pathname } = useRouter()
   const { address } = useAddress()
 
-  const [confirmCopy, setConfirmCopy] = useState(false)
-  const onCopy = () => {
-    if (address !== undefined) {
-      navigator.clipboard.writeText(address)
-      setConfirmCopy(true)
-      setTimeout(() => setConfirmCopy(false), 1500)
+  const [confirmCopyAddress, setConfirmCopyAddress] = useState(false)
+  const [confirmCopySeed, setConfirmCopySeed] = useState(false)
+  const onCopy = (seed?: string) => {
+    if (address !== undefined || seed !== undefined) {
+      navigator.clipboard.writeText(seed ?? address!)
+      seed !== undefined
+        ? setConfirmCopySeed(true)
+        : setConfirmCopyAddress(true)
+      setTimeout(
+        () =>
+          seed !== undefined
+            ? setConfirmCopySeed(false)
+            : setConfirmCopyAddress(false),
+        1500
+      )
     }
   }
 
@@ -70,21 +79,54 @@ const BottomMenu: FC<Props> = ({ className }) => {
               leftHanded ? 'flex-row-reverse' : null
             )}
           >
-            <button className="bg-purple-500 p-1 h-7 rounded hover:bg-purple-400 shadow-lg">
-              <LibraryIcon className="h-full text-white dark:text-gray-900" />
-            </button>
             <div className="flex flex-col h-16 justify-between">
               <button
+                disabled={confirmCopySeed}
                 className={clsx(
                   'p-1 h-7 rounded shadow-lg',
-                  confirmCopy ? 'bg-white' : 'bg-purple-500 hover:bg-purple-400'
+                  confirmCopySeed
+                    ? 'bg-white'
+                    : 'bg-purple-500 hover:bg-purple-400'
                 )}
-                onClick={onCopy}
+                onClick={async () => {
+                  const {
+                    // @ts-expect-error
+                    response: { signature: sig },
+                  } = (await checkBiometrics())!
+
+                  const encryptedSeed = (await getEncryptedSeed('os'))!
+                  const decryptedSeed = AES.decrypt(
+                    encryptedSeed.encryptedSeed,
+                    sig.toString()
+                  ).toString(enc.Utf8)
+                  onCopy(decryptedSeed)
+                }}
               >
-                {confirmCopy ? (
+                {confirmCopySeed ? (
                   <CheckIcon className="h-full text-purple-500" />
                 ) : (
-                  <ShareIcon className="h-full text-white dark:text-gray-900" />
+                  <KeyIcon className="h-full text-white dark:text-gray-900" />
+                )}
+              </button>
+              <button className="bg-purple-500 p-1 h-7 rounded hover:bg-purple-400 shadow-lg">
+                <LibraryIcon className="h-full text-white dark:text-gray-900" />
+              </button>
+            </div>
+            <div className="flex flex-col h-16 justify-between">
+              <button
+                disabled={confirmCopyAddress}
+                className={clsx(
+                  'p-1 h-7 rounded shadow-lg',
+                  confirmCopyAddress
+                    ? 'bg-white'
+                    : 'bg-purple-500 hover:bg-purple-400'
+                )}
+                onClick={() => onCopy()}
+              >
+                {confirmCopyAddress ? (
+                  <CheckIcon className="h-full text-purple-500" />
+                ) : (
+                  <DocumentDuplicateIcon className="h-full text-white dark:text-gray-900" />
                 )}
               </button>
               <button className="bg-purple-500 p-1 h-7 rounded hover:bg-purple-400 shadow-lg">

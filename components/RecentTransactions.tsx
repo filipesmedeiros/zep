@@ -37,7 +37,11 @@ const RecentTransactions: FC<Props> = ({ className }) => {
   const { data: historyPages, setSize } =
     useSwrInfinite<AccountHistoryResponse>(
       (_, prevHistory) =>
-        prevHistory === null ? 'no-cursor' : prevHistory.previous ?? null,
+        address === undefined
+          ? null
+          : prevHistory === null
+          ? 'no-cursor'
+          : prevHistory.previous ?? null,
       (cursor: 'no-cursor' | string) =>
         fetcher<AccountHistoryResponse>(
           'https://mynano.ninja/api/node',
@@ -50,7 +54,7 @@ const RecentTransactions: FC<Props> = ({ className }) => {
   const hasMoreTxns = historyPages.at(-1)?.previous !== undefined
 
   const txns = historyPages.flatMap(({ history }) =>
-    history.map(txn => {
+    (history !== '' ? history : []).map(txn => {
       const amount = Number(
         convert(txn.amount, { from: Unit.raw, to: Unit.NANO }).slice(0, 20)
       )
@@ -67,50 +71,63 @@ const RecentTransactions: FC<Props> = ({ className }) => {
     })
   )
 
+  const hasTxns = txns.length > 0
+
   return (
     <div className={clsx('flex flex-col gap-6 w-full items-center', className)}>
       <h2 className="text-2xl font-semibold text-white">recent transactions</h2>
-      <ol className="flex flex-col gap-3 w-full">
-        {txns.map(txn => (
-          <li
-            key={txn.hash}
-            className={clsx(
-              'bg-white shadow rounded px-3 py-3 flex items-center justify-between gap-2 text-black border-r-4',
-              txn.send ? 'border-yellow-500' : 'border-green-500'
-            )}
-          >
-            {txn.send ? (
-              <UploadIcon className="w-6 text-yellow-500 flex-shrink-0" />
-            ) : (
-              <DownloadIcon className="w-6 text-green-500 flex-shrink-0" />
-            )}
-            <div className="overflow-hidden overflow-ellipsis text-left flex-1 whitespace-nowrap">
-              {Intl.DateTimeFormat([], {
-                day: '2-digit',
-                month: '2-digit',
-                year: '2-digit',
-              }).format(txn.timestamp * 1000)}{' '}
-              -{' '}
-              {mockAddressBook[txn.account]?.displayName ?? (
-                <span className="text-xs">{txn.account}</span>
+      {hasTxns ? (
+        <ol className="flex flex-col gap-3 w-full">
+          {txns.map(txn => (
+            <li
+              key={txn.hash}
+              className={clsx(
+                'bg-white shadow rounded px-3 py-3 flex items-center justify-between gap-2 text-black border-r-4',
+                txn.send ? 'border-yellow-500' : 'border-green-500'
               )}
-            </div>
-            <span className="flex-shrink-0 font-medium">
-              Ӿ{' '}
-              {txn.amount === 'small' ? (
-                '<.01'
-              ) : txn.amount.startsWith('0.') ? (
-                <>
-                  <span className="text-sm font-semibold">0</span>
-                  {txn.amount.substring(1)}
-                </>
+            >
+              {txn.send ? (
+                <UploadIcon className="w-6 text-yellow-500 flex-shrink-0" />
               ) : (
-                txn.amount
+                <DownloadIcon className="w-6 text-green-500 flex-shrink-0" />
               )}
-            </span>
-          </li>
-        ))}
-      </ol>
+              <div className="overflow-hidden overflow-ellipsis text-left flex-1 whitespace-nowrap">
+                {Intl.DateTimeFormat([], {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: '2-digit',
+                }).format(txn.timestamp * 1000)}{' '}
+                -{' '}
+                {mockAddressBook[txn.account]?.displayName ?? (
+                  <span className="text-xs">{txn.account}</span>
+                )}
+              </div>
+              <span className="flex-shrink-0 font-medium">
+                Ӿ{' '}
+                {txn.amount === 'small' ? (
+                  '<.01'
+                ) : txn.amount.startsWith('0.') ? (
+                  <>
+                    <span className="text-sm font-semibold">0</span>
+                    {txn.amount.substring(1)}
+                  </>
+                ) : (
+                  txn.amount
+                )}
+              </span>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <div className="text-center pt-8">
+          <p className="pb-4">no transactions yet...</p>
+          <p>
+            get your first nano
+            <br />
+            to see something here!
+          </p>
+        </div>
+      )}
       {hasMoreTxns && (
         <button
           className="bg-purple-200 py-2 px-4 rounded dark:text-gray-900 font-bold shadow"

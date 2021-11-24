@@ -3,7 +3,9 @@ import clsx from 'clsx'
 import { useRouter } from 'next/router'
 import { FC, useEffect } from 'react'
 
+import { useAddress } from '../lib/context/addressContext'
 import { usePreferences } from '../lib/context/preferencesContext'
+import { getAddress } from '../lib/db/addresses'
 import useDarkMode from '../lib/hooks/useDarkMode'
 import useMounted from '../lib/hooks/useMounted'
 import {
@@ -24,6 +26,7 @@ const Layout: FC<Props> = ({ children }) => {
     preferences: { leftHanded },
     setPreference,
   } = usePreferences()
+  const { setAddress } = useAddress()
 
   useEffect(() => {
     const listenToColorMedia = (ev: MediaQueryListEvent) => {
@@ -35,6 +38,14 @@ const Layout: FC<Props> = ({ children }) => {
     if (!prefersDarkMode()) togglePrefersDarkMode()
     colorMedia.addEventListener('change', listenToColorMedia)
   }, [setPreference])
+
+  useEffect(() => {
+    const setupAddress = async () => {
+      const address = (await getAddress(0))?.address
+      if (address !== undefined) setAddress(address)
+    }
+    setupAddress()
+  }, [setAddress])
 
   if (!mounted) return null
 

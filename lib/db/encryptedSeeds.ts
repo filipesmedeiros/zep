@@ -1,9 +1,6 @@
 import Dexie, { Table } from 'dexie'
 
-export enum EncryptedSeedId {
-  Pin = 'pin',
-  Os = 'os',
-}
+export type EncryptedSeedId = 'pin' | 'os'
 
 interface EncryptedSeed {
   id: EncryptedSeedId

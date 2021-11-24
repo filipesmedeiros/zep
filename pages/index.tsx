@@ -2,39 +2,40 @@ import { useRouter } from 'next/dist/client/router'
 import { useEffect } from 'react'
 
 import PinPad from '../components/PinPad'
-import { checkBiometrics, registerBiometrics } from '../lib/biometrics'
-import { addChallenge, hasChallenge } from '../lib/db/challenges'
-import { EncryptedSeedId, removeEncryptedSeed } from '../lib/db/encryptedSeeds'
+import { checkBiometrics } from '../lib/biometrics'
+import { useAddress } from '../lib/context/addressContext'
+import { getAddress } from '../lib/db/addresses'
+import { addCryptoAsset, hasCryptoAsset } from '../lib/db/cryptoAssets'
 import { prefersBiometricsAuth } from '../lib/preferences/biometricsAuth'
 
 const Landing = () => {
   const { push } = useRouter()
-  useEffect(() => {
-    if (prefersBiometricsAuth()) {
-      const auth = async () => {
-        try {
-          await checkBiometrics()
-          push('/dashboard')
-        } catch {
-          removeEncryptedSeed(EncryptedSeedId.Os)
-          await registerBiometrics()
-          push('/dashboard')
-        }
-      }
-      auth()
-    }
-  }, [push])
+
+  const { setAddress } = useAddress()
 
   useEffect(() => {
     const setupOsChallenge = async () => {
-      const randomBytes = new Uint8Array(32)
-      crypto.getRandomValues(randomBytes)
-      if (!(await hasChallenge('osChallenge')))
-        addChallenge('osChallenge', randomBytes)
+      if (!(await hasCryptoAsset('challenge'))) {
+        const randomBytes = new Uint8Array(32)
+        crypto.getRandomValues(randomBytes)
+        addCryptoAsset('challenge', randomBytes)
+      }
     }
 
-    setupOsChallenge()
-  }, [])
+    const auth = async () => {
+      if (prefersBiometricsAuth()) {
+        await checkBiometrics()
+        push('/dashboard')
+      }
+    }
+
+    const setupAddress = async () => {
+      const address = (await getAddress(0))?.address
+      if (address !== undefined) setAddress(address)
+    }
+
+    setupOsChallenge().then(auth).then(setupAddress)
+  }, [push, setAddress])
 
   return (
     <main className="flex flex-col items-center justify-evenly h-full w-full">
