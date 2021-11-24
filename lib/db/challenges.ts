@@ -5,7 +5,7 @@ interface EncryptedSeed {
   challenge: Uint8Array
 }
 
-class KeyStore extends Dexie {
+class Challenges extends Dexie {
   public challenges!: Table<EncryptedSeed, string>
 
   public constructor() {
@@ -16,7 +16,7 @@ class KeyStore extends Dexie {
   }
 }
 
-export const db = new KeyStore()
+export const db = new Challenges()
 
 export const addChallenge = (id: string, challenge: Uint8Array) =>
   db.challenges.add({ id, challenge })

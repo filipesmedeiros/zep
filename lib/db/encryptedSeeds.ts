@@ -7,10 +7,10 @@ export enum EncryptedSeedId {
 
 interface EncryptedSeed {
   id: EncryptedSeedId
-  encryptedSeed: Uint8Array
+  encryptedSeed: string
 }
 
-class KeyStore extends Dexie {
+class EncryptedSeeds extends Dexie {
   public encryptedSeeds!: Table<EncryptedSeed, EncryptedSeedId>
 
   public constructor() {
@@ -21,12 +21,10 @@ class KeyStore extends Dexie {
   }
 }
 
-export const db = new KeyStore()
+export const db = new EncryptedSeeds()
 
-export const addEncryptedSeed = (
-  id: EncryptedSeedId,
-  encryptedSeed: Uint8Array
-) => db.encryptedSeeds.add({ id, encryptedSeed })
+export const addEncryptedSeed = (id: EncryptedSeedId, encryptedSeed: string) =>
+  db.encryptedSeeds.add({ id, encryptedSeed })
 
 export const removeEncryptedSeed = (id: EncryptedSeedId) =>
   db.encryptedSeeds.delete(id)

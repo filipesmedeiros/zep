@@ -1,7 +1,19 @@
 import cbor from 'cbor'
+import { AES } from 'crypto-js'
+import {
+  deriveAddress,
+  derivePublicKey,
+  deriveSecretKey,
+  generateSeed,
+} from 'nanocurrency'
 
+import { addAddress } from './db/addresses'
 import { getChallenge } from './db/challenges'
-import { EncryptedSeedId, getEncryptedSeed } from './db/encryptedSeeds'
+import {
+  EncryptedSeedId,
+  addEncryptedSeed,
+  getEncryptedSeed,
+} from './db/encryptedSeeds'
 
 export const registerBiometrics = async () => {
   const challenge = await getChallenge('osChallenge')
@@ -26,6 +38,7 @@ export const registerBiometrics = async () => {
       ],
       timeout: 30000,
       challenge: challenge.challenge,
+      attestation: 'direct',
       authenticatorSelection: {
         authenticatorAttachment: 'platform',
         userVerification: 'required',
@@ -39,12 +52,22 @@ export const registerBiometrics = async () => {
   )
 
   // @ts-expect-error ts hasn't implemented
-  const decoded = cbor.decode(credential!.response.attestationObject)
+  const { attStmt: sig } = cbor.decode(credential!.response.attestationObject)
 
-  console.log(decoded)
+  const newSeed = await generateSeed()
 
-  // // @ts-expect-error not implemented by ts yet
-  // return addEncryptedSeed(EncryptedSeedId.Os, credential!.rawId)
+  console.log(newSeed)
+
+  const encryptedSeed = AES.encrypt(newSeed, sig.toString()).toString()
+  console.log(encryptedSeed)
+  await addEncryptedSeed(EncryptedSeedId.Os, encryptedSeed)
+
+  addAddress(
+    0,
+    deriveAddress(derivePublicKey(deriveSecretKey(newSeed, 0)), {
+      useNanoPrefix: true,
+    })
+  )
 }
 
 export const checkBiometrics = async () => {

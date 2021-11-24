@@ -20,6 +20,7 @@
     "@heroicons/react": "^1.0.5",
     "cbor": "^8.1.0",
     "clsx": "^1.1.1",
+    "crypto-js": "^4.1.1",
     "dexie": "^3.2.0",
     "jsqr": "^1.4.0",
     "nanocurrency": "^2.5.0",
@@ -32,6 +33,7 @@
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^3.1.1",
+    "@types/crypto-js": "^4.0.2",
     "@types/node": "^16.11.7",
     "@types/qrcode": "^1.4.1",
     "@types/react": "^17.0.34",
