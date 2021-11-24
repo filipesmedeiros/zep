@@ -1,10 +1,15 @@
+import { LightningBoltIcon } from '@heroicons/react/solid'
 import clsx from 'clsx'
 import { useRouter } from 'next/router'
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 
 import { usePreferences } from '../lib/context/preferencesContext'
 import useDarkMode from '../lib/hooks/useDarkMode'
 import useMounted from '../lib/hooks/useMounted'
+import {
+  prefersDarkMode,
+  togglePrefersDarkMode,
+} from '../lib/preferences/darkMode'
 import Balance from './Balance'
 import BottomMenu from './BottomMenu'
 import PreferencesMenu from './PreferencesMenu'
@@ -17,12 +22,25 @@ const Layout: FC<Props> = ({ children }) => {
   const { pathname } = useRouter()
   const {
     preferences: { leftHanded },
+    setPreference,
   } = usePreferences()
+
+  useEffect(() => {
+    const listenToColorMedia = (ev: MediaQueryListEvent) => {
+      setPreference('darkMode', ev.matches)
+      togglePrefersDarkMode()
+    }
+    const colorMedia = window.matchMedia('(prefers-color-scheme: dark)')
+    setPreference('darkMode', colorMedia.matches)
+    if (!prefersDarkMode()) togglePrefersDarkMode()
+    colorMedia.addEventListener('change', listenToColorMedia)
+  }, [setPreference])
+
   if (!mounted) return null
 
   return (
     <div
-      className="dark:text-white dark:bg-gray-900 relative w-screen h-screen pt-4 pb-4 px-5 grid justify-center gap-4"
+      className="dark:text-white bg-purple-100 dark:bg-gray-900 relative w-screen h-screen pt-4 pb-4 px-5 grid justify-center gap-4"
       style={{
         gridTemplate:
           '"top-menu" auto "balance" auto "main" 1fr "transaction-menu" auto / 1fr',
@@ -30,15 +48,18 @@ const Layout: FC<Props> = ({ children }) => {
     >
       <header
         className={clsx(
-          'flex justify-between',
+          'flex justify-between items-center',
 
           leftHanded ? 'flex-row-reverse' : null
         )}
         style={{ gridArea: 'top-menu' }}
       >
-        <h1 className="font-extrabold text-2xl text-gray-900 dark:text-purple-100">
-          zep
-        </h1>
+        <div className="flex items-start translate-x-2">
+          <h1 className="font-extrabold text-2xl text-gray-900 dark:text-purple-100">
+            zep
+          </h1>
+          <LightningBoltIcon className="text-gray-900 dark:text-purple-100 h-4" />
+        </div>
         <PreferencesMenu />
       </header>
       {pathname !== '/' ? (
@@ -50,7 +71,7 @@ const Layout: FC<Props> = ({ children }) => {
             <Balance />
           </div>
           <main
-            className="overflow-auto bg-purple-500 rounded-md border-t-8 border-b-8 border-purple-500 py-6 px-3"
+            className="overflow-auto bg-purple-500 rounded-md border-t-8 border-b-8 border-purple-500 shadow-md py-6 px-3"
             style={{ gridArea: 'main' }}
           >
             {children}

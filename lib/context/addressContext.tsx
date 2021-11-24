@@ -9,7 +9,8 @@ const addressContext = createContext<AddressContextValue | undefined>(undefined)
 
 export const useAddress = () => {
   const contextValue = useContext(addressContext)
-  if (contextValue === undefined) throw new Error('usePreferences')
+  if (contextValue === undefined)
+    throw new Error('`useAddress` must be used insisde a context `Provider`')
   return contextValue
 }
 

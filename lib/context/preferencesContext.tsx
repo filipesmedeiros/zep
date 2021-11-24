@@ -1,4 +1,11 @@
-import { FC, createContext, useContext, useEffect, useState } from 'react'
+import {
+  FC,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
 
 import {
   prefersBiometricsAuth,
@@ -36,7 +43,10 @@ const preferencesContext = createContext<
 
 export const usePreferences = () => {
   const preferences = useContext(preferencesContext)
-  if (preferences === undefined) throw new Error('usePreferences')
+  if (preferences === undefined)
+    throw new Error(
+      '`usePreferences` must be used insisde a context `Provider`'
+    )
   return preferences
 }
 
@@ -55,14 +65,16 @@ export const PreferencesProvider: FC = ({ children }) => {
       showCurrencyDash: prefersShowCurrencyDash(),
     })
   }, [])
-  const setPreference = <K extends keyof Preferences>(
-    preference: K,
-    value: Preferences[K]
-  ) => {
-    // todo
-    setPreferences(prev => ({ ...prev, [preference]: value }))
-  }
-  const togglePreference = (preference: keyof Preferences) => {
+  const setPreference = useCallback(
+    <K extends keyof Preferences>() =>
+      (preference: K, value: Preferences[K]) => {
+        // todo change localStorage here
+        setPreferences(prev => ({ ...prev, [preference]: value }))
+      },
+    []
+  )
+
+  const togglePreference = useCallback((preference: keyof Preferences) => {
     if (preference === 'darkMode') {
       togglePrefersDarkMode()
       setPreferences(prev => ({ ...prev, darkMode: !prev.darkMode }))
@@ -87,7 +99,7 @@ export const PreferencesProvider: FC = ({ children }) => {
             : ShowCurrency.Both,
       }))
     }
-  }
+  }, [])
 
   return (
     <preferencesContext.Provider

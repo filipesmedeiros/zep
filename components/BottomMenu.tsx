@@ -9,6 +9,7 @@ import {
   LibraryIcon,
   QrcodeIcon,
   RssIcon,
+  ShareIcon,
   UploadIcon,
 } from '@heroicons/react/solid'
 import clsx from 'clsx'
@@ -26,7 +27,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
   const {
     preferences: { leftHanded },
   } = usePreferences()
-  const { push } = useRouter()
+  const { push, pathname } = useRouter()
   const { address } = useAddress()
 
   const [confirmCopy, setConfirmCopy] = useState(false)
@@ -41,17 +42,20 @@ const BottomMenu: FC<Props> = ({ className }) => {
   return (
     <div
       className={clsx(
-        'flex w-full justify-between items-end',
+        'flex w-full items-end',
         leftHanded ? 'flex-row-reverse' : 'flex-row',
+        pathname === '/dashboard' ? 'justify-end' : 'justify-between',
         className
       )}
     >
-      <button
-        className="bg-purple-500 p-1 h-12 rounded hover:bg-purple-400 shadow-lg"
-        onClick={() => push('/dashboard')}
-      >
-        <HomeIcon className="h-full text-white dark:text-gray-900" />
-      </button>
+      {pathname !== '/dashboard' && (
+        <button
+          className="bg-purple-500 p-1 h-12 rounded hover:bg-purple-400 shadow-lg"
+          onClick={() => push('/dashboard')}
+        >
+          <HomeIcon className="h-full text-white dark:text-gray-900" />
+        </button>
+      )}
 
       <div>
         <div
@@ -80,7 +84,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
                 {confirmCopy ? (
                   <CheckIcon className="h-full text-purple-500" />
                 ) : (
-                  <DocumentDuplicateIcon className="h-full text-white dark:text-gray-900" />
+                  <ShareIcon className="h-full text-white dark:text-gray-900" />
                 )}
               </button>
               <button className="bg-purple-500 p-1 h-7 rounded hover:bg-purple-400 shadow-lg">
@@ -91,18 +95,28 @@ const BottomMenu: FC<Props> = ({ className }) => {
 
           <div className="relative h-16">
             <button
-              className="bg-purple-500 absolute top-0 right-0 h-16 w-7 rounded-r hover:bg-purple-400 shadow-md translate-x-2/3"
+              className={clsx(
+                'bg-purple-500 absolute top-0 h-16 w-7 rounded-r hover:bg-purple-400 shadow-md',
+                leftHanded
+                  ? 'left-0 -translate-x-2/3 rounded-l'
+                  : 'right-0 translate-x-2/3 rounded-r'
+              )}
               onClick={() => push('/readQrCode')}
             >
               <UploadIcon className="h-full text-white dark:text-gray-900 w-full" />
             </button>
 
             <div className="border-purple-500 border-t-2 border-b-2 py-1 px-3 h-16 shadow-lg">
-              <QrcodeIcon className="h-full text-purple-500 dark:text-purple-100" />
+              <QrcodeIcon className="h-full text-gray-900 dark:text-purple-100" />
             </div>
 
             <button
-              className="bg-purple-500 absolute bottom-0 left-0 h-16 w-7 rounded-l hover:bg-purple-400 shadow-md -translate-x-2/3"
+              className={clsx(
+                'bg-purple-500 absolute top-0 h-16 w-7 hover:bg-purple-400 shadow-md',
+                leftHanded
+                  ? 'right-0 translate-x-2/3 rounded-r'
+                  : 'left-0 -translate-x-2/3 rounded-l'
+              )}
               onClick={() => push('/myQrCode')}
             >
               <DownloadIcon className="h-full text-white dark:text-gray-900 w-full" />
