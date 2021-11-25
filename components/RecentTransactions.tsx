@@ -123,16 +123,17 @@ const RecentTransactions: FC<Props> = ({ className }) => {
 
   const mappedPendingTxns = useMemo(
     () =>
-      (pendingTxns === undefined ? [] : Object.entries(pendingTxns.blocks)).map(
-        ([hash, block]) => ({
-          send: block.subtype !== 'send',
-          account: block.block_account,
-          hash,
-          amount: block.amount,
-          timestamp: Number(block.local_timestamp),
-          receivable: true,
-        })
-      ),
+      (pendingTxns === undefined
+        ? []
+        : Object.entries(pendingTxns.blocks ?? [])
+      ).map(([hash, block]) => ({
+        send: block.subtype !== 'send',
+        account: block.block_account,
+        hash,
+        amount: block.amount,
+        timestamp: Number(block.local_timestamp),
+        receivable: true,
+      })),
     [pendingTxns]
   )
 
@@ -164,9 +165,7 @@ const RecentTransactions: FC<Props> = ({ className }) => {
             >
               <button
                 className="contents"
-                onClick={() =>
-                  receiveNano(address, txn.account, txn.hash, txn.amount)
-                }
+                onClick={() => receiveNano(address, txn.hash, txn.amount)}
               >
                 {txn.send ? (
                   <UploadIcon className="w-6 text-yellow-500 flex-shrink-0" />

@@ -4,12 +4,7 @@ import { block, wallet } from 'nanocurrency-web'
 import decryptSeed from '../decryptSeed'
 import fetcher from '../fetcher'
 
-const receiveNano = async (
-  myAddress: string,
-  fromAddress: string,
-  hash: string,
-  amount: string
-) => {
+const receiveNano = async (myAddress: string, hash: string, amount: string) => {
   const accountInfo: any = await fetcher('https://mynano.ninja/api/node', {
     method: 'POST',
     headers: [['Content-Type', 'application/json']],
@@ -20,16 +15,9 @@ const receiveNano = async (
   })
 
   if ('error' in accountInfo) {
-    const receiveHash = hashBlock({
-      balance: amount,
-      account: myAddress,
-      previous:
-        '0000000000000000000000000000000000000000000000000000000000000000',
-      representative: myAddress,
-      link: hash,
-    })
+    const seed = await decryptSeed('os')
     console.log('start work')
-    const work = (await computeWork(receiveHash, {
+    const work = (await computeWork(wallet.accounts(seed, 0, 0)[0].publicKey, {
       workThreshold: 'fffffe0000000000',
     }))!
     console.log('end work')
@@ -43,8 +31,6 @@ const receiveNano = async (
       transactionHash: hash,
       work,
     }
-
-    const seed = await decryptSeed('os')
     console.log(seed)
     const signedBlock = block.receive(
       data,
