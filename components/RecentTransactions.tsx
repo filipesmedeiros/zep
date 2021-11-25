@@ -1,12 +1,24 @@
 import { DownloadIcon, UploadIcon } from '@heroicons/react/solid'
 import clsx from 'clsx'
-import { Unit, convert } from 'nanocurrency'
+import { tools } from 'nanocurrency-web'
 import { FC, useCallback, useMemo, useState } from 'react'
+import useSwr from 'swr'
 import useSwrInfinite from 'swr/infinite'
 
 import { useAddress } from '../lib/context/addressContext'
 import fetcher from '../lib/fetcher'
-import { AccountHistoryResponse } from '../lib/types'
+import receiveNano from '../lib/nano/receiveNano'
+import {
+  AccountHistoryResponse,
+  AccountPendingResponse,
+  BlocksInfoResponse,
+} from '../lib/types'
+
+const rawToNanoDisplay = (raw: string) =>
+  Number(tools.convert(raw, 'RAW', 'NANO').slice(0, 20))
+    .toFixed(2)
+    .replace(/^0\.00/, 'small')
+    .replace('.00', '')
 
 export interface Props {
   className?: string
@@ -49,72 +61,148 @@ const RecentTransactions: FC<Props> = ({ className }) => {
         )
     )
 
-  if (historyPages === undefined) return null
-
-  const hasMoreTxns = historyPages.at(-1)?.previous !== undefined
-
-  const txns = historyPages.flatMap(({ history }) =>
-    (history !== '' ? history : []).map(txn => {
-      const amount = Number(
-        convert(txn.amount, { from: Unit.raw, to: Unit.NANO }).slice(0, 20)
-      )
-        .toFixed(2)
-        .replace(/^0\.00/, 'small')
-        .replace('.00', '')
-      return {
-        send: txn.type === 'send',
-        account: txn.account,
-        hash: txn.hash,
-        amount,
-        timestamp: Number(txn.local_timestamp),
-      }
-    })
+  const paramsPending = useMemo(
+    () => ({
+      action: 'accounts_pending',
+      accounts: [address],
+      count: '20',
+    }),
+    [address]
+  )
+  const { data: pendingTxnHashes } = useSwr<AccountPendingResponse>(
+    address !== undefined ? address : null,
+    () =>
+      fetcher<AccountPendingResponse>('https://mynano.ninja/api/node', {
+        method: 'POST',
+        headers: [['Content-Type', 'application/json']],
+        body: JSON.stringify(paramsPending),
+      })
+  )
+  const formattedPendingHashes = useMemo(
+    () =>
+      Object.values(pendingTxnHashes?.blocks ?? {}).flatMap(hashes => hashes),
+    [pendingTxnHashes]
   )
 
-  const hasTxns = txns.length > 0
+  const paramsPendingInfo = useCallback(
+    (hashes: string[]) => ({
+      action: 'blocks_info',
+      json_block: 'true',
+      hashes,
+    }),
+    []
+  )
+  const { data: pendingTxns } = useSwr<BlocksInfoResponse>(
+    [formattedPendingHashes.length > 0 ? formattedPendingHashes : null],
+    hashes =>
+      fetcher<BlocksInfoResponse>('https://mynano.ninja/api/node', {
+        method: 'POST',
+        headers: [['Content-Type', 'application/json']],
+        body: JSON.stringify(paramsPendingInfo(hashes)),
+      })
+  )
+
+  const hasMoreTxns = historyPages?.at(-1)?.previous !== undefined
+
+  const txns = useMemo(
+    () =>
+      historyPages?.flatMap(({ history }) =>
+        (history !== '' ? history : []).map(txn => {
+          return {
+            send: txn.type === 'send',
+            account: txn.account,
+            hash: txn.hash,
+            amount: txn.amount,
+            timestamp: Number(txn.local_timestamp),
+            receivable: false,
+          }
+        })
+      ),
+    [historyPages]
+  )
+
+  const mappedPendingTxns = useMemo(
+    () =>
+      (pendingTxns === undefined ? [] : Object.entries(pendingTxns.blocks)).map(
+        ([hash, block]) => ({
+          send: block.subtype !== 'send',
+          account: block.block_account,
+          hash,
+          amount: block.amount,
+          timestamp: Number(block.local_timestamp),
+          receivable: true,
+        })
+      ),
+    [pendingTxns]
+  )
+
+  const txnsWithPending = useMemo(
+    () => [...(mappedPendingTxns ?? []), ...(txns ?? [])],
+    [txns, mappedPendingTxns]
+  )
+
+  if (historyPages === undefined || address === undefined) return null
+
+  const hasTxns = txnsWithPending.length > 0
 
   return (
     <div className={clsx('flex flex-col gap-6 w-full items-center', className)}>
       <h2 className="text-2xl font-semibold text-white">recent transactions</h2>
       {hasTxns ? (
         <ol className="flex flex-col gap-3 w-full">
-          {txns.map(txn => (
+          {txnsWithPending.map(txn => (
             <li
               key={txn.hash}
               className={clsx(
                 'bg-white shadow rounded px-3 py-3 flex items-center justify-between gap-2 text-black border-r-4',
-                txn.send ? 'border-yellow-500' : 'border-green-500'
+                txn.send
+                  ? 'border-yellow-500'
+                  : txn.receivable
+                  ? 'border-blue-500'
+                  : 'border-green-500'
               )}
             >
-              {txn.send ? (
-                <UploadIcon className="w-6 text-yellow-500 flex-shrink-0" />
-              ) : (
-                <DownloadIcon className="w-6 text-green-500 flex-shrink-0" />
-              )}
-              <div className="overflow-hidden overflow-ellipsis text-left flex-1 whitespace-nowrap">
-                {Intl.DateTimeFormat([], {
-                  day: '2-digit',
-                  month: '2-digit',
-                  year: '2-digit',
-                }).format(txn.timestamp * 1000)}{' '}
-                -{' '}
-                {mockAddressBook[txn.account]?.displayName ?? (
-                  <span className="text-xs">{txn.account}</span>
-                )}
-              </div>
-              <span className="flex-shrink-0 font-medium">
-                Ӿ{' '}
-                {txn.amount === 'small' ? (
-                  '<.01'
-                ) : txn.amount.startsWith('0.') ? (
-                  <>
-                    <span className="text-sm font-semibold">0</span>
-                    {txn.amount.substring(1)}
-                  </>
+              <button
+                className="contents"
+                onClick={() =>
+                  receiveNano(address, txn.account, txn.hash, txn.amount)
+                }
+              >
+                {txn.send ? (
+                  <UploadIcon className="w-6 text-yellow-500 flex-shrink-0" />
                 ) : (
-                  txn.amount
+                  <DownloadIcon
+                    className={clsx(
+                      'w-6 flex-shrink-0',
+                      txn.receivable ? 'text-blue-500' : 'text-green-500'
+                    )}
+                  />
                 )}
-              </span>
+                <div className="overflow-hidden overflow-ellipsis text-left flex-1 whitespace-nowrap">
+                  {Intl.DateTimeFormat([], {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: '2-digit',
+                  }).format(txn.timestamp * 1000)}{' '}
+                  -{' '}
+                  {mockAddressBook[txn.account]?.displayName ?? (
+                    <span className="text-xs">{txn.account}</span>
+                  )}
+                </div>
+                <span className="flex-shrink-0 font-medium">
+                  Ӿ{' '}
+                  {rawToNanoDisplay(txn.amount) === 'small' ? (
+                    '<.01'
+                  ) : rawToNanoDisplay(txn.amount).startsWith('0.') ? (
+                    <>
+                      <span className="text-sm font-semibold">0</span>
+                      {rawToNanoDisplay(txn.amount).substring(1)}
+                    </>
+                  ) : (
+                    rawToNanoDisplay(txn.amount)
+                  )}
+                </span>
+              </button>
             </li>
           ))}
         </ol>

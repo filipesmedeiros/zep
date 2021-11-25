@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { Unit, convert } from 'nanocurrency'
+import { tools } from 'nanocurrency-web'
 import { FC, useMemo } from 'react'
 import useSWR from 'swr'
 
@@ -51,10 +51,7 @@ const Balance: FC<Props> = ({ className }) => {
     xnoPrice !== undefined &&
     account !== undefined
 
-  const xnoBalance = convert(account?.balance ?? '0', {
-    from: Unit.raw,
-    to: Unit.NANO,
-  })
+  const xnoBalance = tools.convert(account?.balance ?? '0', 'RAW', 'NANO')
 
   return (
     <div

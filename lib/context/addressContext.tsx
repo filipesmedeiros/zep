@@ -1,8 +1,8 @@
-import { FC, createContext, useContext, useState } from 'react'
+import { FC, createContext, useContext, useEffect, useState } from 'react'
 
 export interface AddressContextValue {
   address: string | undefined
-  setAddress: (addres: string) => void
+  setAddress: (address: string) => void
 }
 
 const addressContext = createContext<AddressContextValue | undefined>(undefined)
@@ -19,6 +19,9 @@ export const AddressProvider: FC<{ address?: string }> = ({
   address: initialAddress,
 }) => {
   const [address, setAddress] = useState<string | undefined>(initialAddress)
+  useEffect(() => {
+    setAddress(initialAddress)
+  }, [initialAddress])
 
   return (
     <addressContext.Provider value={{ address, setAddress }}>

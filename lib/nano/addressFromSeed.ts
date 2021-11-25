@@ -1,8 +1,6 @@
-import { deriveAddress, derivePublicKey, deriveSecretKey } from 'nanocurrency'
+import { wallet } from 'nanocurrency-web'
 
 const addressFromSeed = (seed: string, index: number) =>
-  deriveAddress(derivePublicKey(deriveSecretKey(seed, index)), {
-    useNanoPrefix: true,
-  })
+  wallet.accounts(seed, index, index)[0].address
 
 export default addressFromSeed
