@@ -13,7 +13,7 @@ class MyDocument extends Document {
 
   render() {
     return (
-      <Html>
+      <Html className="dark">
         <Head>
           <link rel="manifest" href="/manifest.json" />
           <link rel="apple-touch-icon" href="/images/icon-small.png" />

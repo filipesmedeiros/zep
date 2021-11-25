@@ -4,7 +4,7 @@ import decryptSeed from '../decryptSeed'
 import accountAtIndex from './accountAtIndex'
 
 const sendNano = async (
-  blockData: Parameters<typeof block['receive']>[0],
+  blockData: Parameters<typeof block['send']>[0],
   index: number
 ) => {
   const { privateKey } = accountAtIndex(
@@ -12,7 +12,7 @@ const sendNano = async (
     index
   )
 
-  const signedBlock = block.receive(blockData, privateKey)
+  const signedBlock = block.send(blockData, privateKey)
   return signedBlock
 }
 

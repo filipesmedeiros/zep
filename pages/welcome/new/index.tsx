@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import useSetupSeed from '../../../lib/hooks/useSetupSeed'
 
 const New: NextPage = () => {
-  const { lazy, seed, storeSeed } = useSetupSeed()
+  const { lazy, seed, storeSeed } = useSetupSeed(true)
   const { push } = useRouter()
   const [storing, setStoring] = useState(false)
   useEffect(() => {
@@ -18,8 +18,13 @@ const New: NextPage = () => {
     copyAndGoToStore()
   }, [seed, push])
 
+  const onStoreClick = async () => {
+    await storeSeed()
+    push('/welcome/new/done')
+  }
+
   return (
-    <div className="flex flex-col h-full justify-start items-center text-center px-4 gap-2">
+    <div className="flex flex-col h-full justify-start items-center text-center px-4 gap-2 text-purple-50">
       <h1 className="text-9xl font-extrabold">{!storing ? 1 : 2}</h1>
       {!storing ? (
         <>
@@ -27,7 +32,7 @@ const New: NextPage = () => {
             generate a <b>passphrase</b> and copy it to your clipboard
           </p>
           <button
-            className="dark:bg-gray-900 dark:text-purple-100 py-2 px-5 rounded text-2xl"
+            className="dark:bg-gray-900 dark:text-purple-100 py-2 px-5 rounded text-xl bg-purple-50 font-bold text-gray-900"
             onClick={lazy}
           >
             generate passphrase
@@ -45,8 +50,8 @@ const New: NextPage = () => {
             store the <b>passphrase</b> securely in zep
           </p>
           <button
-            className="dark:bg-gray-900 dark:text-purple-100 py-2 px-5 rounded text-2xl"
-            onClick={storeSeed}
+            className="dark:bg-gray-900 dark:text-purple-100 py-2 px-5 rounded text-xl bg-purple-50 font-bold text-gray-900"
+            onClick={onStoreClick}
           >
             store passphrase
           </button>

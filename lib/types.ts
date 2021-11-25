@@ -43,3 +43,31 @@ export interface BlocksInfoResponse {
     }
   }
 }
+
+export type AccountInfoResponse =
+  | {
+      frontier: string
+      open_block: string
+      representative_block: string
+      balance: string
+      modified_timestamp: string
+      block_count: string
+      account_version: string
+      confirmation_height: string
+      confirmation_height_frontier: string
+      confirmed_balance: '11999999999999999918751838129509869131'
+      confirmed_height: '22966'
+      confirmed_frontier: '80A6745762493FA21A22718ABFA4F635656A707B48B3324198AC7F3938DE6D4F'
+      representative: 'nano_1gyeqc6u5j3oaxbe5qy1hyz3q745a318kh8h9ocnpan7fuxnq85cxqboapu5'
+      confirmed_representative: 'nano_1gyeqc6u5j3oaxbe5qy1hyz3q745a318kh8h9ocnpan7fuxnq85cxqboapu5'
+    }
+  | { error: 'Account not found' }
+
+export interface AccountInfoCache {
+  address: string
+  index: number
+  publicKey: string
+  frontier: string | null
+  representative: string | null
+  balance: string | null
+}

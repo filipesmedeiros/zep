@@ -31,7 +31,7 @@ const PreferencesMenu: FC<Props> = () => {
     <div className="relative z-20 justify-center" ref={menuRef}>
       <button
         className={clsx(
-          'w-10 p-1 rounded bg-purple-500 shadow-md text-white dark:text-gray-900 hover:cursor-pointer hover:bg-purple-400 transition-colors dark text-white:dark:text-gray-900'
+          'w-10 p-1 rounded bg-purple-500 shadow-md text-purple-50 dark:text-gray-900 hover:cursor-pointer hover:bg-purple-400 transition-colors dark text-purple-50:dark:text-gray-900'
         )}
         onClick={toggleMenu}
       >
@@ -52,10 +52,10 @@ const PreferencesMenu: FC<Props> = () => {
             <button
               disabled={!showMenu}
               className={clsx(
-                'p-1 rounded dark:hover:text-purple-300 transition-colors duration-100 w-full text-white',
+                'p-1 rounded transition-colors duration-100 w-full',
                 biometricsAuth
-                  ? 'dark:text-purple-400 dark:bg-gray-900 dark:hover:text-purple-400 shadow-md hover:bg-purple-400 bg-purple-100 text-purple-400'
-                  : 'hover:text-purple-400 bg-purple-400 dark:text-gray-900',
+                  ? 'dark:text-purple-400 dark:bg-gray-900 dark:hover:text-purple-400 shadow-md hover:bg-purple-400 bg-purple-50 text-purple-400'
+                  : 'hover:text-purple-400 bg-purple-400 dark:text-gray-900 text-purple-50 dark:hover:text-purple-300',
                 showMenu ? 'hover:cursor-pointer' : 'cursor-default'
               )}
               onClick={() => {
@@ -71,10 +71,10 @@ const PreferencesMenu: FC<Props> = () => {
           <button
             disabled={!showMenu}
             className={clsx(
-              'p-1 rounded dark:hover:text-purple-300 transition-colors duration-100 w-full text-white',
+              'p-1 rounded transition-colors duration-100 w-full',
               darkMode
-                ? 'dark:text-purple-400 dark:bg-gray-900 dark:hover:text-purple-400 shadow-md hover:bg-purple-400 bg-purple-100 text-purple-400'
-                : 'hover:text-purple-400 bg-purple-400 dark:text-gray-900',
+                ? 'dark:text-purple-400 dark:bg-gray-900 dark:hover:text-purple-400 shadow-md hover:bg-purple-400 bg-purple-50 text-purple-400'
+                : 'hover:text-purple-400 bg-purple-400 dark:text-gray-900 text-purple-50 dark:hover:text-purple-300',
               showMenu ? 'hover:cursor-pointer' : 'cursor-default'
             )}
             onClick={() => {
@@ -89,10 +89,10 @@ const PreferencesMenu: FC<Props> = () => {
           <button
             disabled={!showMenu}
             className={clsx(
-              'p-1 rounded dark:hover:text-purple-300 transition-colors duration-100 w-full text-white dark:text-gray-900',
+              'p-1 rounded transition-colors duration-100 w-full',
               leftHanded
-                ? 'dark:text-purple-400 dark:bg-gray-900 dark:hover:text-purple-400 shadow-md hover:bg-purple-400 bg-purple-100 text-purple-400'
-                : 'hover:text-purple-400 bg-purple-400 dark:text-gray-900',
+                ? 'dark:text-purple-400 dark:bg-gray-900 dark:hover:text-purple-400 shadow-md hover:bg-purple-400 bg-purple-50 text-purple-400'
+                : 'hover:text-purple-400 bg-purple-400 dark:text-gray-900 dark:hover:text-purple-300 text-purple-50',
               showMenu ? 'hover:cursor-pointer' : 'cursor-default'
             )}
             onClick={() => {

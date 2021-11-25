@@ -1,11 +1,11 @@
 import type { NextPage } from 'next'
 
-import { useAddress } from '../lib/context/addressContext'
+import { useAccount } from '../lib/context/accountContext'
 import useDrawQrCode from '../lib/hooks/useDrawQrCode'
 
 const MyQrCode: NextPage = () => {
-  const { address } = useAddress()
-  const canvasRef = useDrawQrCode({ address: address ?? '' })
+  const account = useAccount()
+  const canvasRef = useDrawQrCode({ address: account?.address ?? '' })
 
   return (
     <div className="grid gap-6 place-content-center h-full w-full">

@@ -1,13 +1,13 @@
 import { DownloadIcon, UploadIcon } from '@heroicons/react/solid'
 import clsx from 'clsx'
 import { tools } from 'nanocurrency-web'
-import { FC, useCallback, useMemo, useState } from 'react'
+import { FC, useCallback, useMemo } from 'react'
 import useSwr from 'swr'
 import useSwrInfinite from 'swr/infinite'
 
-import { useAddress } from '../lib/context/addressContext'
+import { useAccount } from '../lib/context/accountContext'
 import fetcher from '../lib/fetcher'
-import receiveNano from '../lib/nano/receiveNano'
+import useReceiveNano from '../lib/hooks/useReceiveNano'
 import {
   AccountHistoryResponse,
   AccountPendingResponse,
@@ -31,25 +31,25 @@ const mockAddressBook: Record<string, { displayName: string }> = {
 }
 
 const RecentTransactions: FC<Props> = ({ className }) => {
-  const { address } = useAddress()
+  const account = useAccount()
   const params = useCallback(
     (cursor: string | undefined) => ({
       method: 'POST',
       headers: [['Content-Type', 'application/json']],
       body: JSON.stringify({
         action: 'account_history',
-        account: address,
+        account: account?.address,
         count: 20,
         head: cursor,
       }),
     }),
-    [address]
+    [account]
   )
 
   const { data: historyPages, setSize } =
     useSwrInfinite<AccountHistoryResponse>(
       (_, prevHistory) =>
-        address === undefined
+        account === undefined
           ? null
           : prevHistory === null
           ? 'no-cursor'
@@ -64,13 +64,13 @@ const RecentTransactions: FC<Props> = ({ className }) => {
   const paramsPending = useMemo(
     () => ({
       action: 'accounts_pending',
-      accounts: [address],
+      accounts: [account?.address],
       count: '20',
     }),
-    [address]
+    [account]
   )
   const { data: pendingTxnHashes } = useSwr<AccountPendingResponse>(
-    address !== undefined ? address : null,
+    account !== undefined ? account.address : null,
     () =>
       fetcher<AccountPendingResponse>('https://mynano.ninja/api/node', {
         method: 'POST',
@@ -107,7 +107,7 @@ const RecentTransactions: FC<Props> = ({ className }) => {
   const txns = useMemo(
     () =>
       historyPages?.flatMap(({ history }) =>
-        (history !== '' ? history : []).map(txn => {
+        (history !== '' ? history ?? [] : []).map(txn => {
           return {
             send: txn.type === 'send',
             account: txn.account,
@@ -117,7 +117,7 @@ const RecentTransactions: FC<Props> = ({ className }) => {
             receivable: false,
           }
         })
-      ),
+      ) ?? [],
     [historyPages]
   )
 
@@ -137,76 +137,137 @@ const RecentTransactions: FC<Props> = ({ className }) => {
     [pendingTxns]
   )
 
-  const txnsWithPending = useMemo(
-    () => [...(mappedPendingTxns ?? []), ...(txns ?? [])],
-    [txns, mappedPendingTxns]
-  )
+  const receiveNano = useReceiveNano()
 
-  if (historyPages === undefined || address === undefined) return null
+  if (historyPages === undefined || account === undefined) return null
 
-  const hasTxns = txnsWithPending.length > 0
+  const hasPendingTxns = (mappedPendingTxns ?? []).length > 0
+  const hasTxns = (txns ?? []).length > 0
 
   return (
-    <div className={clsx('flex flex-col gap-6 w-full items-center', className)}>
-      <h2 className="text-2xl font-semibold text-white">recent transactions</h2>
-      {hasTxns ? (
-        <ol className="flex flex-col gap-3 w-full">
-          {txnsWithPending.map(txn => (
-            <li
-              key={txn.hash}
-              className={clsx(
-                'bg-white shadow rounded px-3 py-3 flex items-center justify-between gap-2 text-black border-r-4',
-                txn.send
-                  ? 'border-yellow-500'
-                  : txn.receivable
-                  ? 'border-blue-500'
-                  : 'border-green-500'
-              )}
-            >
-              <button
-                className="contents"
-                onClick={() => receiveNano(address, txn.hash, txn.amount)}
-              >
-                {txn.send ? (
-                  <UploadIcon className="w-6 text-yellow-500 flex-shrink-0" />
-                ) : (
-                  <DownloadIcon
-                    className={clsx(
-                      'w-6 flex-shrink-0',
-                      txn.receivable ? 'text-blue-500' : 'text-green-500'
-                    )}
-                  />
+    <div className={clsx('flex flex-col gap-6 w-full', className)}>
+      {hasPendingTxns && (
+        <section className="flex flex-col gap-3 w-full items-center">
+          <h2 className="text-2xl font-semibold text-purple-50">pending</h2>
+          <ol className="flex flex-col gap-3 w-full">
+            {mappedPendingTxns.map(txn => (
+              <li
+                key={txn.hash}
+                className={clsx(
+                  'bg-purple-50 shadow rounded px-3 py-3 flex items-center justify-between gap-2 text-black border-r-4',
+                  txn.send
+                    ? 'border-yellow-500'
+                    : txn.receivable
+                    ? 'border-blue-500'
+                    : 'border-green-500'
                 )}
-                <div className="overflow-hidden overflow-ellipsis text-left flex-1 whitespace-nowrap">
-                  {Intl.DateTimeFormat([], {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: '2-digit',
-                  }).format(txn.timestamp * 1000)}{' '}
-                  -{' '}
-                  {mockAddressBook[txn.account]?.displayName ?? (
-                    <span className="text-xs">{txn.account}</span>
-                  )}
-                </div>
-                <span className="flex-shrink-0 font-medium">
-                  Ӿ{' '}
-                  {rawToNanoDisplay(txn.amount) === 'small' ? (
-                    '<.01'
-                  ) : rawToNanoDisplay(txn.amount).startsWith('0.') ? (
-                    <>
-                      <span className="text-sm font-semibold">0</span>
-                      {rawToNanoDisplay(txn.amount).substring(1)}
-                    </>
+              >
+                <button
+                  className="contents"
+                  onClick={() => receiveNano(txn.hash, txn.amount)}
+                >
+                  {txn.send ? (
+                    <UploadIcon className="w-6 text-yellow-500 flex-shrink-0" />
                   ) : (
-                    rawToNanoDisplay(txn.amount)
+                    <DownloadIcon
+                      className={clsx(
+                        'w-6 flex-shrink-0',
+                        txn.receivable ? 'text-blue-500' : 'text-green-500'
+                      )}
+                    />
                   )}
-                </span>
-              </button>
-            </li>
-          ))}
-        </ol>
-      ) : (
-        <div className="text-center pt-8">
+                  <div className="overflow-hidden overflow-ellipsis text-left flex-1 whitespace-nowrap">
+                    {Intl.DateTimeFormat([], {
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: '2-digit',
+                    }).format(txn.timestamp * 1000)}{' '}
+                    -{' '}
+                    {mockAddressBook[txn.account]?.displayName ?? (
+                      <span className="text-xs">{txn.account}</span>
+                    )}
+                  </div>
+                  <span className="flex-shrink-0 font-medium">
+                    Ӿ{' '}
+                    {rawToNanoDisplay(txn.amount) === 'small' ? (
+                      '<.01'
+                    ) : rawToNanoDisplay(txn.amount).startsWith('0.') ? (
+                      <>
+                        <span className="text-sm font-semibold">0</span>
+                        {rawToNanoDisplay(txn.amount).substring(1)}
+                      </>
+                    ) : (
+                      rawToNanoDisplay(txn.amount)
+                    )}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+      {hasPendingTxns && hasTxns && <hr />}
+      {hasTxns && (
+        <section className="flex flex-col gap-3 w-full items-center">
+          <h2 className="text-2xl font-semibold text-purple-50">
+            recent transactions
+          </h2>
+          <ol className="flex flex-col gap-3 w-full">
+            {txns.map(txn => (
+              <li
+                key={txn.hash}
+                className={clsx(
+                  'bg-purple-50 shadow rounded px-3 py-3 flex items-center justify-between gap-2 text-black border-r-4',
+                  txn.send
+                    ? 'border-yellow-500'
+                    : txn.receivable
+                    ? 'border-blue-500'
+                    : 'border-green-500'
+                )}
+              >
+                <button className="contents" onClick={() => {}}>
+                  {txn.send ? (
+                    <UploadIcon className="w-6 text-yellow-500 flex-shrink-0" />
+                  ) : (
+                    <DownloadIcon
+                      className={clsx(
+                        'w-6 flex-shrink-0',
+                        txn.receivable ? 'text-blue-500' : 'text-green-500'
+                      )}
+                    />
+                  )}
+                  <div className="overflow-hidden overflow-ellipsis text-left flex-1 whitespace-nowrap">
+                    {Intl.DateTimeFormat([], {
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: '2-digit',
+                    }).format(txn.timestamp * 1000)}{' '}
+                    -{' '}
+                    {mockAddressBook[txn.account]?.displayName ?? (
+                      <span className="text-xs">{txn.account}</span>
+                    )}
+                  </div>
+                  <span className="flex-shrink-0 font-medium">
+                    Ӿ{' '}
+                    {rawToNanoDisplay(txn.amount) === 'small' ? (
+                      '<.01'
+                    ) : rawToNanoDisplay(txn.amount).startsWith('0.') ? (
+                      <>
+                        <span className="text-sm font-semibold">0</span>
+                        {rawToNanoDisplay(txn.amount).substring(1)}
+                      </>
+                    ) : (
+                      rawToNanoDisplay(txn.amount)
+                    )}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+      {!hasPendingTxns && !hasTxns && (
+        <div className="text-center pt-8 text-purple-50">
           <p className="pb-4">no transactions yet...</p>
           <p>
             get your first nano

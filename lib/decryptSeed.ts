@@ -4,13 +4,15 @@ import { checkBiometrics } from './biometrics'
 import { getEncryptedSeed } from './db/encryptedSeeds'
 
 const decryptSeed = async (id: 'os' | 'pin') => {
-  const encryptedSeed = (await getEncryptedSeed(id))?.encryptedSeed
+  const encryptedSeed = await getEncryptedSeed(id)
   const {
     // @ts-expect-error
     response: { signature: sig },
   } = await checkBiometrics()
-  console.log({ sig })
-  return AES.decrypt(encryptedSeed!, sig.toString()).toString(enc.Utf8)
+  const decryptedSeed = AES.decrypt(encryptedSeed!, sig.toString()).toString(
+    enc.Utf8
+  )
+  return decryptedSeed
 }
 
 export default decryptSeed

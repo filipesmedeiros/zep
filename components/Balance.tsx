@@ -3,7 +3,7 @@ import { tools } from 'nanocurrency-web'
 import { FC, useMemo } from 'react'
 import useSWR from 'swr'
 
-import { useAddress } from '../lib/context/addressContext'
+import { useAccount, useAccounts } from '../lib/context/accountContext'
 import { usePreferences } from '../lib/context/preferencesContext'
 import { ShowCurrencyPreference } from '../lib/db/preferences'
 import fetcher from '../lib/fetcher'
@@ -26,24 +26,7 @@ const Balance: FC<Props> = ({ className }) => {
     fetcher,
   })
 
-  const { address } = useAddress()
-
-  const params = useMemo(
-    () => ({
-      method: 'POST',
-      headers: [['Content-Type', 'application/json']],
-      body: JSON.stringify({
-        action: 'account_balance',
-        account: address,
-      }),
-    }),
-    [address]
-  )
-
-  const { data: account } = useSWR<{
-    balance: string
-    pending: string
-  }>(address !== undefined ? ['https://mynano.ninja/api/node', params] : null)
+  const account = useAccount()
 
   const {
     preferences: { showCurrencyDash },
@@ -63,7 +46,7 @@ const Balance: FC<Props> = ({ className }) => {
   return (
     <div
       className={clsx(
-        'bg-purple-500 dark:text-gray-900 text-purple-100 py-4 px-7 rounded shadow-lg',
+        'bg-purple-500 dark:text-gray-900 text-purple-50 py-4 px-7 rounded shadow-lg',
         className
       )}
       onClick={() =>

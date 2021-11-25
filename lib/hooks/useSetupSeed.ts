@@ -4,14 +4,16 @@ import { useRouter } from 'next/router'
 import { useCallback, useState } from 'react'
 
 import { checkBiometrics, registerBiometrics } from '../biometrics'
-import { useAddress } from '../context/addressContext'
+import { useAccounts } from '../context/accountContext'
 import { addAccount } from '../db/accounts'
 import { addEncryptedSeed, hasEncryptedSeed } from '../db/encryptedSeeds'
-import addressFromSeed from '../nano/addressFromSeed'
+import encryptSeed from '../encryptSeed'
+import accountAtIndex from '../nano/accountAtIndex'
+import fetchAccountInfo from '../nano/fetchAccountInfo'
 import useSetup from './useSetup'
 
 const useSetupSeed = (skip?: boolean) => {
-  const { setAddress } = useAddress()
+  const { setAccount } = useAccounts()
   const [seed, setSeed] = useState<
     { seed: string; mnemonic: string } | undefined
   >(undefined)
@@ -29,20 +31,28 @@ const useSetupSeed = (skip?: boolean) => {
         wallet.generate(),
         registerBiometrics(),
       ])
+      const { address, publicKey } = accountAtIndex(generatedSeed, 0)
+
+      const infoRes = await fetchAccountInfo(address)
+
+      const account = {
+        frontier: 'error' in infoRes ? null : infoRes.confirmed_frontier,
+        representative:
+          'error' in infoRes ? null : infoRes.confirmed_representative,
+        balance: '0',
+        index: 0,
+        address,
+        publicKey,
+      }
       setSeed({ seed: generatedSeed, mnemonic })
-      setAddress(addressFromSeed(generatedSeed, 0))
-      await addAccount(0, addressFromSeed(generatedSeed, 0))
+      setAccount(account)
+      await addAccount(0, account)
     } catch {}
-  }, [replace, setAddress])
+  }, [replace, setAccount])
 
   const storeSeed = useCallback(async () => {
     if (seed === undefined) return
-    const {
-      // @ts-expect-error
-      response: { signature: sig },
-    } = await checkBiometrics()
-    const encryptedSeed = AES.encrypt(seed.seed, sig.toString()).toString()
-    await addEncryptedSeed('os', encryptedSeed)
+    await addEncryptedSeed('os', await encryptSeed(seed.seed))
   }, [seed])
 
   const { settingUp, lazy } = useSetup(setupSeed, skip)

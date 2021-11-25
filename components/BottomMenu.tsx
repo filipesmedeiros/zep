@@ -15,9 +15,10 @@ import { useRouter } from 'next/router'
 import { FC, useState } from 'react'
 
 import { checkBiometrics } from '../lib/biometrics'
-import { useAddress } from '../lib/context/addressContext'
+import { useAccount, useAccounts } from '../lib/context/accountContext'
 import { usePreferences } from '../lib/context/preferencesContext'
 import { getEncryptedSeed } from '../lib/db/encryptedSeeds'
+import decryptSeed from '../lib/decryptSeed'
 import useIsWelcoming from '../lib/hooks/useIsWelcoming'
 
 export interface Props {
@@ -29,23 +30,23 @@ const BottomMenu: FC<Props> = ({ className }) => {
     preferences: { leftHanded },
   } = usePreferences()
   const { push, pathname } = useRouter()
-  const { address } = useAddress()
+  const account = useAccount()
 
   const [confirmCopyAddress, setConfirmCopyAddress] = useState(false)
   const [confirmCopySeed, setConfirmCopySeed] = useState(false)
-  const onCopy = (seed?: string) => {
-    if (address !== undefined || seed !== undefined) {
-      navigator.clipboard.writeText(seed ?? address!)
-      seed !== undefined
-        ? setConfirmCopySeed(true)
-        : setConfirmCopyAddress(true)
-      setTimeout(
-        () =>
-          seed !== undefined
-            ? setConfirmCopySeed(false)
-            : setConfirmCopyAddress(false),
-        1500
-      )
+
+  const onCopySeed = async () => {
+    const seed = await decryptSeed('os')
+    navigator.clipboard.writeText(seed)
+    setConfirmCopySeed(true)
+    setTimeout(() => setConfirmCopySeed(false), 1500)
+  }
+
+  const onCopyAddress = () => {
+    if (account !== undefined) {
+      navigator.clipboard.writeText(account.address)
+      setConfirmCopyAddress(true)
+      setTimeout(() => setConfirmCopyAddress(false), 1500)
     }
   }
 
@@ -66,7 +67,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
           className="bg-purple-500 p-1 h-12 rounded hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-lg"
           onClick={() => push('/dashboard')}
         >
-          <HomeIcon className="h-full text-white dark:text-gray-900" />
+          <HomeIcon className="h-full text-purple-50 dark:text-gray-900" />
         </button>
       )}
 
@@ -88,34 +89,22 @@ const BottomMenu: FC<Props> = ({ className }) => {
                 className={clsx(
                   'p-1 h-7 rounded shadow-lg',
                   confirmCopySeed
-                    ? 'bg-white'
+                    ? 'bg-purple-50'
                     : 'bg-purple-500 hover:bg-purple-400 disabled:hover:bg-purple-500'
                 )}
-                onClick={async () => {
-                  const {
-                    // @ts-expect-error
-                    response: { signature: sig },
-                  } = (await checkBiometrics())!
-
-                  const encryptedSeed = (await getEncryptedSeed('os'))!
-                  const decryptedSeed = AES.decrypt(
-                    encryptedSeed,
-                    sig.toString()
-                  ).toString(enc.Utf8)
-                  onCopy(decryptedSeed)
-                }}
+                onClick={onCopySeed}
               >
                 {confirmCopySeed ? (
                   <CheckIcon className="h-full text-purple-500" />
                 ) : (
-                  <KeyIcon className="h-full text-white dark:text-gray-900" />
+                  <KeyIcon className="h-full text-purple-50 dark:text-gray-900" />
                 )}
               </button>
               <button
                 disabled={isWelcoming}
                 className="bg-purple-500 p-1 h-7 rounded hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-lg"
               >
-                <LibraryIcon className="h-full text-white dark:text-gray-900" />
+                <LibraryIcon className="h-full text-purple-50 dark:text-gray-900" />
               </button>
             </div>
             <div className="flex flex-col h-16 justify-between">
@@ -124,22 +113,22 @@ const BottomMenu: FC<Props> = ({ className }) => {
                 className={clsx(
                   'p-1 h-7 rounded shadow-lg',
                   confirmCopyAddress
-                    ? 'bg-white'
+                    ? 'bg-purple-50'
                     : 'bg-purple-500 hover:bg-purple-400 disabled:hover:bg-purple-500'
                 )}
-                onClick={() => onCopy()}
+                onClick={onCopyAddress}
               >
                 {confirmCopyAddress ? (
                   <CheckIcon className="h-full text-purple-500" />
                 ) : (
-                  <DocumentDuplicateIcon className="h-full text-white dark:text-gray-900" />
+                  <DocumentDuplicateIcon className="h-full text-purple-50 dark:text-gray-900" />
                 )}
               </button>
               <button
                 disabled={isWelcoming}
                 className="bg-purple-500 p-1 h-7 rounded hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-lg"
               >
-                <DownloadIcon className="h-full text-white dark:text-gray-900" />
+                <DownloadIcon className="h-full text-purple-50 dark:text-gray-900" />
               </button>
             </div>
           </div>
@@ -155,7 +144,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
               )}
               onClick={() => push('/readQrCode')}
             >
-              <UploadIcon className="h-full text-white dark:text-gray-900 w-full" />
+              <UploadIcon className="h-full text-purple-50 dark:text-gray-900 w-full" />
             </button>
 
             <div className="border-purple-500 border-t-2 border-b-2 py-1 px-3 h-16 shadow-lg">
@@ -172,7 +161,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
               )}
               onClick={() => push('/myQrCode')}
             >
-              <DownloadIcon className="h-full text-white dark:text-gray-900 w-full" />
+              <DownloadIcon className="h-full text-purple-50 dark:text-gray-900 w-full" />
             </button>
           </div>
 
@@ -181,13 +170,13 @@ const BottomMenu: FC<Props> = ({ className }) => {
               disabled={isWelcoming}
               className="bg-purple-500 p-1 h-7 rounded hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-md"
             >
-              <UploadIcon className="h-full text-white dark:text-gray-900" />
+              <UploadIcon className="h-full text-purple-50 dark:text-gray-900" />
             </button>
             <button
               disabled={isWelcoming}
               className="bg-purple-500 p-1 h-7 rounded hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-lg"
             >
-              <RssIcon className="h-full text-white dark:text-gray-900" />
+              <RssIcon className="h-full text-purple-50 dark:text-gray-900" />
             </button>
           </div>
         </div>

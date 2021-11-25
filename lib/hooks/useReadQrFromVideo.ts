@@ -1,7 +1,7 @@
 import jsqr from 'jsqr'
 import { useEffect, useRef, useState } from 'react'
 
-const useReadQrFromVideo = () => {
+const useReadQrFromVideo = (onQrCodeRead: (content: string) => void) => {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [videoLive, setVideoLive] = useState(false)
   useEffect(() => {
@@ -36,7 +36,7 @@ const useReadQrFromVideo = () => {
         )
 
         if (qr !== null) {
-          console.log(qr) // todo
+          onQrCodeRead(qr.data)
           return
         }
 

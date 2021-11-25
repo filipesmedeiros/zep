@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 
-import { useAddress } from '../context/addressContext'
+import { useAccounts } from '../context/accountContext'
 
 const useListenToTxn = () => {
-  const { address } = useAddress()
+  const { accounts } = useAccounts()
   const [mostRecentTxn, setMostRecentTxn] = useState<any | undefined>(undefined)
   useEffect(() => {
-    if (address !== undefined) {
+    if (accounts !== undefined) {
       const ws = new WebSocket('wss://ws.mynano.ninja/')
 
       ws.onopen = () => {
@@ -16,7 +16,7 @@ const useListenToTxn = () => {
             action: 'subscribe',
             topic: 'confirmation',
             options: {
-              accounts: [address],
+              accounts: [accounts],
             },
           })
         )
@@ -29,7 +29,7 @@ const useListenToTxn = () => {
 
       return () => ws.close()
     }
-  }, [address])
+  }, [accounts])
   return mostRecentTxn
 }
 
