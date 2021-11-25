@@ -5,14 +5,16 @@ import { useCallback, useState } from 'react'
 
 import { checkBiometrics, registerBiometrics } from '../biometrics'
 import { useAddress } from '../context/addressContext'
-import { addAddress } from '../db/addresses'
+import { addAccount } from '../db/accounts'
 import { addEncryptedSeed, hasEncryptedSeed } from '../db/encryptedSeeds'
 import addressFromSeed from '../nano/addressFromSeed'
 import useSetup from './useSetup'
 
 const useSetupSeed = (skip?: boolean) => {
   const { setAddress } = useAddress()
-  const [mnemonic, setMnemonic] = useState<string | undefined>(undefined)
+  const [seed, setSeed] = useState<
+    { seed: string; mnemonic: string } | undefined
+  >(undefined)
   const { replace } = useRouter()
   const setupSeed = useCallback(async () => {
     try {
@@ -23,32 +25,34 @@ const useSetupSeed = (skip?: boolean) => {
         return
       }
 
-      const [{ seed: newSeed, mnemonic }] = await Promise.all([
+      const [{ seed: generatedSeed, mnemonic }] = await Promise.all([
         wallet.generate(),
         registerBiometrics(),
       ])
-
-      const {
-        // @ts-expect-error
-        response: { signature: sig },
-      } = await checkBiometrics()
-      const encryptedSeed = AES.encrypt(newSeed, sig.toString()).toString()
-      await Promise.all([
-        addEncryptedSeed('os', encryptedSeed),
-        addAddress(0, addressFromSeed(newSeed, 0)),
-      ])
-      setAddress(addressFromSeed(newSeed, 0))
-      setMnemonic(mnemonic)
+      setSeed({ seed: generatedSeed, mnemonic })
+      setAddress(addressFromSeed(generatedSeed, 0))
+      await addAccount(0, addressFromSeed(generatedSeed, 0))
     } catch {}
   }, [replace, setAddress])
 
-  const settingUp = useSetup(setupSeed, skip)
+  const storeSeed = useCallback(async () => {
+    if (seed === undefined) return
+    const {
+      // @ts-expect-error
+      response: { signature: sig },
+    } = await checkBiometrics()
+    const encryptedSeed = AES.encrypt(seed.seed, sig.toString()).toString()
+    await addEncryptedSeed('os', encryptedSeed)
+  }, [seed])
+
+  const { settingUp, lazy } = useSetup(setupSeed, skip)
 
   return {
-    lazy: setupSeed,
+    lazy,
+    storeSeed,
     settingUp,
-    seedIsThere: mnemonic !== undefined,
-    seed: mnemonic,
+    seedIsThere: seed !== undefined,
+    seed: seed,
   }
 }
 

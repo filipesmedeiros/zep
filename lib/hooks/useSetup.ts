@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 /**
  * *please* remeber to memoize the setup function :)
@@ -16,7 +16,12 @@ const useSetup = (setup: () => Promise<void> | void, skip?: boolean) => {
     }
     doSetup()
   }, [setup, skip])
-  return settingUp
+  const lazy = useCallback(async () => {
+    if (!settingUp) setSettingUp(true)
+    await setup()
+    setSettingUp(false)
+  }, [setup, settingUp])
+  return { lazy, settingUp }
 }
 
 export default useSetup

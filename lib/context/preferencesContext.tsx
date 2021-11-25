@@ -8,35 +8,22 @@ import {
 } from 'react'
 
 import {
-  prefersBiometricsAuth,
-  togglePrefersBiometricsAuth,
-} from '../preferences/biometricsAuth'
-import { prefersDarkMode, togglePrefersDarkMode } from '../preferences/darkMode'
-import {
-  prefersLeftHanded,
-  togglePrefersLeftHanded,
-} from '../preferences/leftHanded'
-import {
-  ShowCurrency,
-  prefersShowCurrencyDash,
-  togglePrefersCurrencyDash,
-} from '../preferences/showCurrencyDash'
-
-export interface Preferences {
-  darkMode: boolean | undefined
-  biometricsAuth: boolean | undefined
-  leftHanded: boolean | undefined
-  showCurrencyDash: ShowCurrency | undefined
-}
+  PreferenceName,
+  PreferenceTypes,
+  ShowCurrencyPreference,
+  getPreference,
+  putPreference,
+} from '../db/preferences'
+import useDarkMode from '../hooks/useDarkMode'
+import isiOS from '../isiOS'
 
 const preferencesContext = createContext<
   | {
-      preferences: Preferences
-      setPreference: <K extends keyof Preferences>(
-        preference: K,
-        value: Preferences[K]
+      preferences: PreferenceTypes
+      setPreference: <P extends PreferenceName>(
+        preference: P,
+        value: PreferenceTypes[P]
       ) => void
-      togglePreference: (preference: keyof Preferences) => void
     }
   | undefined
 >(undefined)
@@ -51,60 +38,41 @@ export const usePreferences = () => {
 }
 
 export const PreferencesProvider: FC = ({ children }) => {
-  const [preferences, setPreferences] = useState<Preferences>({
+  const [preferences, setPreferences] = useState<PreferenceTypes>({
     darkMode: undefined,
     biometricsAuth: undefined,
     leftHanded: undefined,
     showCurrencyDash: undefined,
   })
   useEffect(() => {
-    setPreferences({
-      darkMode: prefersDarkMode(),
-      biometricsAuth: prefersBiometricsAuth(),
-      leftHanded: prefersLeftHanded(),
-      showCurrencyDash: prefersShowCurrencyDash(),
-    })
+    const setPrefs = async () => {
+      const [darkMode, biometricsAuth, leftHanded, showCurrencyDash] =
+        await Promise.all([
+          getPreference('darkMode'),
+          getPreference('biometricsAuth'),
+          getPreference('leftHanded'),
+          getPreference('showCurrencyDash'),
+        ])
+      setPreferences({
+        darkMode: darkMode ?? true,
+        biometricsAuth: biometricsAuth ?? !isiOS(),
+        leftHanded: leftHanded ?? false,
+        showCurrencyDash: showCurrencyDash ?? ShowCurrencyPreference.Xno,
+      })
+    }
+    setPrefs()
   }, [])
+  useDarkMode(preferences.darkMode)
   const setPreference = useCallback(
-    <K extends keyof Preferences>() =>
-      (preference: K, value: Preferences[K]) => {
-        // todo change localStorage here
-        setPreferences(prev => ({ ...prev, [preference]: value }))
-      },
+    <P extends PreferenceName>(name: P, value: PreferenceTypes[P]) => {
+      setPreferences(prev => ({ ...prev, [name]: value }))
+      putPreference(name, value)
+    },
     []
   )
 
-  const togglePreference = useCallback((preference: keyof Preferences) => {
-    if (preference === 'darkMode') {
-      togglePrefersDarkMode()
-      setPreferences(prev => ({ ...prev, darkMode: !prev.darkMode }))
-    } else if (preference === 'biometricsAuth') {
-      togglePrefersBiometricsAuth()
-      setPreferences(prev => ({
-        ...prev,
-        biometricsAuth: !prev.biometricsAuth,
-      }))
-    } else if (preference === 'leftHanded') {
-      togglePrefersLeftHanded()
-      setPreferences(prev => ({ ...prev, leftHanded: !prev.leftHanded }))
-    } else if (preference === 'showCurrencyDash') {
-      togglePrefersCurrencyDash()
-      setPreferences(prev => ({
-        ...prev,
-        showCurrencyDash:
-          prev.showCurrencyDash === ShowCurrency.Both
-            ? ShowCurrency.Xno
-            : prev.showCurrencyDash === ShowCurrency.Xno
-            ? ShowCurrency.None
-            : ShowCurrency.Both,
-      }))
-    }
-  }, [])
-
   return (
-    <preferencesContext.Provider
-      value={{ preferences, setPreference, togglePreference }}
-    >
+    <preferencesContext.Provider value={{ preferences, setPreference }}>
       {children}
     </preferencesContext.Provider>
   )

@@ -22,7 +22,7 @@ const PreferencesMenu: FC<Props> = () => {
   useClickAway(menuRef, () => setShowMenu(false))
   const {
     preferences: { darkMode, biometricsAuth, leftHanded },
-    togglePreference,
+    setPreference,
   } = usePreferences()
 
   const isiOS = useIsiOS()
@@ -59,7 +59,7 @@ const PreferencesMenu: FC<Props> = () => {
                 showMenu ? 'hover:cursor-pointer' : 'cursor-default'
               )}
               onClick={() => {
-                togglePreference('biometricsAuth')
+                setPreference('biometricsAuth', !biometricsAuth)
                 setShowMenu(false)
               }}
             >
@@ -73,12 +73,12 @@ const PreferencesMenu: FC<Props> = () => {
             className={clsx(
               'p-1 rounded dark:hover:text-purple-300 transition-colors duration-100 w-full text-white',
               darkMode
-                ? 'dark:text-purple-400 dark:bg-gray-900 dark:hover:text-purple-400 bg-gray-900 text-purple-400'
-                : 'hover:text-purple-400 dark:text-gray-900',
+                ? 'dark:text-purple-400 dark:bg-gray-900 dark:hover:text-purple-400 shadow-md hover:bg-purple-400 bg-purple-100 text-purple-400'
+                : 'hover:text-purple-400 bg-purple-400 dark:text-gray-900',
               showMenu ? 'hover:cursor-pointer' : 'cursor-default'
             )}
             onClick={() => {
-              togglePreference('darkMode')
+              setPreference('darkMode', !darkMode)
               setShowMenu(false)
             }}
           >
@@ -91,12 +91,12 @@ const PreferencesMenu: FC<Props> = () => {
             className={clsx(
               'p-1 rounded dark:hover:text-purple-300 transition-colors duration-100 w-full text-white dark:text-gray-900',
               leftHanded
-                ? 'dark:text-purple-400 dark:bg-gray-900 dark:hover:text-purple-400 bg-gray-900 text-purple-400'
-                : 'hover:text-purple-400',
+                ? 'dark:text-purple-400 dark:bg-gray-900 dark:hover:text-purple-400 shadow-md hover:bg-purple-400 bg-purple-100 text-purple-400'
+                : 'hover:text-purple-400 bg-purple-400 dark:text-gray-900',
               showMenu ? 'hover:cursor-pointer' : 'cursor-default'
             )}
             onClick={() => {
-              togglePreference('leftHanded')
+              setPreference('leftHanded', !leftHanded)
               setShowMenu(false)
             }}
           >

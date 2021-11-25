@@ -8,10 +8,12 @@ const Welcome: NextPage = () => {
       <h1 className="text-4xl mb-3 font-bold">hey!</h1>
       <p className="text-xl font-medium mb-2">
         do you already have
-        <br />a <b>nano</b> seed you wanna use?
+        <br />a <b>nano</b> passphrase
+        <br />
+        you wanna use?
       </p>
-      <aside className="text-xs mb-5">
-        your seed will{' '}
+      <aside className="text-xs mb-3">
+        your passphrase will{' '}
         <b className="font-extrabold">
           <em>never</em>
         </b>{' '}
@@ -20,21 +22,20 @@ const Welcome: NextPage = () => {
         and will only be decrypted for a few moments to send nano
       </aside>
       <div className="flex flex-col gap-3 justify-center w-full mb-6">
-        <button className="dark:bg-gray-900 bg-white dark:hover:bg-gray-800 py-2 px-5 rounded text-3xl font-bold shadow-lg hover:shadow-md active:shadow transition-all duration-100">
-          i have a seed
+        <button className="dark:bg-gray-900 bg-white dark:hover:bg-gray-800 py-2 px-5 rounded text-lg font-bold shadow-lg hover:shadow-md active:shadow transition-all duration-100">
+          i have a passphrase/seed
         </button>
         <button
-          className="dark:bg-gray-900 bg-white dark:hover:bg-gray-800 py-2 px-5 rounded text-3xl font-bold shadow-lg hover:shadow-md active:shadow transition-all duration-100"
+          className="dark:bg-gray-900 bg-white dark:hover:bg-gray-800 py-2 px-5 rounded text-lg font-bold shadow-lg hover:shadow-md active:shadow transition-all duration-100"
           onClick={() => push('/welcome/new')}
         >
-          give me a seed
+          what&apos;s a passphrase?
         </button>
       </div>
       <p className="text-xs">
         <em>
-          psst: you can already see all the cool buttons below,
-          <br />
-          but they&apos;re all disabled for now
+          psst: you can already see all the cool buttons below, but they&apos;re
+          all disabled for now
         </em>
       </p>
     </div>

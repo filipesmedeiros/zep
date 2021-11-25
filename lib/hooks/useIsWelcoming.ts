@@ -1,5 +1,8 @@
 import { useRouter } from 'next/router'
 
-const useIsWelcoming = () => useRouter().pathname.startsWith('/welcome')
+const useIsWelcoming = () => {
+  const { pathname } = useRouter()
+  return pathname.startsWith('/welcome') && !pathname.endsWith('/done')
+}
 
 export default useIsWelcoming

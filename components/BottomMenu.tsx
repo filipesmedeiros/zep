@@ -22,10 +22,9 @@ import useIsWelcoming from '../lib/hooks/useIsWelcoming'
 
 export interface Props {
   className?: string
-  disabled?: boolean
 }
 
-const BottomMenu: FC<Props> = ({ className, disabled }) => {
+const BottomMenu: FC<Props> = ({ className }) => {
   const {
     preferences: { leftHanded },
   } = usePreferences()
@@ -100,7 +99,7 @@ const BottomMenu: FC<Props> = ({ className, disabled }) => {
 
                   const encryptedSeed = (await getEncryptedSeed('os'))!
                   const decryptedSeed = AES.decrypt(
-                    encryptedSeed.encryptedSeed,
+                    encryptedSeed,
                     sig.toString()
                   ).toString(enc.Utf8)
                   onCopy(decryptedSeed)

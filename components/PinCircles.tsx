@@ -19,7 +19,7 @@ const PinCircles: FC<Props> = ({ filledCount, className }) => {
             'rounded-md w-5 h-8 transition-colors duration-150',
             filledCount > num
               ? 'bg-purple-500 border-purple-500'
-              : 'bg-purple-200 border-purple-200',
+              : 'dark:bg-purple-200 bg-purple-300 dark:border-purple-200 border-purple-300',
             num === 1 || num === 4 ? 'skew-x-12' : '-skew-x-12'
           )}
         />

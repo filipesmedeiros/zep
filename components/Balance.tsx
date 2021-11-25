@@ -5,12 +5,19 @@ import useSWR from 'swr'
 
 import { useAddress } from '../lib/context/addressContext'
 import { usePreferences } from '../lib/context/preferencesContext'
+import { ShowCurrencyPreference } from '../lib/db/preferences'
 import fetcher from '../lib/fetcher'
-import { ShowCurrency } from '../lib/preferences/showCurrencyDash'
 
 export interface Props {
   className?: string
 }
+
+const nextShowCurrency = (curr: ShowCurrencyPreference | undefined) =>
+  curr === ShowCurrencyPreference.Both
+    ? ShowCurrencyPreference.Xno
+    : curr === ShowCurrencyPreference.Xno
+    ? ShowCurrencyPreference.None
+    : ShowCurrencyPreference.Both
 
 const Balance: FC<Props> = ({ className }) => {
   const { data: xnoPrice } = useSWR<{
@@ -40,14 +47,14 @@ const Balance: FC<Props> = ({ className }) => {
 
   const {
     preferences: { showCurrencyDash },
-    togglePreference,
+    setPreference,
   } = usePreferences()
 
   const showXnoBalance =
-    showCurrencyDash !== ShowCurrency.None && account !== undefined
+    showCurrencyDash !== ShowCurrencyPreference.None && account !== undefined
 
   const showFiatBalance =
-    showCurrencyDash === ShowCurrency.Both &&
+    showCurrencyDash === ShowCurrencyPreference.Both &&
     xnoPrice !== undefined &&
     account !== undefined
 
@@ -56,10 +63,12 @@ const Balance: FC<Props> = ({ className }) => {
   return (
     <div
       className={clsx(
-        'bg-purple-500 dark:text-gray-900 text-purple-100 py-4 px-7 rounded-lg shadow-lg',
+        'bg-purple-500 dark:text-gray-900 text-purple-100 py-4 px-7 rounded shadow-lg',
         className
       )}
-      onClick={() => togglePreference('showCurrencyDash')}
+      onClick={() =>
+        setPreference('showCurrencyDash', nextShowCurrency(showCurrencyDash))
+      }
     >
       <h3 className="text-4xl text-center">
         Ӿ

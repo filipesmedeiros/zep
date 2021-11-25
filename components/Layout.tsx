@@ -21,7 +21,7 @@ const Layout: FC<Props> = ({ children }) => {
 
   return (
     <div
-      className="dark:text-white bg-purple-100 dark:bg-gray-900 relative w-screen h-screen pt-4 pb-4 px-5 grid justify-center gap-4"
+      className="dark:text-white bg-purple-50 dark:bg-gray-900 relative w-screen h-screen pt-4 pb-4 px-5 grid justify-center gap-4"
       style={{
         gridTemplate:
           '"top-menu" auto "balance" auto "main" 1fr "bottom-menu" auto / 1fr',
@@ -50,7 +50,7 @@ const Layout: FC<Props> = ({ children }) => {
             <Balance />
           </div>
           <main
-            className="overflow-auto bg-purple-500 rounded-md border-t-8 border-b-8 border-purple-500 shadow-md py-6 px-3"
+            className="overflow-auto bg-purple-500 rounded border-t-8 border-b-8 border-purple-500 shadow-md py-6 px-3"
             style={{ gridArea: 'main' }}
           >
             {children}

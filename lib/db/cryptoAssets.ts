@@ -18,7 +18,7 @@ class CryptoAssets extends Dexie {
   }
 }
 
-export const db = new CryptoAssets()
+const db = new CryptoAssets()
 
 export const addCryptoAsset = (id: CryptoAssetId, cryptoAsset: Uint8Array) =>
   db.cryptoAssets.add({ id, cryptoAsset })
@@ -27,7 +27,12 @@ export const removeCryptoAsset = (id: CryptoAssetId) =>
   db.cryptoAssets.delete(id)
 
 export const getCryptoAsset = (id: CryptoAssetId) =>
-  db.cryptoAssets.where({ id }).first()
+  db.cryptoAssets
+    .where({ id })
+    .first()
+    .then(res => res?.cryptoAsset)
 
 export const hasCryptoAsset = async (id: CryptoAssetId) =>
   (await db.cryptoAssets.where({ id }).count()) > 0
+
+export default db

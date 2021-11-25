@@ -3,14 +3,14 @@ import { useEffect } from 'react'
 
 import PinPad from '../components/PinPad'
 import { checkBiometrics } from '../lib/biometrics'
-import { prefersBiometricsAuth } from '../lib/preferences/biometricsAuth'
+import { getPreference } from '../lib/db/preferences'
 
 const Landing = () => {
   const { push } = useRouter()
 
   useEffect(() => {
     const auth = async () => {
-      if (prefersBiometricsAuth()) {
+      if (await getPreference('biometricsAuth')) {
         try {
           await checkBiometrics()
           push('/dashboard')

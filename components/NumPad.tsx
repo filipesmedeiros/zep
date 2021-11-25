@@ -60,7 +60,7 @@ const NumPad: FC<Props> = ({ onNumPress, onDelete, onFingerprintPress }) => {
       {range(9).map(num => (
         <button
           className={clsx(
-            'hover:bg-purple-50 hover:text-purple-600 active:bg-purple-100 transition-colors duration-100 rounded',
+            'dark:hover:bg-purple-50 hover:bg-gray-900 dark:hover:text-purple-600 hover:text-purple-50 active:bg-purple-100 transition-colors duration-100 rounded',
             { 'bg-purple-100': activeKey === num + 1 }
           )}
           key={num}
@@ -73,7 +73,7 @@ const NumPad: FC<Props> = ({ onNumPress, onDelete, onFingerprintPress }) => {
         <button
           onClick={onFingerprintPress}
           className={clsx(
-            'flex justify-center items-center hover:bg-purple-50 hover:text-purple-600 active:bg-purple-100 transition-colors duration-100 rounded'
+            'flex justify-center items-center dark:hover:bg-purple-50 hover:bg-gray-900 dark:hover:text-purple-600 hover:text-purple-50 active:bg-purple-100 transition-colors duration-100 rounded'
           )}
         >
           <FingerPrintIcon className="w-7" />
@@ -81,7 +81,7 @@ const NumPad: FC<Props> = ({ onNumPress, onDelete, onFingerprintPress }) => {
       )}
       <button
         className={clsx(
-          'hover:bg-purple-50 hover:text-purple-600 active:bg-purple-100 transition-colors duration-100 rounded',
+          'dark:hover:bg-purple-50 hover:bg-gray-900 dark:hover:text-purple-600 hover:text-purple-50 active:bg-purple-100 transition-colors duration-100 rounded',
           { 'bg-purple-100': activeKey === 0, 'col-start-2': biometricsAuth }
         )}
         onClick={() => onNumPress(0)}
@@ -91,7 +91,7 @@ const NumPad: FC<Props> = ({ onNumPress, onDelete, onFingerprintPress }) => {
       <button
         onClick={onDelete}
         className={clsx(
-          'flex justify-center items-center hover:bg-purple-50 hover:text-purple-600 active:bg-purple-100 transition-colors rounded',
+          'flex justify-center items-center dark:hover:bg-purple-50 hover:bg-gray-900 dark:hover:text-purple-600 hover:text-purple-50 active:bg-purple-100 transition-colors rounded',
           { 'bg-purple-100': activeKey === -1 }
         )}
       >

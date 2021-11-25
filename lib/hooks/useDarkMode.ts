@@ -1,14 +1,17 @@
 import { useEffect } from 'react'
 
-import { prefersDarkMode } from '../preferences/darkMode'
+import { getPreference } from '../db/preferences'
 
-const useDarkMode = () => {
+const useDarkMode = (darkMode?: boolean) => {
   useEffect(() => {
-    const isDark = prefersDarkMode()
-    const htmlClasses = document.querySelector('html')?.classList
-    if (isDark) htmlClasses?.add('dark')
-    else htmlClasses?.remove('dark')
-  }, [])
+    const setDarkModeClass = async () => {
+      const isDark = darkMode ?? (await getPreference('darkMode')) === true
+      const htmlClasses = document.querySelector('html')?.classList
+      if (isDark) htmlClasses?.add('dark')
+      else htmlClasses?.remove('dark')
+    }
+    setDarkModeClass()
+  }, [darkMode])
 }
 
 export default useDarkMode
