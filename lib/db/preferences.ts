@@ -1,5 +1,7 @@
 import Dexie, { Table } from 'dexie'
 
+import db from '.'
+
 export enum ShowCurrencyPreference {
   Xno = 'xno',
   Both = 'both',
@@ -20,18 +22,10 @@ interface Preference {
   value: string
 }
 
-class Preferences extends Dexie {
-  public preferences!: Table<Preference, PreferenceName>
+export type Key = PreferenceName
+export type Value = Preference
 
-  public constructor() {
-    super('Preferences')
-    this.version(1).stores({
-      preferences: 'name,value',
-    })
-  }
-}
-
-const db = new Preferences()
+export const schema = 'name,value'
 
 export const addPreference = <P extends PreferenceName>(
   name: P,
@@ -58,5 +52,3 @@ export const getPreference = <P extends PreferenceName>(
 
 export const hasPreference = async (name: PreferenceName) =>
   (await db.preferences.where({ name }).count()) > 0
-
-export default db

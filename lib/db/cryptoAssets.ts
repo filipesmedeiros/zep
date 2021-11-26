@@ -1,5 +1,7 @@
 import Dexie, { Table } from 'dexie'
 
+import db from '.'
+
 export type CryptoAssetId = 'challenge' | 'credentialId'
 
 interface CryptoAsset {
@@ -7,18 +9,10 @@ interface CryptoAsset {
   cryptoAsset: Uint8Array
 }
 
-class CryptoAssets extends Dexie {
-  public cryptoAssets!: Table<CryptoAsset, CryptoAssetId>
+export type Key = CryptoAssetId
+export type Value = CryptoAsset
 
-  public constructor() {
-    super('CryptoAssets')
-    this.version(1).stores({
-      cryptoAssets: 'id,cryptoAsset',
-    })
-  }
-}
-
-const db = new CryptoAssets()
+export const schema = 'id,cryptoAsset'
 
 export const addCryptoAsset = (id: CryptoAssetId, cryptoAsset: Uint8Array) =>
   db.cryptoAssets.add({ id, cryptoAsset })
@@ -34,5 +28,3 @@ export const getCryptoAsset = (id: CryptoAssetId) =>
 
 export const hasCryptoAsset = async (id: CryptoAssetId) =>
   (await db.cryptoAssets.where({ id }).count()) > 0
-
-export default db

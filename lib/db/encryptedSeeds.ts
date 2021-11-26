@@ -1,5 +1,7 @@
 import Dexie, { Table } from 'dexie'
 
+import db from '.'
+
 export type EncryptedSeedId = 'pin' | 'os'
 
 interface EncryptedSeed {
@@ -7,18 +9,10 @@ interface EncryptedSeed {
   encryptedSeed: string
 }
 
-class EncryptedSeeds extends Dexie {
-  public encryptedSeeds!: Table<EncryptedSeed, EncryptedSeedId>
+export type Key = EncryptedSeedId
+export type Value = EncryptedSeed
 
-  public constructor() {
-    super('EncryptedSeeds')
-    this.version(1).stores({
-      encryptedSeeds: 'id,encryptedSeed',
-    })
-  }
-}
-
-const db = new EncryptedSeeds()
+export const schema = 'id,encryptedSeed'
 
 export const addEncryptedSeed = (id: EncryptedSeedId, encryptedSeed: string) =>
   db.encryptedSeeds.add({ id, encryptedSeed })
@@ -34,5 +28,3 @@ export const getEncryptedSeed = (id: EncryptedSeedId) =>
 
 export const hasEncryptedSeed = async (id: EncryptedSeedId) =>
   (await db.encryptedSeeds.where({ id }).count()) > 0
-
-export default db
