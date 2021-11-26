@@ -64,7 +64,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
       {pathname !== '/dashboard' && (
         <button
           disabled={isWelcoming}
-          className="bg-purple-500 p-1 h-12 rounded hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-lg"
+          className="bg-purple-500 p-1 h-12 rounded hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-lg disabled:cursor-default"
           onClick={() => push('/dashboard')}
         >
           <HomeIcon className="h-full text-purple-50 dark:text-gray-900" />
@@ -90,7 +90,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
                   'p-1 h-7 rounded shadow-lg',
                   confirmCopySeed
                     ? 'bg-purple-50'
-                    : 'bg-purple-500 hover:bg-purple-400 disabled:hover:bg-purple-500'
+                    : 'bg-purple-500 hover:bg-purple-400 disabled:hover:bg-purple-500 disabled:cursor-default'
                 )}
                 onClick={onCopySeed}
               >
@@ -102,7 +102,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
               </button>
               <button
                 disabled={isWelcoming}
-                className="bg-purple-500 p-1 h-7 rounded hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-lg"
+                className="bg-purple-500 p-1 h-7 rounded hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-lg disabled:cursor-default"
               >
                 <LibraryIcon className="h-full text-purple-50 dark:text-gray-900" />
               </button>
@@ -114,7 +114,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
                   'p-1 h-7 rounded shadow-lg',
                   confirmCopyAddress
                     ? 'bg-purple-50'
-                    : 'bg-purple-500 hover:bg-purple-400 disabled:hover:bg-purple-500'
+                    : 'bg-purple-500 hover:bg-purple-400 disabled:hover:bg-purple-500 disabled:cursor-default'
                 )}
                 onClick={onCopyAddress}
               >
@@ -126,7 +126,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
               </button>
               <button
                 disabled={isWelcoming}
-                className="bg-purple-500 p-1 h-7 rounded hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-lg"
+                className="bg-purple-500 p-1 h-7 rounded hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-lg disabled:cursor-default"
               >
                 <DownloadIcon className="h-full text-purple-50 dark:text-gray-900" />
               </button>
@@ -137,7 +137,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
             <button
               disabled={isWelcoming}
               className={clsx(
-                'bg-purple-500 absolute top-0 h-16 w-7 rounded-r hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-md',
+                'bg-purple-500 absolute top-0 h-16 w-7 rounded-r hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-md disabled:cursor-default',
                 leftHanded
                   ? 'left-0 -translate-x-2/3 rounded-l'
                   : 'right-0 translate-x-2/3 rounded-r'
@@ -154,7 +154,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
             <button
               disabled={isWelcoming}
               className={clsx(
-                'bg-purple-500 absolute top-0 h-16 w-7 hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-md',
+                'bg-purple-500 absolute top-0 h-16 w-7 hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-md disabled:cursor-default',
                 leftHanded
                   ? 'right-0 translate-x-2/3 rounded-r'
                   : 'left-0 -translate-x-2/3 rounded-l'
@@ -168,13 +168,13 @@ const BottomMenu: FC<Props> = ({ className }) => {
           <div className="flex flex-col h-16 justify-between">
             <button
               disabled={isWelcoming}
-              className="bg-purple-500 p-1 h-7 rounded hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-md"
+              className="bg-purple-500 p-1 h-7 rounded hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-md disabled:cursor-default"
             >
               <UploadIcon className="h-full text-purple-50 dark:text-gray-900" />
             </button>
             <button
               disabled={isWelcoming}
-              className="bg-purple-500 p-1 h-7 rounded hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-lg"
+              className="bg-purple-500 p-1 h-7 rounded hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-lg disabled:cursor-default"
             >
               <RssIcon className="h-full text-purple-50 dark:text-gray-900" />
             </button>
