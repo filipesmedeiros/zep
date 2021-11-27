@@ -13,7 +13,7 @@ const Send: NextPage = () => {
   const hasAmount = amount !== undefined
 
   const [xnoToSend, setXnoToSend] = useState('')
-  const send = useSendNano()
+  const { send } = useSendNano()
 
   return (
     <div>

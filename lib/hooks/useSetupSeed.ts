@@ -3,8 +3,9 @@ import { useRouter } from 'next/router'
 import { useCallback, useState } from 'react'
 
 import { registerBiometrics } from '../biometrics'
+import computeWorkAsync from '../computeWorkAsync'
 import { useAccounts } from '../context/accountContext'
-import { addAccount } from '../db/accounts'
+import { addAccount, addPrecomputedWork } from '../db/accounts'
 import { addEncryptedSeed, hasEncryptedSeed } from '../db/encryptedSeeds'
 import encryptSeed from '../encryptSeed'
 import { AccountInfoCache } from '../types'
@@ -43,7 +44,14 @@ const useSetupSeed = (skip?: boolean) => {
       }
       setSeed({ seed: generatedSeed, mnemonic })
       setAccount(account)
-      await addAccount(0, account)
+      addAccount(0, account)
+
+      computeWorkAsync(address, { send: false }).then(work => {
+        if (work !== null) {
+          setAccount({ ...account, precomputedWork: work })
+          addPrecomputedWork(address, work)
+        }
+      })
     } catch {}
   }, [replace, setAccount])
 

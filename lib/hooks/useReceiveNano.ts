@@ -1,5 +1,5 @@
 import { computeWork, hashBlock } from 'nanocurrency'
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 
 import computeWorkAsync from '../computeWorkAsync'
 import { useAccount } from '../context/accountContext'
@@ -10,15 +10,20 @@ import receiveNano from '../xno/receiveNano'
 
 const useReceiveNano = () => {
   const account = useAccount()
+  const [generatingWork, setGeneratingWork] = useState(false)
 
   const receive = useCallback(
     async (hash: string, amount: string) => {
       if (account === undefined) return
       let precomputedWork = await getPrecomputedWork(account.address)
-      if (precomputedWork === null)
+      if (precomputedWork === null) {
+        setGeneratingWork(true)
         precomputedWork = await computeWorkAsync(
-          account.frontier ?? account.address
+          account.frontier ?? account.address,
+          { send: false }
         )
+        setGeneratingWork(false)
+      }
       if (precomputedWork === null) throw new Error('couldnt_compute_work')
       await receiveNano(
         {
@@ -36,7 +41,7 @@ const useReceiveNano = () => {
     [account]
   )
 
-  return receive
+  return { receive, generatingWork }
 }
 
 export default useReceiveNano

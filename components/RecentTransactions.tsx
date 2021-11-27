@@ -29,9 +29,7 @@ const mockAddressBook: Record<string, { displayName: string }> = {
 }
 
 const RecentTransactions: FC<Props> = ({ className }) => {
-  const account = useAccount()
-
-  const receiveNano = useReceiveNano()
+  const { receive } = useReceiveNano()
 
   return (
     <div className={clsx('flex flex-col gap-6 w-full', className)}>
@@ -62,7 +60,7 @@ const RecentTransactions: FC<Props> = ({ className }) => {
               >
                 <button
                   className="contents"
-                  onClick={() => receiveNano(txn.hash, txn.amount)}
+                  onClick={() => receive(txn.hash, txn.amount)}
                 >
                   {txn.send ? (
                     <UploadIcon className="w-6 text-yellow-500 flex-shrink-0" />

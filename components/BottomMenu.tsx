@@ -176,11 +176,6 @@ const BottomMenu: FC<Props> = ({ className }) => {
             <button
               disabled={isWelcoming}
               className="bg-purple-500 p-1 h-7 rounded hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-lg disabled:cursor-default"
-              onClick={() =>
-                computeWorkAsync(
-                  account?.frontier ?? account?.publicKey ?? ''
-                ).then(console.log)
-              }
             >
               <RssIcon className="h-full text-purple-50 dark:text-gray-900" />
             </button>

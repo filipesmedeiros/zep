@@ -1,5 +1,5 @@
 import { hashBlock } from 'nanocurrency'
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 
 import computeWorkAsync from '../computeWorkAsync'
 import { useAccount } from '../context/accountContext'
@@ -12,6 +12,7 @@ import sendNano from '../xno/sendNano'
 
 const useSendNano = () => {
   const account = useAccount()
+  const [generatingWork, setGeneratingWork] = useState(false)
 
   const send = useCallback(
     async (to: string, amount: string) => {
@@ -22,7 +23,17 @@ const useSendNano = () => {
         account.frontier === null
       )
         throw new Error('wrong_block_data') // todo improve this error
-      const signedBlock = await sendNano(
+      let precomputedWork = await getPrecomputedWork(account.address)
+      if (precomputedWork === null) {
+        setGeneratingWork(true)
+        precomputedWork = await computeWorkAsync(
+          account.frontier ?? account.address,
+          { send: true }
+        )
+        setGeneratingWork(false)
+      }
+      if (precomputedWork === null) throw new Error('couldnt_compute_work')
+      await sendNano(
         {
           walletBalanceRaw: account.balance,
           fromAddress: account.address,
@@ -30,7 +41,7 @@ const useSendNano = () => {
           representativeAddress: account.representative,
           frontier: account.frontier,
           amountRaw: amount,
-          work: (await getPrecomputedWork(account.address)) ?? undefined,
+          work: precomputedWork,
         },
         account.index
       )
@@ -38,7 +49,7 @@ const useSendNano = () => {
     [account]
   )
 
-  return send
+  return { send, generatingWork }
 }
 
 export default useSendNano

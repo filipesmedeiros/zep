@@ -23,7 +23,7 @@ export const registerBiometrics = async () => {
         },
       ],
       timeout: 30000,
-      challenge: challenge,
+      challenge: challenge.cryptoAsset,
       attestation: 'direct',
       authenticatorSelection: {
         authenticatorAttachment: 'platform',
@@ -62,10 +62,10 @@ export const checkBiometrics = async () => {
   const getCredentialParams: CredentialRequestOptions = {
     publicKey: {
       timeout: 60000,
-      challenge: challenge,
+      challenge: challenge.cryptoAsset,
       allowCredentials: [
         {
-          id: credentialId,
+          id: credentialId.cryptoAsset,
           transports: ['internal'] as AuthenticatorTransport[],
           type: 'public-key' as 'public-key',
         },

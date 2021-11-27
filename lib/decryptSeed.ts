@@ -9,9 +9,10 @@ const decryptSeed = async (id: 'os' | 'pin') => {
     // @ts-expect-error
     response: { signature: sig },
   } = await checkBiometrics()
-  const decryptedSeed = AES.decrypt(encryptedSeed!, sig.toString()).toString(
-    enc.Utf8
-  )
+  const decryptedSeed = AES.decrypt(
+    encryptedSeed!.encryptedSeed,
+    sig.toString()
+  ).toString(enc.Utf8)
   return decryptedSeed
 }
 
