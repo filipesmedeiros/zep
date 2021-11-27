@@ -41,10 +41,22 @@ export const openDb = async (version = 1) => {
   else {
     dbConnection = await openDB<Schema>('Database', version, {
       upgrade: db => {
-        db.createObjectStore('accounts').createIndex('address', 'address')
-        db.createObjectStore('cryptoAssets')
-        db.createObjectStore('encryptedSeed')
-        db.createObjectStore('preferences')
+        db.createObjectStore('accounts', {
+          keyPath: 'index',
+          autoIncrement: true,
+        }).createIndex('address', 'address')
+        db.createObjectStore('cryptoAssets', {
+          keyPath: 'id',
+          autoIncrement: true,
+        })
+        db.createObjectStore('encryptedSeed', {
+          keyPath: 'id',
+          autoIncrement: true,
+        })
+        db.createObjectStore('preferences', {
+          keyPath: 'id',
+          autoIncrement: true,
+        })
       },
     })
   }
