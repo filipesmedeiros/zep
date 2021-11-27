@@ -1,3 +1,4 @@
+import { hashBlock } from 'nanocurrency'
 import { block } from 'nanocurrency-web'
 
 import decryptSeed from '../decryptSeed'

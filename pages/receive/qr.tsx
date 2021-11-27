@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 
-import { useAccount } from '../lib/context/accountContext'
-import useDrawQrCode from '../lib/hooks/useDrawQrCode'
+import { useAccount } from '../../lib/context/accountContext'
+import useDrawQrCode from '../../lib/hooks/useDrawQrCode'
 
 const MyQrCode: NextPage = () => {
   const account = useAccount()

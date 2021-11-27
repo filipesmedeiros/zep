@@ -15,6 +15,7 @@ import { useRouter } from 'next/router'
 import { FC, useState } from 'react'
 
 import { checkBiometrics } from '../lib/biometrics'
+import computeWorkAsync from '../lib/computeWorkAsync'
 import { useAccount, useAccounts } from '../lib/context/accountContext'
 import { usePreferences } from '../lib/context/preferencesContext'
 import { getEncryptedSeed } from '../lib/db/encryptedSeeds'
@@ -142,7 +143,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
                   ? 'left-0 -translate-x-2/3 rounded-l'
                   : 'right-0 translate-x-2/3 rounded-r'
               )}
-              onClick={() => push('/readQrCode')}
+              onClick={() => push('/send/qr')}
             >
               <UploadIcon className="h-full text-purple-50 dark:text-gray-900 w-full" />
             </button>
@@ -159,7 +160,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
                   ? 'right-0 translate-x-2/3 rounded-r'
                   : 'left-0 -translate-x-2/3 rounded-l'
               )}
-              onClick={() => push('/myQrCode')}
+              onClick={() => push('/receive/qr')}
             >
               <DownloadIcon className="h-full text-purple-50 dark:text-gray-900 w-full" />
             </button>
@@ -175,6 +176,11 @@ const BottomMenu: FC<Props> = ({ className }) => {
             <button
               disabled={isWelcoming}
               className="bg-purple-500 p-1 h-7 rounded hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-lg disabled:cursor-default"
+              onClick={() =>
+                computeWorkAsync(
+                  account?.frontier ?? account?.publicKey ?? ''
+                ).then(console.log)
+              }
             >
               <RssIcon className="h-full text-purple-50 dark:text-gray-900" />
             </button>

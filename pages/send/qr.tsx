@@ -1,13 +1,23 @@
 import clsx from 'clsx'
 import type { NextPage } from 'next'
+import { useRouter } from 'next/router'
 import { useCallback } from 'react'
 
-import useReadQrFromVideo from '../lib/hooks/useReadQrFromVideo'
+import useReadQrFromVideo from '../../lib/hooks/useReadQrFromVideo'
+import isTxnUrl from '../../lib/nano/isTxnUrl'
+import txnUrlToParts from '../../lib/nano/txnUrlToParts'
 
 const ReadQrCode: NextPage = () => {
-  const onQrCodeRead = useCallback((url: string) => {
-    console.log(url)
-  }, [])
+  const { push } = useRouter()
+  const onQrCodeRead = useCallback(
+    (urlOrAddress: string) => {
+      if (isTxnUrl(urlOrAddress)) {
+        const { address, amount } = txnUrlToParts(urlOrAddress)
+        push(`/send?address=${address}&amount=${amount}`)
+      } else push(`/send?address=${urlOrAddress}`)
+    },
+    [push]
+  )
   const { videoLive, videoRef } = useReadQrFromVideo(onQrCodeRead)
 
   return (

@@ -1,8 +1,7 @@
-import { computeWork } from 'nanocurrency'
 import { useCallback } from 'react'
 
 import { useAccount } from '../context/accountContext'
-import fetcher from '../fetcher'
+import { consumePrecomputedWork, getPrecomputedWork } from '../db/accounts'
 import sendNano from '../nano/sendNano'
 
 const useSendNano = () => {
@@ -17,7 +16,7 @@ const useSendNano = () => {
         account.frontier === null
       )
         return
-      const signedBlock = sendNano(
+      const signedBlock = await sendNano(
         {
           walletBalanceRaw: account.balance,
           fromAddress: account.address,
@@ -25,11 +24,11 @@ const useSendNano = () => {
           representativeAddress: account.representative,
           frontier: account.frontier,
           amountRaw: amount,
-          work: (await computeWork(account.frontier))!,
+          work: (await getPrecomputedWork(account.address)) ?? undefined,
         },
         account.index
       )
-      return fetcher('https://mynano.ninja/api/node', {
+      return fetch('https://mynano.ninja/api/node', {
         method: 'POST',
         headers: [['Content-Type', 'application/json']],
         body: JSON.stringify({
@@ -39,6 +38,14 @@ const useSendNano = () => {
           block: signedBlock,
         }),
       })
+        .then(res => {
+          if (!res.ok) throw new Error()
+          return res.json()
+        })
+        .then(data => {
+          if ('error' in data) throw new Error()
+          consumePrecomputedWork(account.address)
+        })
     },
     [account]
   )

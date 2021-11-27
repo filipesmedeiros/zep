@@ -1,15 +1,13 @@
-import { AES } from 'crypto-js'
 import { wallet } from 'nanocurrency-web'
 import { useRouter } from 'next/router'
 import { useCallback, useState } from 'react'
 
-import { checkBiometrics, registerBiometrics } from '../biometrics'
+import { registerBiometrics } from '../biometrics'
 import { useAccounts } from '../context/accountContext'
 import { addAccount } from '../db/accounts'
 import { addEncryptedSeed, hasEncryptedSeed } from '../db/encryptedSeeds'
 import encryptSeed from '../encryptSeed'
 import accountAtIndex from '../nano/accountAtIndex'
-import fetchAccountInfo from '../nano/fetchAccountInfo'
 import useSetup from './useSetup'
 
 const useSetupSeed = (skip?: boolean) => {
@@ -33,12 +31,9 @@ const useSetupSeed = (skip?: boolean) => {
       ])
       const { address, publicKey } = accountAtIndex(generatedSeed, 0)
 
-      const infoRes = await fetchAccountInfo(address)
-
       const account = {
-        frontier: 'error' in infoRes ? null : infoRes.confirmed_frontier,
-        representative:
-          'error' in infoRes ? null : infoRes.confirmed_representative,
+        frontier: null,
+        representative: address,
         balance: '0',
         index: 0,
         address,

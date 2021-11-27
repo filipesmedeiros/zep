@@ -7,13 +7,12 @@ import {
   useState,
 } from 'react'
 
+import { getPreference, putPreference } from '../db/preferences'
 import {
   PreferenceName,
   PreferenceTypes,
   ShowCurrencyPreference,
-  getPreference,
-  putPreference,
-} from '../db/preferences'
+} from '../db/types'
 import useDarkMode from '../hooks/useDarkMode'
 import isiOS from '../isiOS'
 

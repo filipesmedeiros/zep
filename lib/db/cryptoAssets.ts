@@ -1,18 +1,5 @@
-import Dexie, { Table } from 'dexie'
-
 import db from '.'
-
-export type CryptoAssetId = 'challenge' | 'credentialId'
-
-interface CryptoAsset {
-  id: CryptoAssetId
-  cryptoAsset: Uint8Array
-}
-
-export type Key = CryptoAssetId
-export type Value = CryptoAsset
-
-export const schema = 'id,cryptoAsset'
+import { CryptoAssetId } from './types'
 
 export const addCryptoAsset = (id: CryptoAssetId, cryptoAsset: Uint8Array) =>
   db.cryptoAssets.add({ id, cryptoAsset })

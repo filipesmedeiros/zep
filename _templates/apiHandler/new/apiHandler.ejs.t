@@ -19,6 +19,3 @@ const handler: NextApiHandler<ResponseBody> = (req, res) => {
 }
 
 export default handler
-
-
-

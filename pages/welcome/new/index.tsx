@@ -9,13 +9,13 @@ const New: NextPage = () => {
   const { push } = useRouter()
   const [storing, setStoring] = useState(false)
   useEffect(() => {
-    const copyAndGoToStore = async () => {
-      if (seed !== undefined) {
+    if (seed !== undefined) {
+      const copyAndGoToStore = async () => {
         await navigator.clipboard.writeText(seed.mnemonic)
         setStoring(true)
       }
+      copyAndGoToStore()
     }
-    copyAndGoToStore()
   }, [seed, push])
 
   const onStoreClick = async () => {

@@ -13,6 +13,7 @@
     "format": "prettier --write .",
     "gen:component": "hygen component new",
     "gen:apiHandler": "hygen apiHandler new",
+    "gen:dataStore": "hygen dataStore new",
     "gen:page": "hygen page new",
     "gen:hook": "hygen hook new"
   },

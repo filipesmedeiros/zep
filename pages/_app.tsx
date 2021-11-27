@@ -4,7 +4,7 @@ import { SWRConfig } from 'swr'
 import 'tailwindcss/tailwind.css'
 
 import Layout from '../components/Layout'
-import { AddressProvider } from '../lib/context/accountContext'
+import { AccountProvider } from '../lib/context/accountContext'
 import { PreferencesProvider } from '../lib/context/preferencesContext'
 import fetcher from '../lib/fetcher'
 import useDarkMode from '../lib/hooks/useDarkMode'
@@ -27,13 +27,13 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
 
   return (
     <SWRConfig value={{ fetcher, provider: () => new Map() }}>
-      <AddressProvider initialAccounts={accounts} initialAccountIndex={0}>
+      <AccountProvider initialAccounts={accounts} initialAccountIndex={0}>
         <PreferencesProvider>
           <Layout>
             <Component {...pageProps} />
           </Layout>
         </PreferencesProvider>
-      </AddressProvider>
+      </AccountProvider>
     </SWRConfig>
   )
 }

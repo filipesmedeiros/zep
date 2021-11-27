@@ -13,13 +13,18 @@ const useSetupAccounts = (skip?: boolean) => {
     const dbAccount = await getAccount(0)
     if (dbAccount !== undefined) {
       setAccounts({ 0: dbAccount })
-      const infoRes = await fetchAccountInfo(dbAccount.address)
+      const infoResponse = await fetchAccountInfo(dbAccount.address)
 
       const freshAccountInfo = {
         ...dbAccount,
-        frontier: 'error' in infoRes ? null : infoRes.confirmed_frontier,
+        frontier:
+          'error' in infoResponse ? null : infoResponse.confirmed_frontier,
         representative:
-          'error' in infoRes ? null : infoRes.confirmed_representative,
+          'error' in infoResponse
+            ? null
+            : infoResponse.confirmed_representative,
+        balance:
+          'error' in infoResponse ? null : infoResponse.confirmed_balance,
       }
       setAccounts({ 0: freshAccountInfo })
       putAccount(dbAccount.index, freshAccountInfo)

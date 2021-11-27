@@ -1,11 +1,11 @@
 import clsx from 'clsx'
 import { tools } from 'nanocurrency-web'
-import { FC, useMemo } from 'react'
+import { FC } from 'react'
 import useSWR from 'swr'
 
-import { useAccount, useAccounts } from '../lib/context/accountContext'
+import { useAccount } from '../lib/context/accountContext'
 import { usePreferences } from '../lib/context/preferencesContext'
-import { ShowCurrencyPreference } from '../lib/db/preferences'
+import { ShowCurrencyPreference } from '../lib/db/types'
 import fetcher from '../lib/fetcher'
 
 export interface Props {

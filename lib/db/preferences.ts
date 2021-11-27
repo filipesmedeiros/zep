@@ -1,31 +1,5 @@
-import Dexie, { Table } from 'dexie'
-
 import db from '.'
-
-export enum ShowCurrencyPreference {
-  Xno = 'xno',
-  Both = 'both',
-  None = 'none',
-}
-
-export interface PreferenceTypes {
-  darkMode: boolean | undefined
-  biometricsAuth: boolean | undefined
-  leftHanded: boolean | undefined
-  showCurrencyDash: ShowCurrencyPreference | undefined
-}
-
-export type PreferenceName = keyof PreferenceTypes
-
-interface Preference {
-  name: PreferenceName
-  value: string
-}
-
-export type Key = PreferenceName
-export type Value = Preference
-
-export const schema = 'name,value'
+import { PreferenceName, PreferenceTypes } from './types'
 
 export const addPreference = <P extends PreferenceName>(
   name: P,

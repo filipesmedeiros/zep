@@ -2,6 +2,7 @@ import { computeWork, hashBlock } from 'nanocurrency'
 import { useCallback } from 'react'
 
 import { useAccount } from '../context/accountContext'
+import { consumeWork } from '../db/accounts'
 import fetcher from '../fetcher'
 import receiveNano from '../nano/receiveNano'
 
@@ -22,7 +23,7 @@ const useReceiveNano = () => {
             account.frontier ??
             '0000000000000000000000000000000000000000000000000000000000000000',
           amountRaw: amount,
-          work: (await computeWork(account.frontier ?? account.publicKey))!,
+          work: await consumeWork(account.address),
         },
         account.index
       )

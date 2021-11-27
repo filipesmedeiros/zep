@@ -9,17 +9,17 @@ import {
 
 import { AccountInfoCache } from '../types'
 
-export interface AddressContextValue {
+export interface AccountContextValue {
   currAccount: AccountInfoCache | undefined
   accounts: { [key: number]: AccountInfoCache } | undefined
   setAccount: (info: AccountInfoCache) => void
   removeAccount: (index: number) => void
 }
 
-const addressContext = createContext<AddressContextValue | undefined>(undefined)
+const accountContext = createContext<AccountContextValue | undefined>(undefined)
 
 export const useAccounts = () => {
-  const contextValue = useContext(addressContext)
+  const contextValue = useContext(accountContext)
   if (contextValue === undefined)
     throw new Error('`useAddress` must be used insisde a context `Provider`')
   return contextValue
@@ -36,7 +36,7 @@ export const useAccount = (index?: number) => {
     : contextValue.currAccount
 }
 
-export const AddressProvider: FC<{
+export const AccountProvider: FC<{
   initialAccounts?: { [key: number]: AccountInfoCache } | undefined
   initialAccountIndex?: number
 }> = ({ children, initialAccounts, initialAccountIndex }) => {
@@ -66,16 +66,23 @@ export const AddressProvider: FC<{
     })
   }, [])
 
+  const currAccount = accounts?.[currAccountIndex]
+
+  useEffect(() => {
+    if (currAccount !== undefined) {
+    }
+  }, [currAccount])
+
   return (
-    <addressContext.Provider
+    <accountContext.Provider
       value={{
         accounts,
         setAccount,
         removeAccount,
-        currAccount: accounts?.[currAccountIndex],
+        currAccount,
       }}
     >
       {children}
-    </addressContext.Provider>
+    </accountContext.Provider>
   )
 }
