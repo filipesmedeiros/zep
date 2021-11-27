@@ -1,8 +1,14 @@
+import { hashBlock } from 'nanocurrency'
 import { useCallback } from 'react'
 
+import computeWorkAsync from '../computeWorkAsync'
 import { useAccount } from '../context/accountContext'
-import { consumePrecomputedWork, getPrecomputedWork } from '../db/accounts'
-import sendNano from '../nano/sendNano'
+import {
+  addPrecomputedWork,
+  consumePrecomputedWork,
+  getPrecomputedWork,
+} from '../db/accounts'
+import sendNano from '../xno/sendNano'
 
 const useSendNano = () => {
   const account = useAccount()
@@ -15,7 +21,7 @@ const useSendNano = () => {
         account.representative === null ||
         account.frontier === null
       )
-        return
+        throw new Error('wrong_block_data') // todo improve this error
       const signedBlock = await sendNano(
         {
           walletBalanceRaw: account.balance,
@@ -28,24 +34,6 @@ const useSendNano = () => {
         },
         account.index
       )
-      return fetch('https://mynano.ninja/api/node', {
-        method: 'POST',
-        headers: [['Content-Type', 'application/json']],
-        body: JSON.stringify({
-          action: 'process',
-          json_block: 'true',
-          subtype: 'send',
-          block: signedBlock,
-        }),
-      })
-        .then(res => {
-          if (!res.ok) throw new Error()
-          return res.json()
-        })
-        .then(data => {
-          if ('error' in data) throw new Error()
-          consumePrecomputedWork(account.address)
-        })
     },
     [account]
   )

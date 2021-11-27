@@ -2,16 +2,15 @@ import db from '.'
 import { EncryptedSeedId } from './types'
 
 export const addEncryptedSeed = (id: EncryptedSeedId, encryptedSeed: string) =>
-  db.encryptedSeeds.add({ id, encryptedSeed })
+  db()!.add('encryptedSeed', { id, encryptedSeed })
 
 export const removeEncryptedSeed = (id: EncryptedSeedId) =>
-  db.encryptedSeeds.delete(id)
+  db()!.delete('encryptedSeed', id)
 
 export const getEncryptedSeed = (id: EncryptedSeedId) =>
-  db.encryptedSeeds
-    .where({ id })
-    .first()
-    .then(res => res?.encryptedSeed)
+  db()!.get('encryptedSeed', id)
 
 export const hasEncryptedSeed = async (id: EncryptedSeedId) =>
-  (await db.encryptedSeeds.where({ id }).count()) > 0
+  db()!
+    .count('encryptedSeed', id)
+    .then(count => count === 1)

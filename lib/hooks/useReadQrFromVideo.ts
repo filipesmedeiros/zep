@@ -51,7 +51,7 @@ const useReadQrFromVideo = (onQrCodeRead: (content: string) => void) => {
       stream?.getTracks().forEach(track => track.stop())
       stopTick = true
     }
-  }, [])
+  }, [onQrCodeRead])
   return { videoRef, videoLive }
 }
 

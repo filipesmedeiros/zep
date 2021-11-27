@@ -4,24 +4,26 @@ import { useEffect, useState } from 'react'
 import { getCryptoAsset } from '../db/cryptoAssets'
 import useIsWelcoming from './useIsWelcoming'
 
-const useProtectedRoutes = () => {
+const useProtectedRoutes = (skip?: boolean) => {
   const { replace, pathname } = useRouter()
   const [validatingCredential, setValidatingCredential] = useState(true)
   const isWelcoming = useIsWelcoming()
   useEffect(() => {
-    if (isWelcoming) {
-      setValidatingCredential(false)
-      return
-    }
+    if (!skip) {
+      if (isWelcoming) {
+        setValidatingCredential(false)
+        return
+      }
 
-    const checkCredential = async () => {
-      const hasCredentialId =
-        (await getCryptoAsset('credentialId')) !== undefined
-      if (!hasCredentialId) replace('/welcome')
-      else setValidatingCredential(false)
+      const checkCredential = async () => {
+        const hasCredentialId =
+          (await getCryptoAsset('credentialId')) !== undefined
+        if (!hasCredentialId) replace('/welcome')
+        else setValidatingCredential(false)
+      }
+      checkCredential()
     }
-    checkCredential()
-  }, [replace, pathname, isWelcoming])
+  }, [replace, pathname, isWelcoming, skip])
   return validatingCredential
 }
 

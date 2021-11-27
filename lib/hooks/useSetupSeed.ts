@@ -7,7 +7,8 @@ import { useAccounts } from '../context/accountContext'
 import { addAccount } from '../db/accounts'
 import { addEncryptedSeed, hasEncryptedSeed } from '../db/encryptedSeeds'
 import encryptSeed from '../encryptSeed'
-import accountAtIndex from '../nano/accountAtIndex'
+import { AccountInfoCache } from '../types'
+import accountAtIndex from '../xno/accountAtIndex'
 import useSetup from './useSetup'
 
 const useSetupSeed = (skip?: boolean) => {
@@ -31,13 +32,14 @@ const useSetupSeed = (skip?: boolean) => {
       ])
       const { address, publicKey } = accountAtIndex(generatedSeed, 0)
 
-      const account = {
+      const account: AccountInfoCache = {
         frontier: null,
         representative: address,
         balance: '0',
         index: 0,
         address,
         publicKey,
+        precomputedWork: null,
       }
       setSeed({ seed: generatedSeed, mnemonic })
       setAccount(account)

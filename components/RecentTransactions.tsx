@@ -2,8 +2,6 @@ import { DownloadIcon, UploadIcon } from '@heroicons/react/solid'
 import clsx from 'clsx'
 import { tools } from 'nanocurrency-web'
 import { FC, useCallback, useMemo } from 'react'
-import useSwr from 'swr'
-import useSwrInfinite from 'swr/infinite'
 
 import { useAccount } from '../lib/context/accountContext'
 import fetcher from '../lib/fetcher'
@@ -32,125 +30,25 @@ const mockAddressBook: Record<string, { displayName: string }> = {
 
 const RecentTransactions: FC<Props> = ({ className }) => {
   const account = useAccount()
-  const params = useCallback(
-    (cursor: string | undefined) => ({
-      method: 'POST',
-      headers: [['Content-Type', 'application/json']],
-      body: JSON.stringify({
-        action: 'account_history',
-        account: account?.address,
-        count: 20,
-        head: cursor,
-      }),
-    }),
-    [account]
-  )
-
-  const { data: historyPages, setSize } =
-    useSwrInfinite<AccountHistoryResponse>(
-      (_, prevHistory) =>
-        account === undefined
-          ? null
-          : prevHistory === null
-          ? 'no-cursor'
-          : prevHistory.previous ?? null,
-      (cursor: 'no-cursor' | string) =>
-        fetcher<AccountHistoryResponse>(
-          'https://mynano.ninja/api/node',
-          params(cursor === 'no-cursor' ? undefined : cursor)
-        )
-    )
-
-  const paramsPending = useMemo(
-    () => ({
-      action: 'accounts_pending',
-      accounts: [account?.address],
-      count: '20',
-    }),
-    [account]
-  )
-  const { data: pendingTxnHashes } = useSwr<AccountPendingResponse>(
-    account !== undefined ? account.address : null,
-    () =>
-      fetcher<AccountPendingResponse>('https://mynano.ninja/api/node', {
-        method: 'POST',
-        headers: [['Content-Type', 'application/json']],
-        body: JSON.stringify(paramsPending),
-      })
-  )
-  const formattedPendingHashes = useMemo(
-    () =>
-      Object.values(pendingTxnHashes?.blocks ?? {}).flatMap(hashes => hashes),
-    [pendingTxnHashes]
-  )
-
-  const paramsPendingInfo = useCallback(
-    (hashes: string[]) => ({
-      action: 'blocks_info',
-      json_block: 'true',
-      hashes,
-    }),
-    []
-  )
-  const { data: pendingTxns } = useSwr<BlocksInfoResponse>(
-    [formattedPendingHashes.length > 0 ? formattedPendingHashes : null],
-    hashes =>
-      fetcher<BlocksInfoResponse>('https://mynano.ninja/api/node', {
-        method: 'POST',
-        headers: [['Content-Type', 'application/json']],
-        body: JSON.stringify(paramsPendingInfo(hashes)),
-      })
-  )
-
-  const hasMoreTxns = historyPages?.at(-1)?.previous !== undefined
-
-  const txns = useMemo(
-    () =>
-      historyPages?.flatMap(({ history }) =>
-        (history !== '' ? history ?? [] : []).map(txn => {
-          return {
-            send: txn.type === 'send',
-            account: txn.account,
-            hash: txn.hash,
-            amount: txn.amount,
-            timestamp: Number(txn.local_timestamp),
-            receivable: false,
-          }
-        })
-      ) ?? [],
-    [historyPages]
-  )
-
-  const mappedPendingTxns = useMemo(
-    () =>
-      (pendingTxns === undefined
-        ? []
-        : Object.entries(pendingTxns.blocks ?? [])
-      ).map(([hash, block]) => ({
-        send: block.subtype !== 'send',
-        account: block.block_account,
-        hash,
-        amount: block.amount,
-        timestamp: Number(block.local_timestamp),
-        receivable: true,
-      })),
-    [pendingTxns]
-  )
 
   const receiveNano = useReceiveNano()
 
-  if (historyPages === undefined || account === undefined) return null
-
-  const hasPendingTxns = (mappedPendingTxns ?? []).length > 0
-  const hasTxns = (txns ?? []).length > 0
-
   return (
     <div className={clsx('flex flex-col gap-6 w-full', className)}>
-      {hasPendingTxns && (
+      {false && (
         <section className="flex flex-col gap-3 w-full items-center">
           <h2 className="text-2xl font-semibold text-purple-50">pending</h2>
           <ol className="flex flex-col gap-3 w-full">
-            {mappedPendingTxns.map(txn => (
+            {[
+              {
+                hash: 'string',
+                send: 'string',
+                receivable: true,
+                amount: '0',
+                account: '',
+                timestamp: '',
+              },
+            ].map(txn => (
               <li
                 key={txn.hash}
                 className={clsx(
@@ -181,7 +79,7 @@ const RecentTransactions: FC<Props> = ({ className }) => {
                       day: '2-digit',
                       month: '2-digit',
                       year: '2-digit',
-                    }).format(txn.timestamp * 1000)}{' '}
+                    }).format(Number(txn.timestamp) * 1000)}{' '}
                     -{' '}
                     {mockAddressBook[txn.account]?.displayName ?? (
                       <span className="text-xs">{txn.account}</span>
@@ -206,14 +104,23 @@ const RecentTransactions: FC<Props> = ({ className }) => {
           </ol>
         </section>
       )}
-      {hasPendingTxns && hasTxns && <hr />}
-      {hasTxns && (
+      {false && false && <hr />}
+      {false && (
         <section className="flex flex-col gap-3 w-full items-center">
           <h2 className="text-2xl font-semibold text-purple-50">
             recent transactions
           </h2>
           <ol className="flex flex-col gap-3 w-full">
-            {txns.map(txn => (
+            {[
+              {
+                hash: 'string',
+                send: 'string',
+                receivable: true,
+                amount: '0',
+                account: '',
+                timestamp: '',
+              },
+            ].map(txn => (
               <li
                 key={txn.hash}
                 className={clsx(
@@ -241,7 +148,7 @@ const RecentTransactions: FC<Props> = ({ className }) => {
                       day: '2-digit',
                       month: '2-digit',
                       year: '2-digit',
-                    }).format(txn.timestamp * 1000)}{' '}
+                    }).format(Number(txn.timestamp) * 1000)}{' '}
                     -{' '}
                     {mockAddressBook[txn.account]?.displayName ?? (
                       <span className="text-xs">{txn.account}</span>
@@ -266,7 +173,7 @@ const RecentTransactions: FC<Props> = ({ className }) => {
           </ol>
         </section>
       )}
-      {!hasPendingTxns && !hasTxns && (
+      {!false && !false && (
         <div className="text-center pt-8 text-purple-50">
           <p className="pb-4">no transactions yet...</p>
           <p>
@@ -276,10 +183,10 @@ const RecentTransactions: FC<Props> = ({ className }) => {
           </p>
         </div>
       )}
-      {hasMoreTxns && (
+      {false && (
         <button
           className="bg-purple-200 py-2 px-4 rounded dark:text-gray-900 font-bold shadow"
-          onClick={() => setSize(prev => prev + 1)}
+          onClick={() => {}}
         >
           load more
         </button>

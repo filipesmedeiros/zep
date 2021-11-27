@@ -70,4 +70,18 @@ export interface AccountInfoCache {
   frontier: string | null
   representative: string | null
   balance: string | null
+  precomputedWork: string | null
 }
+
+export interface XnoPriceResponse {
+  symbol: 'XNO'
+  price: number
+  currency: 'USD'
+  timestamp: string
+}
+
+export type ProcessResponse =
+  | {
+      hash: string
+    }
+  | { error: string }

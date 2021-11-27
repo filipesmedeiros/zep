@@ -1,10 +1,12 @@
 import { computeWork, hashBlock } from 'nanocurrency'
 import { useCallback } from 'react'
 
+import computeWorkAsync from '../computeWorkAsync'
 import { useAccount } from '../context/accountContext'
-import { consumeWork } from '../db/accounts'
+import { getPrecomputedWork } from '../db/accounts'
 import fetcher from '../fetcher'
-import receiveNano from '../nano/receiveNano'
+import { zeroString } from '../xno/constants'
+import receiveNano from '../xno/receiveNano'
 
 const useReceiveNano = () => {
   const account = useAccount()
@@ -12,32 +14,24 @@ const useReceiveNano = () => {
   const receive = useCallback(
     async (hash: string, amount: string) => {
       if (account === undefined) return
-      console.log('signing receive')
-      const signedBlock = await receiveNano(
+      let precomputedWork = await getPrecomputedWork(account.address)
+      if (precomputedWork === null)
+        precomputedWork = await computeWorkAsync(
+          account.frontier ?? account.address
+        )
+      if (precomputedWork === null) throw new Error('couldnt_compute_work')
+      await receiveNano(
         {
           transactionHash: hash,
           walletBalanceRaw: account.balance ?? '0',
           toAddress: account.address,
           representativeAddress: account.representative ?? account.address,
-          frontier:
-            account.frontier ??
-            '0000000000000000000000000000000000000000000000000000000000000000',
+          frontier: account.frontier ?? zeroString,
           amountRaw: amount,
-          work: await consumeWork(account.address),
+          work: precomputedWork,
         },
         account.index
       )
-      console.log('finished signing')
-      return fetcher('https://mynano.ninja/api/node', {
-        method: 'POST',
-        headers: [['Content-Type', 'application/json']],
-        body: JSON.stringify({
-          action: 'process',
-          json_block: 'true',
-          subtype: 'receive',
-          block: signedBlock,
-        }),
-      })
     },
     [account]
   )

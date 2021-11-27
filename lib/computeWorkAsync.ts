@@ -1,4 +1,7 @@
-const computeWorkAsync = (frontier: string, workerCount = 4) => {
+const computeWorkAsync = (
+  frontier: string,
+  { send, workerCount = 4 }: { send: boolean; workerCount?: number }
+) => {
   const workers: Worker[] = []
 
   const cleanup = () => {
@@ -7,18 +10,24 @@ const computeWorkAsync = (frontier: string, workerCount = 4) => {
   }
   const abortController = new AbortController()
 
-  const onlineWorkPromise = fetch(`/api/computeWork?frontier=${frontier}`, {
-    signal: abortController.signal,
-  }).then(async res => {
-    if (res.status !== 200) throw new Error()
-    else {
-      const { work } = await res.json()
-      return work as string
-    }
-  })
+  const onlineWorkPromise =
+    process.env.NODE_ENV === 'production'
+      ? fetch(`/api/computeWork?frontier=${frontier}`, {
+          signal: abortController.signal,
+        }).then(async res => {
+          if (res.status !== 200) throw new Error()
+          else {
+            const { work } = await res.json()
+            return work as string
+          }
+        })
+      : Promise.reject(
+          'not in production, so not generating work on the server'
+        )
 
   const offlineWorkPromise = new Promise<string | null>((res, rej) => {
-    const maxWorkers = navigator.hardwareConcurrency ?? workerCount
+    const maxWorkers =
+      Math.floor(navigator.hardwareConcurrency / 4) ?? workerCount
 
     const createWorker = (id: number) => {
       const worker = new Worker(new URL('./workComputer.ts', import.meta.url))
@@ -32,7 +41,7 @@ const computeWorkAsync = (frontier: string, workerCount = 4) => {
         rej(work)
       }
 
-      worker.postMessage({ frontier, id })
+      worker.postMessage({ frontier, id, send })
       return worker
     }
 

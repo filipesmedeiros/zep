@@ -4,8 +4,8 @@ import { useRouter } from 'next/router'
 import { useCallback } from 'react'
 
 import useReadQrFromVideo from '../../lib/hooks/useReadQrFromVideo'
-import isTxnUrl from '../../lib/nano/isTxnUrl'
-import txnUrlToParts from '../../lib/nano/txnUrlToParts'
+import isTxnUrl from '../../lib/xno/isTxnUrl'
+import txnUrlToParts from '../../lib/xno/txnUrlToParts'
 
 const ReadQrCode: NextPage = () => {
   const { push } = useRouter()

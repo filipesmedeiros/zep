@@ -5,6 +5,8 @@ import { FC } from 'react'
 
 import { usePreferences } from '../lib/context/preferencesContext'
 import useListenToColorMedia from '../lib/hooks/useListenToColorMedia'
+import useProtectedRoutes from '../lib/hooks/useProtectedRoutes'
+import useSetupDb from '../lib/hooks/useSetupDb'
 import Balance from './Balance'
 import BottomMenu from './BottomMenu'
 import PreferencesMenu from './PreferencesMenu'

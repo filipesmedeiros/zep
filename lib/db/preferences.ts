@@ -1,28 +1,39 @@
 import db from '.'
-import { PreferenceName, PreferenceTypes } from './types'
+import { PreferenceName, PreferenceTypes, PreferenceValue } from './types'
 
 export const addPreference = <P extends PreferenceName>(
   name: P,
   value: PreferenceTypes[P]
-) => db.preferences.add({ name, value: JSON.stringify(value) })
+) => db()!.add('preferences', { name, value: JSON.stringify(value) })
 
 export const putPreference = <P extends PreferenceName>(
   name: P,
   value: PreferenceTypes[P]
-) => db.preferences.put({ name, value: JSON.stringify(value) })
+) => db()!.put('preferences', { name, value: JSON.stringify(value) })
 
 export const removePreference = (name: PreferenceName) =>
-  db.preferences.delete(name)
+  db()!.delete('preferences', name)
 
-export const getPreference = <P extends PreferenceName>(
-  name: P
-): Promise<PreferenceTypes[P]> =>
-  db.preferences
-    .where({ name })
-    .first()
+export const getPreference = <P extends PreferenceName>(name: P) =>
+  db()!
+    .get('preferences', name)
     .then(pref =>
-      pref?.value === undefined ? undefined : JSON.parse(pref.value)
+      pref?.value === undefined
+        ? undefined
+        : (JSON.parse(pref.value) as PreferenceTypes[P])
+    )
+
+export const getAllPreferences = () =>
+  db()!
+    .getAll('preferences')
+    .then(preferenceList =>
+      preferenceList.map(({ name, value }) => ({
+        name,
+        value: JSON.parse(value) as PreferenceTypes[typeof name],
+      }))
     )
 
 export const hasPreference = async (name: PreferenceName) =>
-  (await db.preferences.where({ name }).count()) > 0
+  db()!
+    .count('preferences', name)
+    .then(count => count === 1)

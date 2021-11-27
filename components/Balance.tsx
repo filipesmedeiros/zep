@@ -1,12 +1,11 @@
 import clsx from 'clsx'
 import { tools } from 'nanocurrency-web'
 import { FC } from 'react'
-import useSWR from 'swr'
 
-import { useAccount } from '../lib/context/accountContext'
+import { useCurrentAccount } from '../lib/context/accountContext'
 import { usePreferences } from '../lib/context/preferencesContext'
 import { ShowCurrencyPreference } from '../lib/db/types'
-import fetcher from '../lib/fetcher'
+import useXnoPrice from '../lib/hooks/useXnoPrice'
 
 export interface Props {
   className?: string
@@ -20,13 +19,9 @@ const nextShowCurrency = (curr: ShowCurrencyPreference | undefined) =>
     : ShowCurrencyPreference.Both
 
 const Balance: FC<Props> = ({ className }) => {
-  const { data: xnoPrice } = useSWR<{
-    price: number
-  }>('https://nano.to/price?json=true', {
-    fetcher,
-  })
+  const { xnoPrice } = useXnoPrice()
 
-  const account = useAccount()
+  const account = useCurrentAccount()
 
   const {
     preferences: { showCurrencyDash },
@@ -65,7 +60,7 @@ const Balance: FC<Props> = ({ className }) => {
       </h3>
       {showFiatBalance && (
         <h3 className="text-xl text-center">
-          $ {(Number(xnoBalance) * xnoPrice.price).toFixed(2)}
+          $ {(Number(xnoBalance) * xnoPrice).toFixed(2)}
         </h3>
       )}
     </div>

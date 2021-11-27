@@ -7,16 +7,34 @@ import {
   useState,
 } from 'react'
 
+import computeWorkAsync from '../computeWorkAsync'
+import { addPrecomputedWork, getAllAccounts, putAccount } from '../db/accounts'
 import { AccountInfoCache } from '../types'
+import fetchAccountInfo from '../xno/fetchAccountInfo'
 
 export interface AccountContextValue {
   currAccount: AccountInfoCache | undefined
-  accounts: { [key: number]: AccountInfoCache } | undefined
+  accounts: { [index: number]: AccountInfoCache } | undefined
   setAccount: (info: AccountInfoCache) => void
   removeAccount: (index: number) => void
+  setCurrAccountIndex: (index: number) => void
 }
 
 const accountContext = createContext<AccountContextValue | undefined>(undefined)
+
+const refreshAccountFromNetwork = async (account: AccountInfoCache) => {
+  const infoResponse = await fetchAccountInfo(account.address)
+
+  const freshAccountInfo = {
+    ...account,
+    frontier: 'error' in infoResponse ? null : infoResponse.confirmed_frontier,
+    representative:
+      'error' in infoResponse ? null : infoResponse.confirmed_representative,
+    balance: 'error' in infoResponse ? null : infoResponse.confirmed_balance,
+  }
+  putAccount(freshAccountInfo)
+  return freshAccountInfo
+}
 
 export const useAccounts = () => {
   const contextValue = useContext(accountContext)
@@ -36,27 +54,55 @@ export const useAccount = (index?: number) => {
     : contextValue.currAccount
 }
 
-export const AccountProvider: FC<{
-  initialAccounts?: { [key: number]: AccountInfoCache } | undefined
-  initialAccountIndex?: number
-}> = ({ children, initialAccounts, initialAccountIndex }) => {
-  const [accounts, setAccounts] = useState<
-    { [key: number]: AccountInfoCache } | undefined
-  >(initialAccounts)
-  useEffect(() => {
-    setAccounts(initialAccounts)
-  }, [initialAccounts])
+export const useCurrentAccount = () => useAccount()
 
-  const [currAccountIndex, setCurrAccountIndex] = useState<number>(
-    initialAccountIndex ?? 0
+export const AccountProvider: FC = ({ children }) => {
+  const [accounts, setAccounts] = useState<{ [key: number]: AccountInfoCache }>(
+    {}
   )
-  useEffect(() => {
-    setCurrAccountIndex(initialAccountIndex ?? 0)
-  }, [initialAccountIndex])
 
   const setAccount = useCallback((account: AccountInfoCache) => {
     setAccounts(prev => ({ ...prev, [account.index]: account }))
+    // todo handle error
+    putAccount(account)
   }, [])
+
+  useEffect(() => {
+    const refreshAccountsFromNetwork = async (accounts: AccountInfoCache[]) =>
+      accounts.forEach(async account => {
+        const freshAccount = await refreshAccountFromNetwork(account)
+        setAccount(freshAccount)
+      })
+    const getAccountsFromIdb = async () => {
+      const accountList = await getAllAccounts()
+      const accounts: AccountContextValue['accounts'] = {}
+      for (const account of accountList) {
+        accounts[account.index] = account
+        if (account.precomputedWork === null) {
+          computeWorkAsync(account.frontier ?? account.address, {
+            send: account.frontier !== null,
+          }).then(work => {
+            if (work !== null) {
+              setAccounts(prev => ({
+                ...prev,
+                [account.index]: {
+                  ...prev[account.index],
+                  precomputedWork: work,
+                },
+              }))
+              addPrecomputedWork(account.address, work)
+            }
+          })
+        }
+      }
+      setAccounts(accounts)
+      refreshAccountsFromNetwork(accountList)
+    }
+    getAccountsFromIdb()
+  }, [setAccount])
+
+  const [currAccountIndex, setCurrAccountIndex] = useState<number>(0)
+  const currAccount = accounts?.[currAccountIndex]
 
   const removeAccount = useCallback((index: number) => {
     setAccounts(prev => {
@@ -64,14 +110,9 @@ export const AccountProvider: FC<{
       delete next[index]
       return next
     })
+    // todo handle error
+    removeAccount(index)
   }, [])
-
-  const currAccount = accounts?.[currAccountIndex]
-
-  useEffect(() => {
-    if (currAccount !== undefined) {
-    }
-  }, [currAccount])
 
   return (
     <accountContext.Provider
@@ -80,6 +121,7 @@ export const AccountProvider: FC<{
         setAccount,
         removeAccount,
         currAccount,
+        setCurrAccountIndex,
       }}
     >
       {children}

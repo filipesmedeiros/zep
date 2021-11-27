@@ -7,25 +7,21 @@ import {
   useState,
 } from 'react'
 
-import { getPreference, putPreference } from '../db/preferences'
-import {
-  PreferenceName,
-  PreferenceTypes,
-  ShowCurrencyPreference,
-} from '../db/types'
+import { getAllPreferences, putPreference } from '../db/preferences'
+import { PreferenceName, PreferenceTypes } from '../db/types'
 import useDarkMode from '../hooks/useDarkMode'
-import isiOS from '../isiOS'
 
-const preferencesContext = createContext<
-  | {
-      preferences: PreferenceTypes
-      setPreference: <P extends PreferenceName>(
-        preference: P,
-        value: PreferenceTypes[P]
-      ) => void
-    }
-  | undefined
->(undefined)
+export interface PreferenceContextValue {
+  preferences: PreferenceTypes
+  setPreference: <P extends PreferenceName>(
+    preference: P,
+    value: PreferenceTypes[P]
+  ) => void
+}
+
+const preferencesContext = createContext<PreferenceContextValue | undefined>(
+  undefined
+)
 
 export const usePreferences = () => {
   const preferences = useContext(preferencesContext)
@@ -36,32 +32,27 @@ export const usePreferences = () => {
   return preferences
 }
 
+const initialState: PreferenceContextValue['preferences'] = {
+  darkMode: undefined,
+  biometricsAuth: undefined,
+  leftHanded: undefined,
+  showCurrencyDash: undefined,
+}
+
 export const PreferencesProvider: FC = ({ children }) => {
-  const [preferences, setPreferences] = useState<PreferenceTypes>({
-    darkMode: undefined,
-    biometricsAuth: undefined,
-    leftHanded: undefined,
-    showCurrencyDash: undefined,
-  })
+  const [preferences, setPreferences] = useState<PreferenceTypes>(initialState)
   useEffect(() => {
-    const setPrefs = async () => {
-      const [darkMode, biometricsAuth, leftHanded, showCurrencyDash] =
-        await Promise.all([
-          getPreference('darkMode'),
-          getPreference('biometricsAuth'),
-          getPreference('leftHanded'),
-          getPreference('showCurrencyDash'),
-        ])
-      setPreferences({
-        darkMode: darkMode ?? true,
-        biometricsAuth: biometricsAuth ?? !isiOS(),
-        leftHanded: leftHanded ?? false,
-        showCurrencyDash: showCurrencyDash ?? ShowCurrencyPreference.Xno,
-      })
+    const fetchPreferencesFromIdb = async () => {
+      const preferenceList = await getAllPreferences()
+      const preferences: PreferenceContextValue['preferences'] = initialState
+      for (const preference of preferenceList) {
+        // @ts-expect-error i should type this better but should be fine for now
+        preferences[preference.name] = preference.value
+      }
+      setPreferences(preferences)
     }
-    setPrefs()
+    fetchPreferencesFromIdb()
   }, [])
-  useDarkMode(preferences.darkMode)
   const setPreference = useCallback(
     <P extends PreferenceName>(name: P, value: PreferenceTypes[P]) => {
       setPreferences(prev => ({ ...prev, [name]: value }))

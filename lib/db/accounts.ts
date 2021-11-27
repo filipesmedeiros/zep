@@ -1,65 +1,49 @@
 import db from '.'
-import computeWorkAsync from '../computeWorkAsync'
 import { AccountInfoCache } from '../types'
 
-export const addAccount = async (index: number, account: AccountInfoCache) => {
-  db.accounts.add({
+export const addAccount = async (index: number, account: AccountInfoCache) =>
+  db()!.add('accounts', {
     ...account,
     index,
     precomputedWork: null,
   })
-  const precomputedWork = await computeWorkAsync(
-    account.frontier ?? account.publicKey
-  )
-  const hasWork = precomputedWork !== null
-  if (hasWork)
-    db.accounts.where({ index }).modify(account => {
-      if (account !== undefined) account.precomputedWork = precomputedWork
-    })
-}
 
-export const putAccount = (index: number, account: AccountInfoCache) =>
-  db.accounts.update(index, { ...account })
+export const putAccount = (account: AccountInfoCache) =>
+  db()!.put('accounts', account)
 
-export const removeAccount = (index: number) => db.accounts.delete(index)
+export const removeAccount = (index: number) => db()!.delete('accounts', index)
 
-export const getAccount = (index: number) =>
-  db.accounts
-    .where({ index })
-    .first()
-    .then(res => (res === undefined ? undefined : res))
+export const getAccount = (index: number) => db()!.get('accounts', index)
+
+export const getAllAccounts = () => db()!.getAll('accounts')
 
 export const hasAccount = async (index: number) =>
-  (await db.accounts.where({ index }).count()) > 0
+  db()!
+    .count('accounts', index)
+    .then(count => count === 1)
 
-export const addPrecomputedWork = async (
-  address: string,
-  work?: string | null
-) =>
-  db.accounts.where({ address }).modify(async account => {
-    if (work !== undefined && work !== null) account.precomputedWork = work
-    else {
-      const precomputedWork = await computeWorkAsync(
-        account.frontier ?? account.publicKey
-      )
-      if (precomputedWork !== null) account.precomputedWork = precomputedWork
-    }
-  })
+export const addPrecomputedWork = async (address: string, work: string) => {
+  const tx = db()!.transaction('accounts', 'readwrite')
+  const account = await tx.store.index('address').get(address)
+  if (account !== undefined && work !== account.precomputedWork) {
+    tx.store.put({ ...account, precomputedWork: work })
+  }
+  return tx.done
+}
 
 export const getPrecomputedWork = async (address: string) =>
-  db.accounts
-    .where({ address })
-    .first()
-    .then(account => account?.precomputedWork)
+  db()!
+    .getFromIndex('accounts', 'address', address)
+    .then(account => {
+      if (account === undefined) throw new Error('not_found')
+      return account.precomputedWork
+    })
 
 export const consumePrecomputedWork = async (address: string) => {
-  const account = await db.accounts.where({ address }).first()
-  if (account === undefined) return undefined
-  db.accounts.where({ address }).modify(account => {
-    account.precomputedWork = null
-  })
-  const precomputedWork = await computeWorkAsync(
-    account.frontier ?? account.publicKey
-  )
-  addPrecomputedWork(address, precomputedWork)
+  const tx = db()!.transaction('accounts', 'readwrite')
+  const account = await tx.store.index('address').get(address)
+  if (account !== undefined && account.precomputedWork !== null) {
+    tx.store.put({ ...account, precomputedWork: null })
+  }
+  return tx.done
 }
