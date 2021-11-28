@@ -1,3 +1,6 @@
+export type BooleanString = 'true' | 'false'
+export type TransactionSubtype = 'send' | 'receive' | 'change'
+
 export interface AccountHistoryResponse {
   account: string
   history:
@@ -27,7 +30,7 @@ export interface BlocksInfoResponse {
       balance: string
       height: string
       local_timestamp: string
-      confirmed: 'true' | 'false'
+      confirmed: BooleanString
       contents: {
         type: 'state'
         account: string
@@ -39,7 +42,7 @@ export interface BlocksInfoResponse {
         signature: string
         work: string
       }
-      subtype: 'send' | 'receive' | 'change'
+      subtype: TransactionSubtype
     }
   }
 }
@@ -55,13 +58,13 @@ export type AccountInfoResponse =
       account_version: string
       confirmation_height: string
       confirmation_height_frontier: string
-      confirmed_balance: '11999999999999999918751838129509869131'
-      confirmed_height: '22966'
-      confirmed_frontier: '80A6745762493FA21A22718ABFA4F635656A707B48B3324198AC7F3938DE6D4F'
-      representative: 'nano_1gyeqc6u5j3oaxbe5qy1hyz3q745a318kh8h9ocnpan7fuxnq85cxqboapu5'
-      confirmed_representative: 'nano_1gyeqc6u5j3oaxbe5qy1hyz3q745a318kh8h9ocnpan7fuxnq85cxqboapu5'
+      confirmed_balance: string
+      confirmed_height: string
+      confirmed_frontier: string
+      representative: string
+      confirmed_representative: string
     }
-  | { error: 'Account not found' }
+  | { error: string }
 
 export interface AccountInfoCache {
   address: string
@@ -85,3 +88,26 @@ export type ProcessResponse =
       hash: string
     }
   | { error: string }
+
+export interface ConfirmationMessage {
+  topic: 'confirmation'
+  time: string
+  message: {
+    account: string
+    amount: string
+    hash: string
+    confirmation_type: string
+    block: {
+      type: 'state'
+      account: string
+      previous: string
+      representative: string
+      balance: string
+      link: string
+      link_as_account: string
+      signature: string
+      work: string
+      subtype: TransactionSubtype
+    }
+  }
+}

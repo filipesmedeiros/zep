@@ -5,11 +5,9 @@ import { FC } from 'react'
 
 import { usePreferences } from '../lib/context/preferencesContext'
 import useListenToColorMedia from '../lib/hooks/useListenToColorMedia'
-import useProtectedRoutes from '../lib/hooks/useProtectedRoutes'
-import useSetupDb from '../lib/hooks/useSetupDb'
 import Balance from './Balance'
 import BottomMenu from './BottomMenu'
-import PreferencesMenu from './PreferencesMenu'
+import TopMenu from './TopMenu'
 
 export interface Props {}
 
@@ -41,7 +39,7 @@ const Layout: FC<Props> = ({ children }) => {
           </h1>
           <LightningBoltIcon className="text-gray-900 dark:text-purple-100 h-4" />
         </div>
-        <PreferencesMenu />
+        <TopMenu />
       </header>
       {pathname !== '/' ? (
         <>

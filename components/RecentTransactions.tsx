@@ -1,16 +1,9 @@
 import { DownloadIcon, UploadIcon } from '@heroicons/react/solid'
 import clsx from 'clsx'
 import { tools } from 'nanocurrency-web'
-import { FC, useCallback, useMemo } from 'react'
+import { FC } from 'react'
 
-import { useAccount } from '../lib/context/accountContext'
-import fetcher from '../lib/fetcher'
 import useReceiveNano from '../lib/hooks/useReceiveNano'
-import {
-  AccountHistoryResponse,
-  AccountPendingResponse,
-  BlocksInfoResponse,
-} from '../lib/types'
 
 const rawToNanoDisplay = (raw: string) =>
   Number(tools.convert(raw, 'RAW', 'NANO').slice(0, 20))

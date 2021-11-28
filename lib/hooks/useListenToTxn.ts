@@ -1,16 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 import { useAccounts } from '../context/accountContext'
+import { ConfirmationMessage } from '../types'
 
-const useListenToTxn = () => {
+const useListenToTxn = (
+  onConfirmation: (confirmation: ConfirmationMessage) => void
+) => {
   const { accounts } = useAccounts()
-  const [mostRecentTxn, setMostRecentTxn] = useState<any | undefined>(undefined)
   useEffect(() => {
     if (accounts !== undefined) {
       const ws = new WebSocket('wss://ws.mynano.ninja/')
 
       ws.onopen = () => {
-        console.log('subscribed')
         ws.send(
           JSON.stringify({
             action: 'subscribe',
@@ -21,16 +22,14 @@ const useListenToTxn = () => {
           })
         )
         ws.addEventListener('message', ({ data }) => {
-          const parsed = JSON.parse(data)
-          console.log(parsed)
-          setMostRecentTxn(parsed)
+          const parsed = JSON.parse(data) as ConfirmationMessage
+          onConfirmation(parsed)
         })
       }
 
       return () => ws.close()
     }
-  }, [accounts])
-  return mostRecentTxn
+  }, [accounts, onConfirmation])
 }
 
 export default useListenToTxn

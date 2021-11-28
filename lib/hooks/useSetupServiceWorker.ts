@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 
 import useSetup from './useSetup'
 
-const useSetupSw = (skip?: boolean) =>
+const useSetupServiceWorker = (skip?: boolean) =>
   useSetup(
     useCallback(() => {
       if ('serviceWorker' in navigator) {
@@ -16,4 +16,4 @@ const useSetupSw = (skip?: boolean) =>
     skip
   )
 
-export default useSetupSw
+export default useSetupServiceWorker

@@ -15,7 +15,7 @@ export interface PreferenceContextValue {
   preferences: PreferenceTypes
   setPreference: <P extends PreferenceName>(
     preference: P,
-    value: PreferenceTypes[P]
+    value: Exclude<PreferenceTypes[P], undefined>
   ) => void
 }
 
@@ -53,12 +53,21 @@ export const PreferencesProvider: FC = ({ children }) => {
     }
     fetchPreferencesFromIdb()
   }, [])
+
+  const setDarkMode = useDarkMode()
+
   const setPreference = useCallback(
-    <P extends PreferenceName>(name: P, value: PreferenceTypes[P]) => {
+    <P extends PreferenceName>(
+      name: P,
+      value: Exclude<PreferenceTypes[P], undefined>
+    ) => {
       setPreferences(prev => ({ ...prev, [name]: value }))
       putPreference(name, value)
+
+      // ? is there a better way to type this?
+      if (name === 'darkMode') setDarkMode(value as boolean)
     },
-    []
+    [setDarkMode]
   )
 
   return (

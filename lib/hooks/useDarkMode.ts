@@ -1,20 +1,25 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import { getPreference } from '../db/preferences'
 
-const useDarkMode = (darkMode?: boolean) => {
+const useDarkMode = () => {
+  const setDarkMode = useCallback(async (darkMode: boolean) => {
+    const htmlClasses = document.querySelector('html')?.classList
+    if (darkMode) htmlClasses?.add('dark')
+    else htmlClasses?.remove('dark')
+  }, [])
+
   useEffect(() => {
-    const setDarkModeClass = async () => {
-      const isDark =
-        darkMode ??
+    const darkModeOnStarup = async () => {
+      const darkMode =
         (await getPreference('darkMode')) ??
         window.matchMedia('(prefers-color-scheme: dark)').matches
-      const htmlClasses = document.querySelector('html')?.classList
-      if (isDark) htmlClasses?.add('dark')
-      else htmlClasses?.remove('dark')
+      setDarkMode(darkMode)
     }
-    setDarkModeClass()
-  }, [darkMode])
+    darkModeOnStarup()
+  }, [setDarkMode])
+
+  return setDarkMode
 }
 
 export default useDarkMode
