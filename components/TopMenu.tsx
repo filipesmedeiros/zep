@@ -55,7 +55,7 @@ const TopMenu: FC<Props> = () => {
         <div className="relative z-20" ref={advancedRef}>
           <button
             className={clsx(
-              'w-10 p-1 rounded bg-purple-500 shadow-md text-purple-50 dark:text-gray-900 hover:cursor-pointer hover:bg-purple-400 transition-colors dark:hover:text-purple-50 dark:text-gray-900'
+              'w-10 p-1 rounded bg-purple-500 shadow-md text-purple-50 dark:text-gray-900 hover:cursor-pointer hover:bg-purple-400 transition-colors dark:hover:text-purple-50'
             )}
             onClick={toggleAdvanced}
           >

@@ -73,10 +73,10 @@ const BottomMenu: FC<Props> = ({ className }) => {
           {'share' in navigator ? (
             <button
               disabled={isWelcoming}
-              className="p-1 h-16 w-7 rounded shadow-lg bg-purple-500 hover:bg-purple-400 disabled:hover:bg-purple-500 disabled:cursor-default"
+              className="p-1 h-16 w-10 rounded shadow-lg bg-purple-500 hover:bg-purple-400 disabled:hover:bg-purple-500 disabled:cursor-default"
               onClick={onShare}
             >
-              <ShareIcon className="h-full text-purple-50 dark:text-gray-900" />
+              <ShareIcon className="text-purple-50 dark:text-gray-900" />
             </button>
           ) : (
             <button
