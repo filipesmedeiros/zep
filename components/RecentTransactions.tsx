@@ -1,8 +1,8 @@
 import { ClockIcon } from '@heroicons/react/outline'
 import { DownloadIcon, UploadIcon } from '@heroicons/react/solid'
 import clsx from 'clsx'
-import { tools } from 'nanocurrency-web'
-import { FC, useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
+import type { FC } from 'react'
 
 import { useCurrentAccount } from '../lib/context/accountContext'
 import useAccountHistory from '../lib/hooks/useAccountHistory'
@@ -10,12 +10,7 @@ import useAccountReceivable from '../lib/hooks/useAccountReceivable'
 import useListenToConfirmations from '../lib/hooks/useListenToConfirmations'
 import useReceiveNano from '../lib/hooks/useReceiveNano'
 import { ConfirmationMessage } from '../lib/types'
-
-const rawToNanoDisplay = (raw: string) =>
-  Number(tools.convert(raw, 'RAW', 'NANO').slice(0, 20))
-    .toFixed(2)
-    .replace(/^0\.00/, 'small')
-    .replace('.00', '')
+import rawToNanoDisplay from '../lib/xno/rawToNanoDisplay'
 
 export interface Props {
   className?: string
@@ -65,8 +60,6 @@ const RecentTransactions: FC<Props> = ({ className }) => {
 
   useListenToConfirmations(onConfirmation)
 
-  console.log(listenedReceivables)
-
   return (
     <div className={clsx('flex flex-col gap-6 w-full', className)}>
       {hasReceivable && (
@@ -95,7 +88,7 @@ const RecentTransactions: FC<Props> = ({ className }) => {
                   <span className="flex-shrink-0 font-medium">
                     Ӿ{' '}
                     {rawToNanoDisplay(message.amount) === 'small' ? (
-                      '<.01'
+                      '<0.01'
                     ) : rawToNanoDisplay(message.amount).startsWith('0.') ? (
                       <>
                         <span className="text-sm font-semibold">0</span>
@@ -135,7 +128,7 @@ const RecentTransactions: FC<Props> = ({ className }) => {
                   <span className="flex-shrink-0 font-medium">
                     Ӿ{' '}
                     {rawToNanoDisplay(receivable.amount) === 'small' ? (
-                      '<.01'
+                      '<0.01'
                     ) : rawToNanoDisplay(receivable.amount).startsWith('0.') ? (
                       <>
                         <span className="text-sm font-semibold">0</span>
@@ -187,7 +180,7 @@ const RecentTransactions: FC<Props> = ({ className }) => {
                   <span className="flex-shrink-0 font-medium">
                     Ӿ{' '}
                     {rawToNanoDisplay(txn.amount) === 'small' ? (
-                      '<.01'
+                      '<0.01'
                     ) : rawToNanoDisplay(txn.amount).startsWith('0.') ? (
                       <>
                         <span className="text-sm font-semibold">0</span>

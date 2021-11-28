@@ -2,7 +2,7 @@ import fetcher from '../fetcher'
 import { AccountInfoResponse } from '../types'
 
 const fetchAccountInfo = (address: string) =>
-  fetcher('https://mynano.ninja/api/node', {
+  fetcher('https://proxy.powernode.cc/proxy', {
     method: 'POST',
     body: {
       action: 'account_info',

@@ -18,7 +18,7 @@ const sendNano = async (
 
   const signedBlock = block.send(blockData, privateKey)
   const processResponse = await fetcher<ProcessResponse>(
-    'https://mynano.ninja/api/node',
+    'https://proxy.powernode.cc/proxy',
     {
       method: 'POST',
       body: {

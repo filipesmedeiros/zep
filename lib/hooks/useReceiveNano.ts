@@ -39,7 +39,7 @@ const useReceiveNano = () => {
       )
 
       await consumePrecomputedWork(account.address)
-      const work = await computeWorkAsync(processResponse.hash, { send: false })
+      const work = await computeWorkAsync(processResponse.hash, { send: true })
       setAccount({
         ...account,
         frontier: processResponse.hash,

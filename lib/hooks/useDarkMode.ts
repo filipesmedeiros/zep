@@ -1,10 +1,12 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { getPreference } from '../db/preferences'
 
 const useDarkMode = () => {
+  const [isDarkMode, setIsDarkMode] = useState(true)
   const setDarkMode = useCallback(async (darkMode: boolean) => {
     const htmlClasses = document.querySelector('html')?.classList
+    setIsDarkMode(darkMode)
     if (darkMode) htmlClasses?.add('dark')
     else htmlClasses?.remove('dark')
   }, [])
@@ -19,7 +21,7 @@ const useDarkMode = () => {
     darkModeOnStarup()
   }, [setDarkMode])
 
-  return setDarkMode
+  return { setDarkMode, isDarkMode }
 }
 
 export default useDarkMode

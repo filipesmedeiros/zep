@@ -2,7 +2,7 @@ import fetcher from '../fetcher'
 import type { BlocksInfoResponse } from '../types'
 
 const fetchBlocksInfo = (hashes: string[]) =>
-  fetcher('https://mynano.ninja/api/node', {
+  fetcher('https://proxy.powernode.cc/proxy', {
     method: 'POST',
     body: {
       action: 'blocks_info',

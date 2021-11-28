@@ -6,6 +6,7 @@ import { useCurrentAccount } from '../lib/context/accountContext'
 import { usePreferences } from '../lib/context/preferencesContext'
 import { ShowCurrencyPreference } from '../lib/db/types'
 import useXnoPrice from '../lib/hooks/useXnoPrice'
+import rawToNanoDisplay from '../lib/xno/rawToNanoDisplay'
 
 export interface Props {
   className?: string
@@ -37,6 +38,7 @@ const Balance: FC<Props> = ({ className }) => {
     account !== undefined
 
   const xnoBalance = tools.convert(account?.balance ?? '0', 'RAW', 'NANO')
+  const xnoBalanceDisplay = rawToNanoDisplay(account?.balance ?? '0')
 
   return (
     <div
@@ -55,7 +57,11 @@ const Balance: FC<Props> = ({ className }) => {
             showXnoBalance ? 'font-medium dark:font-semibold' : 'font-semibold'
           )}
         >
-          {showXnoBalance ? <> {Number(xnoBalance).toFixed(2)}</> : 'NO'}
+          {showXnoBalance ? (
+            <> {xnoBalanceDisplay === 'small' ? '<0.01' : xnoBalanceDisplay}</>
+          ) : (
+            'NO'
+          )}
         </span>
       </h3>
       {showFiatBalance && (

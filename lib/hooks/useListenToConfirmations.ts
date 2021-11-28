@@ -15,8 +15,14 @@ const useListenToConfirmations = (
   const wsRef = useRef<WebSocket>()
 
   useEffect(() => {
-    wsRef.current = new WebSocket('wss://node.somenano.com/websocket')
-    return () => wsRef.current?.close()
+    wsRef.current = new WebSocket('wss://socket.nanos.cc/')
+    return () => {
+      if (
+        wsRef.current?.readyState !== WebSocket.CLOSING &&
+        wsRef.current?.readyState !== WebSocket.CLOSED
+      )
+        wsRef.current?.close()
+    }
   }, [])
 
   useEffect(() => {
@@ -36,7 +42,11 @@ const useListenToConfirmations = (
       )
       wsRef.current!.addEventListener('message', ({ data }) => {
         const parsed = JSON.parse(data) as ConfirmationMessage
-        if (parsed.topic !== 'confirmation') return
+        if (
+          parsed.topic !== 'confirmation' ||
+          parsed.message.block.subtype !== 'send'
+        )
+          return
         onConfirmation(parsed)
       })
 

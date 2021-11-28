@@ -54,7 +54,7 @@ export const PreferencesProvider: FC = ({ children }) => {
     fetchPreferencesFromIdb()
   }, [])
 
-  const setDarkMode = useDarkMode()
+  const { setDarkMode, isDarkMode } = useDarkMode()
 
   const setPreference = useCallback(
     <P extends PreferenceName>(
@@ -69,6 +69,10 @@ export const PreferencesProvider: FC = ({ children }) => {
     },
     [setDarkMode]
   )
+
+  useEffect(() => {
+    setPreference('darkMode', isDarkMode)
+  }, [isDarkMode, setPreference])
 
   return (
     <preferencesContext.Provider value={{ preferences, setPreference }}>

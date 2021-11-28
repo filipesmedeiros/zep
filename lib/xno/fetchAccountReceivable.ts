@@ -6,7 +6,7 @@ const _fetchAccountReceivable = (
   count = 20,
   version22 = false
 ) =>
-  fetcher('https://mynano.ninja/api/node', {
+  fetcher('https://proxy.powernode.cc/proxy', {
     method: 'POST',
     body: {
       action: version22 ? 'accounts_pending' : 'accounts_receivable',
