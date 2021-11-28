@@ -1,6 +1,5 @@
 import type { AppProps } from 'next/app'
 import { FC } from 'react'
-import 'tailwindcss/tailwind.css'
 
 import Layout from '../components/Layout'
 import MemCacheProvider from '../lib/context/memCacheContextProvider'

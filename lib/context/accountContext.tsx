@@ -4,11 +4,17 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react'
 
 import computeWorkAsync from '../computeWorkAsync'
-import { addPrecomputedWork, getAllAccounts, putAccount } from '../db/accounts'
+import {
+  addPrecomputedWork,
+  consumePrecomputedWork,
+  getAllAccounts,
+  putAccount,
+} from '../db/accounts'
 import { AccountInfoCache } from '../types'
 import fetchAccountInfo from '../xno/fetchAccountInfo'
 
@@ -25,15 +31,26 @@ const accountContext = createContext<AccountContextValue | undefined>(undefined)
 const refreshAccountFromNetwork = async (account: AccountInfoCache) => {
   const infoResponse = await fetchAccountInfo(account.address)
 
+  const frontier =
+    'error' in infoResponse ? null : infoResponse.confirmed_frontier
+  const representative =
+    'error' in infoResponse ? null : infoResponse.confirmed_representative
+  const balance =
+    'error' in infoResponse ? null : infoResponse.confirmed_balance
   const freshAccountInfo = {
     ...account,
-    frontier: 'error' in infoResponse ? null : infoResponse.confirmed_frontier,
-    representative:
-      'error' in infoResponse ? null : infoResponse.confirmed_representative,
-    balance: 'error' in infoResponse ? null : infoResponse.confirmed_balance,
+    frontier,
+    representative,
+    balance,
   }
-  putAccount(freshAccountInfo)
-  return freshAccountInfo
+  const diff =
+    account.frontier !== frontier ||
+    account.representative !== representative ||
+    account.balance !== balance
+
+  if (diff) putAccount(freshAccountInfo)
+
+  return { freshAccountInfo, diff }
 }
 
 export const useAccounts = () => {
@@ -70,31 +87,37 @@ export const AccountProvider: FC = ({ children }) => {
   useEffect(() => {
     const refreshAccountsFromNetwork = async (accounts: AccountInfoCache[]) =>
       accounts.forEach(async account => {
-        const freshAccount = await refreshAccountFromNetwork(account)
-        setAccount(freshAccount)
+        const { freshAccountInfo, diff } = await refreshAccountFromNetwork(
+          account
+        )
+        if (diff) setAccount(freshAccountInfo)
       })
+
     const getAccountsFromIdb = async () => {
       const accountList = await getAllAccounts()
       const accounts: AccountContextValue['accounts'] = {}
-      for (const account of accountList) {
+      accountList.forEach(async account => {
         accounts[account.index] = account
         if (account.precomputedWork === null) {
-          computeWorkAsync(account.frontier ?? account.address, {
-            send: account.frontier !== null,
-          }).then(work => {
-            if (work !== null) {
-              setAccounts(prev => ({
-                ...prev,
-                [account.index]: {
-                  ...prev[account.index],
-                  precomputedWork: work,
-                },
-              }))
-              addPrecomputedWork(account.address, work)
+          const work = await computeWorkAsync(
+            account.frontier ?? account.publicKey,
+            {
+              send: account.frontier !== null,
             }
-          })
+          )
+
+          if (work !== null) {
+            setAccounts(prev => ({
+              ...prev,
+              [account.index]: {
+                ...prev[account.index],
+                precomputedWork: work,
+              },
+            }))
+            addPrecomputedWork(account.address, work)
+          }
         }
-      }
+      })
       setAccounts(accounts)
       refreshAccountsFromNetwork(accountList)
     }
@@ -102,7 +125,10 @@ export const AccountProvider: FC = ({ children }) => {
   }, [setAccount])
 
   const [currAccountIndex, setCurrAccountIndex] = useState<number>(0)
-  const currAccount = accounts?.[currAccountIndex]
+  const currAccount = useMemo(
+    () => accounts?.[currAccountIndex],
+    [currAccountIndex, accounts]
+  )
 
   const removeAccount = useCallback((index: number) => {
     setAccounts(prev => {

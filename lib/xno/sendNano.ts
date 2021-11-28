@@ -1,4 +1,3 @@
-import { hashBlock } from 'nanocurrency'
 import { block } from 'nanocurrency-web'
 
 import computeWorkAsync from '../computeWorkAsync'
@@ -18,21 +17,22 @@ const sendNano = async (
   )
 
   const signedBlock = block.send(blockData, privateKey)
-  return fetcher<ProcessResponse>('https://mynano.ninja/api/node', {
-    method: 'POST',
-    headers: [['Content-Type', 'application/json']],
-    body: JSON.stringify({
-      action: 'process',
-      json_block: 'true',
-      subtype: 'send',
-      block: signedBlock,
-    }),
-  }).then(async data => {
-    if ('error' in data) throw new Error()
-    await consumePrecomputedWork(blockData.fromAddress)
-    const work = await computeWorkAsync(hashBlock(signedBlock), { send: true })
-    if (work !== null) addPrecomputedWork(blockData.fromAddress, work)
-  })
+  const processResponse = await fetcher<ProcessResponse>(
+    'https://mynano.ninja/api/node',
+    {
+      method: 'POST',
+      body: {
+        action: 'process',
+        json_block: 'true',
+        subtype: 'send',
+        block: signedBlock,
+      },
+    }
+  )
+
+  if ('error' in processResponse) throw new Error()
+
+  return processResponse
 }
 
 export default sendNano

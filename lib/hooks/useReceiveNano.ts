@@ -1,15 +1,15 @@
-import { computeWork, hashBlock } from 'nanocurrency'
+import Big from 'bignumber.js'
 import { useCallback, useState } from 'react'
 
 import computeWorkAsync from '../computeWorkAsync'
-import { useAccount } from '../context/accountContext'
-import { getPrecomputedWork } from '../db/accounts'
-import fetcher from '../fetcher'
+import { useAccount, useAccounts } from '../context/accountContext'
+import { consumePrecomputedWork, getPrecomputedWork } from '../db/accounts'
 import { zeroString } from '../xno/constants'
 import receiveNano from '../xno/receiveNano'
 
 const useReceiveNano = () => {
   const account = useAccount()
+  const { setAccount } = useAccounts()
   const [generatingWork, setGeneratingWork] = useState(false)
 
   const receive = useCallback(
@@ -19,13 +19,13 @@ const useReceiveNano = () => {
       if (precomputedWork === null) {
         setGeneratingWork(true)
         precomputedWork = await computeWorkAsync(
-          account.frontier ?? account.address,
+          account.frontier ?? account.publicKey,
           { send: false }
         )
         setGeneratingWork(false)
       }
-      if (precomputedWork === null) throw new Error('couldnt_compute_work')
-      await receiveNano(
+      if (precomputedWork === null) throw new Error('cant_compute_work')
+      const processResponse = await receiveNano(
         {
           transactionHash: hash,
           walletBalanceRaw: account.balance ?? '0',
@@ -37,8 +37,17 @@ const useReceiveNano = () => {
         },
         account.index
       )
+
+      await consumePrecomputedWork(account.address)
+      const work = await computeWorkAsync(processResponse.hash, { send: false })
+      setAccount({
+        ...account,
+        frontier: processResponse.hash,
+        balance: new Big(account.balance ?? 0).plus(new Big(amount)).toString(),
+        ...(work !== null ? { work } : {}),
+      })
     },
-    [account]
+    [account, setAccount]
   )
 
   return { receive, generatingWork }

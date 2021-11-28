@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { useCurrentAccount } from '../context/accountContext'
 import type { AccountReceivableResponse, BlocksInfoResponse } from '../types'
 import fetchAccountReceivable from '../xno/fetchAccountReceivable'
 import fetchBlocksInfo from '../xno/fetchBlocksInfo'
 
-type ReturnValue =
+type ReturnValue = (
   | {
       accountReceivable: undefined
       blocksInfo: undefined
@@ -16,6 +16,15 @@ type ReturnValue =
       blocksInfo: BlocksInfoResponse
       loading: false
     }
+) & {
+  mutate: (prev: {
+    accountReceivable: AccountReceivableResponse | undefined
+    blocksInfo: BlocksInfoResponse | undefined
+  }) => {
+    accountReceivable: AccountReceivableResponse | undefined
+    blocksInfo: BlocksInfoResponse | undefined
+  }
+}
 
 const useAccountReceivable = (): ReturnValue => {
   const [accountReceivableWithInfo, setAccountReceivableWithInfo] = useState<{
@@ -47,7 +56,11 @@ const useAccountReceivable = (): ReturnValue => {
   const loading =
     accountReceivableWithInfo.accountReceivable === undefined &&
     accountReceivableWithInfo.blocksInfo === undefined
-  return { ...accountReceivableWithInfo, loading } as ReturnValue
+  return {
+    ...accountReceivableWithInfo,
+    loading,
+    mutate: setAccountReceivableWithInfo,
+  } as ReturnValue
 }
 
 export default useAccountReceivable

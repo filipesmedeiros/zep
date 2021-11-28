@@ -125,7 +125,11 @@ const BottomMenu: FC<Props> = ({ className }) => {
               )}
               onClick={() => push('/receive/qr')}
             >
-              <LoginIcon className="h-full text-purple-50 dark:text-gray-900 w-full -rotate-90" />
+              <LoginIcon
+                className={
+                  'h-full text-purple-50 dark:text-gray-900 w-full -rotate-child-90'
+                }
+              />
             </button>
           </div>
 

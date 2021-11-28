@@ -18,12 +18,14 @@ export interface AccountHistoryResponse {
 
 export interface AccountReceivableResponse {
   blocks: {
-    [destinationAddress: string]: {
-      [blockHash: string]: {
-        amount: string
-        source: string
-      }
-    }
+    [destinationAddress: string]:
+      | {
+          [blockHash: string]: {
+            amount: string
+            source: string
+          }
+        }
+      | ''
   }
 }
 

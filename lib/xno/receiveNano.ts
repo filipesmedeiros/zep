@@ -18,21 +18,22 @@ const sendNano = async (
   )
 
   const signedBlock = block.receive(blockData, privateKey)
-  fetcher<ProcessResponse>('https://mynano.ninja/api/node', {
-    method: 'POST',
-    headers: [['Content-Type', 'application/json']],
-    body: JSON.stringify({
-      action: 'process',
-      json_block: 'true',
-      subtype: 'receive',
-      block: signedBlock,
-    }),
-  }).then(async data => {
-    if ('error' in data) throw new Error()
-    await consumePrecomputedWork(blockData.toAddress)
-    const work = await computeWorkAsync(hashBlock(signedBlock), { send: false })
-    if (work !== null) addPrecomputedWork(blockData.toAddress, work)
-  })
+  const processResponse = await fetcher<ProcessResponse>(
+    'https://mynano.ninja/api/node',
+    {
+      method: 'POST',
+      body: {
+        action: 'process',
+        json_block: 'true',
+        subtype: 'receive',
+        block: signedBlock,
+      },
+    }
+  )
+
+  if ('error' in processResponse) throw new Error()
+
+  return processResponse
 }
 
 export default sendNano
