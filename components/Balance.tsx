@@ -58,7 +58,14 @@ const Balance: FC<Props> = ({ className }) => {
           )}
         >
           {showXnoBalance ? (
-            <> {xnoBalanceDisplay === 'small' ? '<0.01' : xnoBalanceDisplay}</>
+            <>
+              {' '}
+              {account?.balance === null
+                ? '0.00'
+                : xnoBalanceDisplay === 'small'
+                ? '<0.01'
+                : xnoBalanceDisplay}
+            </>
           ) : (
             'NO'
           )}
