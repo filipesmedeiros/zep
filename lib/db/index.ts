@@ -28,7 +28,7 @@ interface Schema extends DBSchema {
       address: string
     }
   }
-  encryptedSeed: {
+  encryptedSeeds: {
     key: EncryptedSeedKey
     value: EncryptedSeedValue
   }
@@ -49,7 +49,7 @@ export const openDb = async (version = 1) => {
           keyPath: 'id',
           autoIncrement: true,
         })
-        db.createObjectStore('encryptedSeed', {
+        db.createObjectStore('encryptedSeeds', {
           keyPath: 'id',
           autoIncrement: true,
         })

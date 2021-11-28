@@ -1,27 +1,27 @@
 import fetcher from '../fetcher'
-import { AccountHistoryResponse } from '../types'
+import type { AccountReceivableResponse } from '../types'
 
-const fetchAccountReceivable = (
+const _fetchAccountReceivable = (
   address: string,
   count = 20,
-  head = undefined,
   version22 = false
 ) =>
   fetcher('https://mynano.ninja/api/node', {
     method: 'POST',
     body: {
-      action: version22 ? 'account_pending' : 'account_receivable',
-      account: address,
-      head,
+      action: version22 ? 'accounts_pending' : 'accounts_receivable',
+      accounts: [address],
       count,
+      threshold: '0',
+      source: 'true',
     },
-  }) as Promise<AccountHistoryResponse>
+  }) as Promise<AccountReceivableResponse>
 
 // most nodes haven't upgraded yet https://docs.nano.org/commands/rpc-protocol/#accounts_pending
 // this will be the future api for this function
-const withVersionFallback = (address: string, count = 20, head = undefined) =>
-  fetchAccountReceivable(address, count, head).catch(() =>
-    fetchAccountReceivable(address, count, head, true)
+const fetchAccountReceivable = async (address: string, count = 20) =>
+  _fetchAccountReceivable(address, count).catch(() =>
+    _fetchAccountReceivable(address, count, true)
   )
 
-export default withVersionFallback
+export default fetchAccountReceivable

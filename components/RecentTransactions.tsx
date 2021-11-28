@@ -1,8 +1,12 @@
+import { ClockIcon } from '@heroicons/react/outline'
 import { DownloadIcon, UploadIcon } from '@heroicons/react/solid'
 import clsx from 'clsx'
 import { tools } from 'nanocurrency-web'
-import { FC } from 'react'
+import type { FC } from 'react'
 
+import { useCurrentAccount } from '../lib/context/accountContext'
+import useAccountHistory from '../lib/hooks/useAccountHistory'
+import useAccountReceivable from '../lib/hooks/useAccountReceivable'
 import useReceiveNano from '../lib/hooks/useReceiveNano'
 
 const rawToNanoDisplay = (raw: string) =>
@@ -15,78 +19,71 @@ export interface Props {
   className?: string
 }
 
-const mockAddressBook: Record<string, { displayName: string }> = {
-  nano_3cpz7oh9qr5b7obbcb5867omqf8esix4sdd5w6mh8kkknamjgbnwrimxsaaf: {
-    displayName: 'kraken',
-  },
-}
-
 const RecentTransactions: FC<Props> = ({ className }) => {
   const { receive } = useReceiveNano()
 
+  const {
+    accountReceivable,
+    blocksInfo: receivableBlocksInfo,
+    loading: loadingReceivable,
+  } = useAccountReceivable()
+  const { accountHistory, loading: loadingHistory } = useAccountHistory()
+
+  const account = useCurrentAccount()
+
+  const hasReceivable =
+    !loadingReceivable && Object.keys(accountReceivable.blocks).length > 0
+  const hasHistory = !loadingHistory && accountHistory.history.length > 0
+
+  const receivable = Object.entries(
+    accountReceivable?.blocks[account?.address ?? ''] ?? {}
+  ).map(([hash, { amount, source }]) => ({
+    hash,
+    amount,
+    from: source,
+  }))
+
   return (
     <div className={clsx('flex flex-col gap-6 w-full', className)}>
-      {false && (
+      {hasReceivable && (
         <section className="flex flex-col gap-3 w-full items-center">
-          <h2 className="text-2xl font-semibold text-purple-50">pending</h2>
+          <h2 className="text-2xl font-semibold text-purple-50">receivable</h2>
           <ol className="flex flex-col gap-3 w-full">
-            {[
-              {
-                hash: 'string',
-                send: 'string',
-                receivable: true,
-                amount: '0',
-                account: '',
-                timestamp: '',
-              },
-            ].map(txn => (
+            {receivable.map(receivable => (
               <li
-                key={txn.hash}
-                className={clsx(
-                  'bg-purple-50 shadow rounded px-3 py-3 flex items-center justify-between gap-2 text-black border-r-4',
-                  txn.send
-                    ? 'border-yellow-500'
-                    : txn.receivable
-                    ? 'border-blue-500'
-                    : 'border-green-500'
-                )}
+                key={receivable.hash}
+                className="bg-purple-50 shadow rounded px-3 py-3 flex items-center justify-between gap-2 text-black border-r-4 border-blue-500"
               >
                 <button
                   className="contents"
-                  onClick={() => receive(txn.hash, txn.amount)}
+                  onClick={() => receive(receivable.hash, receivable.amount)}
                 >
-                  {txn.send ? (
-                    <UploadIcon className="w-6 text-yellow-500 flex-shrink-0" />
-                  ) : (
-                    <DownloadIcon
-                      className={clsx(
-                        'w-6 flex-shrink-0',
-                        txn.receivable ? 'text-blue-500' : 'text-green-500'
-                      )}
-                    />
-                  )}
+                  <ClockIcon className="w-6 flex-shrink-0 text-blue-500" />
+
                   <div className="overflow-hidden overflow-ellipsis text-left flex-1 whitespace-nowrap">
                     {Intl.DateTimeFormat([], {
                       day: '2-digit',
                       month: '2-digit',
                       year: '2-digit',
-                    }).format(Number(txn.timestamp) * 1000)}{' '}
-                    -{' '}
-                    {mockAddressBook[txn.account]?.displayName ?? (
-                      <span className="text-xs">{txn.account}</span>
-                    )}
+                    }).format(
+                      Number(
+                        receivableBlocksInfo!.blocks[receivable.hash]
+                          .local_timestamp
+                      ) * 1000
+                    )}{' '}
+                    - {<span className="text-xs">{receivable.from}</span>}
                   </div>
                   <span className="flex-shrink-0 font-medium">
                     Ӿ{' '}
-                    {rawToNanoDisplay(txn.amount) === 'small' ? (
+                    {rawToNanoDisplay(receivable.amount) === 'small' ? (
                       '<.01'
-                    ) : rawToNanoDisplay(txn.amount).startsWith('0.') ? (
+                    ) : rawToNanoDisplay(receivable.amount).startsWith('0.') ? (
                       <>
                         <span className="text-sm font-semibold">0</span>
-                        {rawToNanoDisplay(txn.amount).substring(1)}
+                        {rawToNanoDisplay(receivable.amount).substring(1)}
                       </>
                     ) : (
-                      rawToNanoDisplay(txn.amount)
+                      rawToNanoDisplay(receivable.amount)
                     )}
                   </span>
                 </button>
@@ -95,8 +92,8 @@ const RecentTransactions: FC<Props> = ({ className }) => {
           </ol>
         </section>
       )}
-      {false && false && <hr />}
-      {false && (
+      {hasHistory && hasReceivable && <hr />}
+      {hasHistory && (
         <section className="flex flex-col gap-3 w-full items-center">
           <h2 className="text-2xl font-semibold text-purple-50">
             recent transactions
@@ -140,10 +137,7 @@ const RecentTransactions: FC<Props> = ({ className }) => {
                       month: '2-digit',
                       year: '2-digit',
                     }).format(Number(txn.timestamp) * 1000)}{' '}
-                    -{' '}
-                    {mockAddressBook[txn.account]?.displayName ?? (
-                      <span className="text-xs">{txn.account}</span>
-                    )}
+                    - {<span className="text-xs">{txn.account}</span>}
                   </div>
                   <span className="flex-shrink-0 font-medium">
                     Ӿ{' '}
@@ -164,7 +158,7 @@ const RecentTransactions: FC<Props> = ({ className }) => {
           </ol>
         </section>
       )}
-      {!false && !false && (
+      {!hasReceivable && !hasHistory && (
         <div className="text-center pt-8 text-purple-50">
           <p className="pb-4">no transactions yet...</p>
           <p>

@@ -16,9 +16,14 @@ export interface AccountHistoryResponse {
   previous?: string
 }
 
-export interface AccountPendingResponse {
+export interface AccountReceivableResponse {
   blocks: {
-    [key: string]: string[]
+    [destinationAddress: string]: {
+      [blockHash: string]: {
+        amount: string
+        source: string
+      }
+    }
   }
 }
 
