@@ -46,7 +46,7 @@ const useSetupSeed = (skip?: boolean) => {
       setAccount(account)
       addAccount(0, account)
 
-      computeWorkAsync(address, { send: false }).then(work => {
+      computeWorkAsync(publicKey, { send: false }).then(work => {
         if (work !== null) {
           setAccount({ ...account, precomputedWork: work })
           addPrecomputedWork(address, work)
