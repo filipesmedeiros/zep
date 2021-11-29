@@ -1,4 +1,5 @@
 import Big from 'bignumber.js'
+import { validateWork } from 'nanocurrency'
 import { useCallback, useState } from 'react'
 
 import computeWorkAsync from '../computeWorkAsync'
@@ -16,7 +17,13 @@ const useReceiveNano = () => {
     async (hash: string, amount: string) => {
       if (account === undefined) return
       let precomputedWork = await getPrecomputedWork(account.address)
-      if (precomputedWork === null) {
+      const isWorkValid =
+        precomputedWork !== null &&
+        validateWork({
+          work: precomputedWork,
+          blockHash: account.frontier ?? account.publicKey,
+        })
+      if (!isWorkValid) {
         setGeneratingWork(true)
         precomputedWork = await computeWorkAsync(
           account.frontier ?? account.publicKey,

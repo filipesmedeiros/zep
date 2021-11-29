@@ -1,4 +1,5 @@
 import Big from 'bignumber.js'
+import { validateWork } from 'nanocurrency'
 import { useCallback, useState } from 'react'
 
 import computeWorkAsync from '../computeWorkAsync'
@@ -21,7 +22,13 @@ const useSendNano = () => {
       )
         throw new Error('wrong_block_data') // todo improve this error
       let precomputedWork = await getPrecomputedWork(account.address)
-      if (precomputedWork === null) {
+      const isWorkValid =
+        precomputedWork !== null &&
+        validateWork({
+          work: precomputedWork,
+          blockHash: account.frontier,
+        })
+      if (!isWorkValid) {
         setGeneratingWork(true)
         precomputedWork = await computeWorkAsync(
           account.frontier ?? account.publicKey,

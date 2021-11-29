@@ -4,7 +4,7 @@ import useSetup from './useSetup'
 
 const useSetupServiceWorker = (skip?: boolean) =>
   useSetup(
-    useCallback(() => {
+    useCallback(async () => {
       if ('serviceWorker' in navigator) {
         try {
           navigator.serviceWorker.register('/sw.js')
