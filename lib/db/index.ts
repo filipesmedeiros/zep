@@ -54,7 +54,7 @@ export const openDb = async (version = 1) => {
           autoIncrement: true,
         })
         db.createObjectStore('preferences', {
-          keyPath: 'id',
+          keyPath: 'name',
           autoIncrement: true,
         })
       },

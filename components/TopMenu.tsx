@@ -1,11 +1,11 @@
 import {
   CogIcon,
+  DotsHorizontalIcon,
   FingerPrintIcon,
   HandIcon,
   KeyIcon,
   LibraryIcon,
   MoonIcon,
-  PlusIcon,
   UsersIcon,
 } from '@heroicons/react/solid'
 import clsx from 'clsx'
@@ -59,7 +59,7 @@ const TopMenu: FC<Props> = () => {
             )}
             onClick={toggleAdvanced}
           >
-            <PlusIcon className="w-full" />
+            <DotsHorizontalIcon className="w-full" />
           </button>
           <ul
             role="menu"

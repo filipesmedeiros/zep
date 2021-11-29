@@ -2,12 +2,13 @@ import { useEffect, useRef } from 'react'
 
 import { useCurrentAccount } from '../context/accountContext'
 import type { ConfirmationMessage } from '../types'
+import { defaultUrls } from '../xno/constants'
 
 /**
  * _please don't forget to memo `onConfirmation`_ :)
  * @param onConfirmation the callback to call with the new confirmation
  */
-const useListenToConfirmations = (
+const useListenToReceivables = (
   onConfirmation: (confirmation: ConfirmationMessage) => void
 ) => {
   const account = useCurrentAccount()
@@ -15,7 +16,7 @@ const useListenToConfirmations = (
   const wsRef = useRef<WebSocket>()
 
   useEffect(() => {
-    wsRef.current = new WebSocket('wss://socket.nanos.cc/')
+    wsRef.current = new WebSocket(defaultUrls.ws)
     return () => {
       if (
         wsRef.current?.readyState !== WebSocket.CLOSING &&
@@ -44,7 +45,8 @@ const useListenToConfirmations = (
         const parsed = JSON.parse(data) as ConfirmationMessage
         if (
           parsed.topic !== 'confirmation' ||
-          parsed.message.block.subtype !== 'send'
+          parsed.message.block.subtype !== 'send' ||
+          parsed.message.account !== account.address
         )
           return
         onConfirmation(parsed)
@@ -61,4 +63,4 @@ const useListenToConfirmations = (
   }, [account, onConfirmation])
 }
 
-export default useListenToConfirmations
+export default useListenToReceivables

@@ -66,7 +66,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
       <div>
         <div
           className={clsx(
-            'flex gap-10 items-end',
+            'flex gap-6 items-end',
             leftHanded ? 'flex-row-reverse' : 'flex-row'
           )}
         >
@@ -97,31 +97,12 @@ const BottomMenu: FC<Props> = ({ className }) => {
             </button>
           )}
 
-          <div className="relative h-16">
+          <div className="flex h-16">
             <button
               disabled={isWelcoming}
               className={clsx(
-                'bg-purple-500 absolute top-0 px-1 h-16 w-10 rounded-r hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-md disabled:cursor-default',
-                leftHanded
-                  ? 'left-0 -translate-x-2/3 rounded-l'
-                  : 'right-0 translate-x-2/3 rounded-r'
-              )}
-              onClick={() => push('/send/qr')}
-            >
-              <PaperAirplaneIcon className="h-full text-purple-50 dark:text-gray-900 w-full rotate-[30deg] translate-x-1" />
-            </button>
-
-            <div className="border-purple-500 border-t-2 border-b-2 py-1 px-4 h-16 shadow-lg">
-              <QrcodeIcon className="h-full text-gray-900 dark:text-purple-100" />
-            </div>
-
-            <button
-              disabled={isWelcoming}
-              className={clsx(
-                'bg-purple-500 absolute top-0 px-1 h-16 w-10 hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-md disabled:cursor-default',
-                leftHanded
-                  ? 'right-0 translate-x-2/3 rounded-r'
-                  : 'left-0 -translate-x-2/3 rounded-l'
+                'bg-purple-500 px-1 h-16 w-10 hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-md disabled:cursor-default',
+                leftHanded ? 'rounded-r' : 'rounded-l'
               )}
               onClick={() => push('/receive/qr')}
             >
@@ -131,20 +112,18 @@ const BottomMenu: FC<Props> = ({ className }) => {
                 }
               />
             </button>
-          </div>
-
-          <div className="flex flex-col h-16 justify-between">
+            <div className="border-purple-500 border-t-2 border-b-2 p-1 h-16 shadow-lg">
+              <QrcodeIcon className="h-full text-gray-900 dark:text-purple-100" />
+            </div>
             <button
               disabled={isWelcoming}
-              className="bg-purple-500 p-1 h-7 rounded hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-md disabled:cursor-default"
+              className={clsx(
+                'bg-purple-500 px-1 h-16 w-10 rounded-r hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-md disabled:cursor-default',
+                leftHanded ? 'rounded-l' : 'rounded-r'
+              )}
+              onClick={() => push('/send/qr')}
             >
-              <PaperAirplaneIcon className="h-full text-purple-50 dark:text-gray-900 rotate-[30deg] translate-x-[2px]" />
-            </button>
-            <button
-              disabled={isWelcoming}
-              className="bg-purple-500 p-1 h-7 rounded hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-lg disabled:cursor-default"
-            >
-              <RssIcon className="h-full text-purple-50 dark:text-gray-900" />
+              <PaperAirplaneIcon className="h-full text-purple-50 dark:text-gray-900 w-full rotate-[30deg] translate-x-1" />
             </button>
           </div>
         </div>

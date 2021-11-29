@@ -1,30 +1,15 @@
-import { useEffect, useState } from 'react'
+import useSWR from 'swr'
 
 import { useCurrentAccount } from '../context/accountContext'
 import type { AccountHistoryResponse } from '../types'
 import fetchAccountHistory from '../xno/fetchAccountHistory'
 
-type ReturnValue =
-  | {
-      accountHistory: undefined
-      loading: true
-    }
-  | { accountHistory: AccountHistoryResponse; loading: false }
-
-const useAccountHistory = (): ReturnValue => {
-  const [accountHistory, setAccountHistory] = useState<
-    AccountHistoryResponse | undefined
-  >(undefined)
-
+const useAccountHistory = () => {
   const account = useCurrentAccount()
-
-  useEffect(() => {
-    if (account !== undefined)
-      fetchAccountHistory(account.address).then(setAccountHistory)
-  }, [account])
-
-  const loading = accountHistory === undefined
-  return { accountHistory, loading } as ReturnValue
+  return useSWR<AccountHistoryResponse>(
+    account !== undefined ? `history:${account.address}` : null,
+    (key: string) => fetchAccountHistory(key.split(':')[1])
+  )
 }
 
 export default useAccountHistory

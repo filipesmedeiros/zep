@@ -1,8 +1,9 @@
 import fetcher from '../fetcher'
 import { AccountInfoResponse } from '../types'
+import { defaultUrls } from './constants'
 
 const fetchAccountInfo = (address: string) =>
-  fetcher('https://proxy.powernode.cc/proxy', {
+  fetcher(defaultUrls.rpc, {
     method: 'POST',
     body: {
       action: 'account_info',

@@ -6,6 +6,7 @@ import decryptSeed from '../decryptSeed'
 import fetcher from '../fetcher'
 import { ProcessResponse } from '../types'
 import accountAtIndex from './accountAtIndex'
+import { defaultUrls } from './constants'
 
 const sendNano = async (
   blockData: Parameters<typeof block['send']>[0],
@@ -17,18 +18,15 @@ const sendNano = async (
   )
 
   const signedBlock = block.send(blockData, privateKey)
-  const processResponse = await fetcher<ProcessResponse>(
-    'https://proxy.powernode.cc/proxy',
-    {
-      method: 'POST',
-      body: {
-        action: 'process',
-        json_block: 'true',
-        subtype: 'send',
-        block: signedBlock,
-      },
-    }
-  )
+  const processResponse = await fetcher<ProcessResponse>(defaultUrls.rpc, {
+    method: 'POST',
+    body: {
+      action: 'process',
+      json_block: 'true',
+      subtype: 'send',
+      block: signedBlock,
+    },
+  })
 
   if ('error' in processResponse) throw new Error()
 

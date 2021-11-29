@@ -1,12 +1,13 @@
 import fetcher from '../fetcher'
 import type { AccountReceivableResponse } from '../types'
+import { defaultUrls } from './constants'
 
 const _fetchAccountReceivable = (
   address: string,
   count = 20,
   version22 = false
 ) =>
-  fetcher('https://proxy.powernode.cc/proxy', {
+  fetcher(defaultUrls.rpc, {
     method: 'POST',
     body: {
       action: version22 ? 'accounts_pending' : 'accounts_receivable',

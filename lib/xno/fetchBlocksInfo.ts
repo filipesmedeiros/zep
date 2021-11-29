@@ -1,8 +1,9 @@
 import fetcher from '../fetcher'
 import type { BlocksInfoResponse } from '../types'
+import { defaultUrls } from './constants'
 
 const fetchBlocksInfo = (hashes: string[]) =>
-  fetcher('https://proxy.powernode.cc/proxy', {
+  fetcher(defaultUrls.rpc, {
     method: 'POST',
     body: {
       action: 'blocks_info',

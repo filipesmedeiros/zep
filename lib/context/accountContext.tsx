@@ -1,3 +1,4 @@
+import { validateWork } from 'nanocurrency'
 import {
   FC,
   createContext,
@@ -9,12 +10,7 @@ import {
 } from 'react'
 
 import computeWorkAsync from '../computeWorkAsync'
-import {
-  addPrecomputedWork,
-  consumePrecomputedWork,
-  getAllAccounts,
-  putAccount,
-} from '../db/accounts'
+import { addPrecomputedWork, getAllAccounts, putAccount } from '../db/accounts'
 import { AccountInfoCache } from '../types'
 import fetchAccountInfo from '../xno/fetchAccountInfo'
 
@@ -37,7 +33,7 @@ const refreshAccountFromNetwork = async (account: AccountInfoCache) => {
     'error' in infoResponse ? null : infoResponse.confirmed_representative
   const balance =
     'error' in infoResponse ? null : infoResponse.confirmed_balance
-  const freshAccountInfo = {
+  const freshAccountInfo: AccountInfoCache = {
     ...account,
     frontier,
     representative,
@@ -66,9 +62,13 @@ export const useAccounts = () => {
  */
 export const useAccount = (index?: number) => {
   const contextValue = useAccounts()
-  return index !== undefined
-    ? contextValue.accounts?.[index]
-    : contextValue.currAccount
+  return useMemo(
+    () =>
+      index !== undefined
+        ? contextValue.accounts?.[index]
+        : contextValue.currAccount,
+    [contextValue, index]
+  )
 }
 
 export const useCurrentAccount = () => useAccount()
@@ -98,7 +98,13 @@ export const AccountProvider: FC = ({ children }) => {
       const accounts: AccountContextValue['accounts'] = {}
       accountList.forEach(async account => {
         accounts[account.index] = account
-        if (account.precomputedWork === null) {
+        if (
+          account.precomputedWork === null ||
+          !validateWork({
+            work: account.precomputedWork,
+            blockHash: account.frontier ?? account.publicKey,
+          })
+        ) {
           const work = await computeWorkAsync(
             account.frontier ?? account.publicKey,
             {
