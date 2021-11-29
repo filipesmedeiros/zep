@@ -50,7 +50,7 @@ const useSendNano = () => {
         ...account,
         frontier: processResponse.hash,
         balance: new Big(account.balance).minus(new Big(amount)).toString(),
-        ...(work !== null ? { work } : {}),
+        ...(work !== null ? { precomputedWork: work } : {}),
       })
     },
     [account, setAccount]

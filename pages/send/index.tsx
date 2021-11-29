@@ -7,13 +7,22 @@ import { useState } from 'react'
 import useSendNano from '../../lib/hooks/useSendNano'
 
 const Send: NextPage = () => {
-  const { query } = useRouter()
+  const { query, push } = useRouter()
   const { address, amount } = query
 
   const hasAmount = amount !== undefined
 
   const [xnoToSend, setXnoToSend] = useState('')
   const { send } = useSendNano()
+
+  const onSend = async () => {
+    await send(
+      address as string,
+      (amount as string) ??
+        convert(xnoToSend, { from: Unit.Nano, to: Unit.raw })
+    )
+    push('/dashboard')
+  }
 
   return (
     <div>
@@ -39,15 +48,7 @@ const Send: NextPage = () => {
           <h2>{address}</h2>
         </>
       )}
-      <button
-        onClick={() =>
-          send(
-            address as string,
-            (amount as string) ??
-              convert(xnoToSend, { from: Unit.Nano, to: Unit.raw })
-          )
-        }
-      >
+      <button onClick={onSend}>
         send <UploadIcon />
       </button>
     </div>

@@ -38,13 +38,15 @@ const useReceiveNano = () => {
         account.index
       )
 
-      await consumePrecomputedWork(account.address)
-      const work = await computeWorkAsync(processResponse.hash, { send: true })
+      const [, work] = await Promise.all([
+        consumePrecomputedWork(account.address),
+        computeWorkAsync(processResponse.hash, { send: true }),
+      ])
       setAccount({
         ...account,
         frontier: processResponse.hash,
         balance: new Big(account.balance ?? 0).plus(new Big(amount)).toString(),
-        ...(work !== null ? { work } : {}),
+        ...(work !== null ? { precomputedWork: work } : {}),
       })
     },
     [account, setAccount]
