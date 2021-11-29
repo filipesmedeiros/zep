@@ -118,3 +118,10 @@ export interface ConfirmationMessage {
     }
   }
 }
+
+export interface WorkGenerateResponse {
+  work: string
+  difficulty: string
+  multiplier: string
+  hash: string
+}

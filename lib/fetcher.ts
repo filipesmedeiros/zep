@@ -1,7 +1,7 @@
 const fetcher = <T>(
   input: Parameters<typeof fetch>[0],
   init?: Omit<Exclude<Parameters<typeof fetch>[1], undefined>, 'body'> & {
-    method: 'POST' | 'PUT' | 'PATCH'
+    method?: 'POST' | 'PUT' | 'PATCH'
     body?: any
   }
 ) =>

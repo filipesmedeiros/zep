@@ -1,6 +1,10 @@
+import fetcher from './fetcher'
+import { WorkGenerateResponse } from './types'
+import { defaultUrls } from './xno/constants'
+
 const computeWorkAsync = (
-  frontier: string,
-  { send, workerCount = 4 }: { send: boolean; workerCount?: number }
+  hash: string,
+  { send, workerCount }: { send: boolean; workerCount?: number }
 ) => {
   const workers: Worker[] = []
 
@@ -10,25 +14,25 @@ const computeWorkAsync = (
   }
   const abortController = new AbortController()
 
-  const onlineWorkPromise =
-    process.env.NODE_ENV === 'production'
-      ? fetch(`/api/computeWork?frontier=${frontier}`, {
-          signal: abortController.signal,
-        }).then(async res => {
-          if (res.status !== 200) throw new Error()
-          else {
-            const { work } = await res.json()
-            return work as string
-          }
-        })
-      : Promise.reject(
-          'not in production, so not generating work on the server'
-        )
+  const onlineWorkPromise = fetcher<WorkGenerateResponse>(defaultUrls.rpc, {
+    signal: abortController.signal,
+    method: 'POST',
+    body: {
+      action: 'work_generate',
+      hash,
+    },
+  }).then(async res => {
+    const { work } = res
+    return work as string
+  })
 
   const offlineWorkPromise = new Promise<string | null>((res, rej) => {
+    if (navigator.onLine) {
+      rej('prefer going to server')
+      return
+    }
     const maxWorkers =
-      Math.floor(navigator.hardwareConcurrency / 4) ?? workerCount
-
+      workerCount ?? Math.max((navigator.hardwareConcurrency ?? 2) - 1, 1)
     const createWorker = (id: number) => {
       const worker = new Worker(new URL('./workComputer.ts', import.meta.url))
       worker.onmessage = work => {
@@ -40,11 +44,9 @@ const computeWorkAsync = (
         cleanup()
         rej(work)
       }
-
-      worker.postMessage({ frontier, id, send })
+      worker.postMessage({ hash, id, send })
       return worker
     }
-
     for (let i = 0; i < maxWorkers; i++) workers.push(createWorker(i))
   })
 
