@@ -18,22 +18,11 @@ const RecentTransactions: FC<Props> = ({ className }) => {
   const account = useCurrentAccount()
   const { receive } = useReceiveNano()
 
-  const { receivableBlocks, receivableBlocksInfo, onBlockReceived } =
-    useAccountReceivable()
+  const { receivableBlocks, onBlockReceived } = useAccountReceivable()
   const { data: accountHistory } = useAccountHistory()
 
   const hasReceivable =
-    receivableBlocks !== undefined &&
-    receivableBlocks.blocks[account?.address ?? ''] !== '' &&
-    receivableBlocksInfo !== undefined
-
-  const receivable = Object.entries(
-    receivableBlocks?.blocks[account?.address ?? ''] ?? {}
-  ).map(([hash, { amount, source }]) => ({
-    hash,
-    amount,
-    from: source,
-  }))
+    receivableBlocks !== undefined && receivableBlocks.length > 0
 
   return (
     <div className={clsx('flex flex-col gap-6 w-full', className)}>
@@ -41,7 +30,7 @@ const RecentTransactions: FC<Props> = ({ className }) => {
         <section className="flex flex-col gap-3 w-full items-center">
           <h2 className="text-2xl font-semibold text-purple-50">receivable</h2>
           <ol className="flex flex-col gap-3 w-full">
-            {receivable.map(receivable => (
+            {receivableBlocks.map(receivable => (
               <li
                 key={receivable.hash}
                 className="bg-purple-50 shadow rounded px-3 py-3 flex items-center justify-between gap-2 text-black border-r-4 border-blue-500"
@@ -60,12 +49,7 @@ const RecentTransactions: FC<Props> = ({ className }) => {
                       day: '2-digit',
                       month: '2-digit',
                       year: '2-digit',
-                    }).format(
-                      Number(
-                        receivableBlocksInfo.blocks[receivable.hash]
-                          .local_timestamp
-                      ) * 1000
-                    )}{' '}
+                    }).format(Number(receivable.timestamp) * 1000)}{' '}
                     - {<span className="text-xs">{receivable.from}</span>}
                   </div>
                   <span className="flex-shrink-0 font-medium">

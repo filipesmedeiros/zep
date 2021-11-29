@@ -8,7 +8,7 @@ import { defaultUrls } from '../xno/constants'
  * _please don't forget to memo `onConfirmation`_ :)
  * @param onConfirmation the callback to call with the new confirmation
  */
-const useListenToReceivables = (
+const useListenToReceivable = (
   onConfirmation: (confirmation: ConfirmationMessage) => void
 ) => {
   const account = useCurrentAccount()
@@ -16,22 +16,9 @@ const useListenToReceivables = (
   const wsRef = useRef<WebSocket>()
 
   useEffect(() => {
+    if (account === undefined) return
     wsRef.current = new WebSocket(defaultUrls.ws)
-    return () => {
-      if (
-        wsRef.current?.readyState !== WebSocket.CLOSING &&
-        wsRef.current?.readyState !== WebSocket.CLOSED
-      )
-        wsRef.current?.close()
-    }
-  }, [])
-
-  useEffect(() => {
-    if (
-      account !== undefined &&
-      wsRef.current !== undefined &&
-      wsRef.current.readyState === WebSocket.OPEN
-    ) {
+    wsRef.current.addEventListener('open', () => {
       wsRef.current!.send(
         JSON.stringify({
           action: 'subscribe',
@@ -46,13 +33,27 @@ const useListenToReceivables = (
         if (
           parsed.topic !== 'confirmation' ||
           parsed.message.block.subtype !== 'send' ||
-          parsed.message.account !== account.address
+          parsed.message.account === account.address
         )
           return
         onConfirmation(parsed)
       })
+    })
+    return () => {
+      if (
+        wsRef.current?.readyState !== WebSocket.CLOSING &&
+        wsRef.current?.readyState !== WebSocket.CLOSED
+      )
+        wsRef.current?.close()
+    }
+  }, [account, onConfirmation])
 
-      return () =>
+  useEffect(() => {
+    return () => {
+      if (
+        wsRef.current !== undefined &&
+        wsRef.current.readyState === WebSocket.OPEN
+      )
         wsRef.current!.send(
           JSON.stringify({
             action: 'unsubscribe',
@@ -60,7 +61,7 @@ const useListenToReceivables = (
           })
         )
     }
-  }, [account, onConfirmation])
+  }, [])
 }
 
-export default useListenToReceivables
+export default useListenToReceivable
