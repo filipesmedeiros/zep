@@ -1,8 +1,7 @@
-import { ClockIcon } from '@heroicons/react/outline'
+import { ChevronUpIcon, ClockIcon } from '@heroicons/react/outline'
 import { DownloadIcon, UploadIcon } from '@heroicons/react/solid'
 import clsx from 'clsx'
-import { useCallback, useState } from 'react'
-import type { FC } from 'react'
+import { FC, useState } from 'react'
 
 import { useCurrentAccount } from '../lib/context/accountContext'
 import useAccountHistory from '../lib/hooks/useAccountHistory'
@@ -15,7 +14,6 @@ export interface Props {
 }
 
 const RecentTransactions: FC<Props> = ({ className }) => {
-  const account = useCurrentAccount()
   const { receive } = useReceiveNano()
 
   const { receivableBlocks, onBlockReceived } = useAccountReceivable()
@@ -24,16 +22,40 @@ const RecentTransactions: FC<Props> = ({ className }) => {
   const hasReceivable =
     receivableBlocks !== undefined && receivableBlocks.length > 0
 
+  const [receivablesExpanded, setReceivablesExpanded] = useState(false)
+
   return (
-    <div className={clsx('flex flex-col gap-6 w-full', className)}>
+    <>
       {hasReceivable && (
-        <section className="flex flex-col gap-3 w-full items-center">
-          <h2 className="text-2xl font-semibold text-purple-50">receivable</h2>
-          <ol className="flex flex-col gap-3 w-full">
+        <section className="flex flex-col gap-3 w-full">
+          <div className="flex justify-between items-center gap-1">
+            <h2 className="text-2xl font-semibold text-purple-50 flex-1">
+              incoming
+            </h2>
+
+            <span className="rounded-full w-6 text-center dark:bg-purple-50 text-gray-900 text-base">
+              {receivableBlocks.length}
+            </span>
+            <ChevronUpIcon
+              onClick={() => setReceivablesExpanded(prev => !prev)}
+              className={clsx(
+                'h-8 transition-transform-child origin-center-child',
+                {
+                  '-rotate-child-180': receivablesExpanded,
+                }
+              )}
+            />
+          </div>
+          <ol
+            className={clsx(
+              'flex flex-col gap-3 w-full overflow-auto transition-height duration-300',
+              receivablesExpanded ? 'h-32' : 'h-0'
+            )}
+          >
             {receivableBlocks.map(receivable => (
               <li
                 key={receivable.hash}
-                className="bg-purple-50 shadow rounded px-3 py-3 flex items-center justify-between gap-2 text-black border-r-4 border-blue-500"
+                className="bg-purple-50 dark:hover:bg-gray-700 dark:bg-gray-800 dark:text-purple-50 shadow rounded px-3 py-3 flex items-center justify-between gap-2 text-black border-r-4 border-blue-400"
               >
                 <button
                   className="contents"
@@ -42,9 +64,9 @@ const RecentTransactions: FC<Props> = ({ className }) => {
                     onBlockReceived(receivable.hash)
                   }}
                 >
-                  <ClockIcon className="w-6 flex-shrink-0 text-blue-500" />
+                  <ClockIcon className="w-6 flex-shrink-0 text-blue-400" />
 
-                  <div className="overflow-hidden overflow-ellipsis text-left flex-1 whitespace-nowrap">
+                  <div className="overflow-hidden overflow-ellipsis text-left whitespace-nowrap">
                     {Intl.DateTimeFormat([], {
                       day: '2-digit',
                       month: '2-digit',
@@ -71,29 +93,26 @@ const RecentTransactions: FC<Props> = ({ className }) => {
           </ol>
         </section>
       )}
-      {accountHistory !== undefined &&
-        accountHistory.history !== '' &&
-        hasReceivable && <hr />}
       {accountHistory !== undefined && accountHistory.history !== '' && (
-        <section className="flex flex-col gap-3 w-full items-center">
+        <section className="flex flex-col gap-3 w-full min-h-0 flex-1">
           <h2 className="text-2xl font-semibold text-purple-50">
             recent transactions
           </h2>
-          <ol className="flex flex-col gap-3 w-full">
+          <ol className="flex flex-col gap-3 w-full overflow-auto">
             {accountHistory.history.map(txn => (
               <li
                 key={txn.hash}
                 className={clsx(
-                  'bg-purple-50 shadow rounded px-3 py-3 flex items-center justify-between gap-2 text-black border-r-4',
-                  txn.type === 'send' ? 'border-yellow-500' : 'border-green-500'
+                  'bg-purple-50 dark:bg-gray-800 dark:text-purple-50 shadow rounded px-3 py-3 flex items-center justify-between gap-2 text-black border-r-4',
+                  txn.type === 'send' ? 'border-yellow-300' : 'border-green-300'
                 )}
               >
                 <button className="contents" onClick={() => {}}>
                   {txn.type === 'send' ? (
-                    <UploadIcon className="w-6 text-yellow-500 flex-shrink-0" />
+                    <UploadIcon className="w-6 text-yellow-300 flex-shrink-0" />
                   ) : (
                     <DownloadIcon
-                      className={clsx('w-6 flex-shrink-0 text-green-500')}
+                      className={clsx('w-6 flex-shrink-0 text-green-300')}
                     />
                   )}
                   <div className="overflow-hidden overflow-ellipsis text-left flex-1 whitespace-nowrap">
@@ -142,7 +161,7 @@ const RecentTransactions: FC<Props> = ({ className }) => {
           load more
         </button>
       )}
-    </div>
+    </>
   )
 }
 

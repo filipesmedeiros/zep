@@ -45,7 +45,8 @@ const BottomMenu: FC<Props> = ({ className }) => {
   const isWelcoming = useIsWelcoming()
 
   return (
-    <div
+    <footer
+      role="menubar"
       className={clsx(
         'flex w-full items-end',
         leftHanded ? 'flex-row-reverse' : 'flex-row',
@@ -56,7 +57,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
       {pathname !== '/dashboard' && (
         <button
           disabled={isWelcoming}
-          className="bg-purple-500 p-1 h-12 rounded hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-lg disabled:cursor-default"
+          className="bg-purple-400 p-1 h-12 rounded hover:bg-purple-400 disabled:hover:bg-purple-400 shadow-lg disabled:cursor-default"
           onClick={() => push('/dashboard')}
         >
           <HomeIcon className="h-full text-purple-50 dark:text-gray-900" />
@@ -73,7 +74,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
           {'share' in navigator ? (
             <button
               disabled={isWelcoming}
-              className="p-1 h-16 w-10 rounded shadow-lg bg-purple-500 hover:bg-purple-400 disabled:hover:bg-purple-500 disabled:cursor-default"
+              className="p-1 h-16 w-10 rounded shadow-lg bg-purple-400 hover:bg-purple-400 disabled:hover:bg-purple-400 disabled:cursor-default"
               onClick={onShare}
             >
               <ShareIcon className="text-purple-50 dark:text-gray-900" />
@@ -85,12 +86,12 @@ const BottomMenu: FC<Props> = ({ className }) => {
                 'p-1 h-16 w-10 rounded shadow-lg',
                 confirmCopyAddress
                   ? 'bg-purple-50'
-                  : 'bg-purple-500 hover:bg-purple-400 disabled:hover:bg-purple-500 disabled:cursor-default'
+                  : 'bg-purple-400 hover:bg-purple-400 disabled:hover:bg-purple-400 disabled:cursor-default'
               )}
               onClick={onCopyAddress}
             >
               {confirmCopyAddress ? (
-                <CheckIcon className="text-purple-500" />
+                <CheckIcon className="text-purple-400" />
               ) : (
                 <DocumentDuplicateIcon className="text-purple-50 dark:text-gray-900" />
               )}
@@ -101,7 +102,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
             <button
               disabled={isWelcoming}
               className={clsx(
-                'bg-purple-500 px-1 h-16 w-10 hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-md disabled:cursor-default',
+                'bg-purple-400 px-1 h-16 w-10 hover:bg-purple-400 disabled:hover:bg-purple-400 shadow-md disabled:cursor-default',
                 leftHanded ? 'rounded-r' : 'rounded-l'
               )}
               onClick={() => push('/receive/qr')}
@@ -112,13 +113,13 @@ const BottomMenu: FC<Props> = ({ className }) => {
                 }
               />
             </button>
-            <div className="border-purple-500 border-t-2 border-b-2 p-1 h-16 shadow-lg">
+            <div className="border-purple-400 border-t-2 border-b-2 p-1 h-16 shadow-lg">
               <QrcodeIcon className="h-full text-gray-900 dark:text-purple-100" />
             </div>
             <button
               disabled={isWelcoming}
               className={clsx(
-                'bg-purple-500 px-1 h-16 w-10 rounded-r hover:bg-purple-400 disabled:hover:bg-purple-500 shadow-md disabled:cursor-default',
+                'bg-purple-400 px-1 h-16 w-10 rounded-r hover:bg-purple-400 disabled:hover:bg-purple-400 shadow-md disabled:cursor-default',
                 leftHanded ? 'rounded-l' : 'rounded-r'
               )}
               onClick={() => push('/send/qr')}
@@ -128,7 +129,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
           </div>
         </div>
       </div>
-    </div>
+    </footer>
   )
 }
 

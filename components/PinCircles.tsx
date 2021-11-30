@@ -18,8 +18,8 @@ const PinCircles: FC<Props> = ({ filledCount, className }) => {
           className={clsx(
             'rounded-md w-5 h-8 transition-colors duration-150',
             filledCount > num
-              ? 'bg-purple-500 border-purple-500'
-              : 'dark:bg-purple-200 bg-purple-300 dark:border-purple-200 border-purple-300',
+              ? 'bg-purple-400 border-purple-400'
+              : 'dark:bg-purple-200 bg-purple-200 dark:border-purple-200 border-purple-200',
             num === 1 || num === 4 ? 'skew-x-12' : '-skew-x-12'
           )}
         />

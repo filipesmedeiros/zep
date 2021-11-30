@@ -3,15 +3,38 @@
 body,
 html {
   font-family: Manrope;
+  overflow: hidden;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
 }
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* todo turn this into a plugin */
 @layer utilities {
-  .-rotate-child-90 > * {
-    transform: rotate(-90deg);
+  .-rotate-child-90 > *:first-child {
+    --tw-rotate: -90deg;
+    transform: var(--tw-transform);
     transform-origin: center;
+  }
+
+  .-rotate-child-180 > *:first-child {
+    --tw-rotate: -180deg;
+    transform: var(--tw-transform);
+    transform-origin: center;
+  }
+
+  .origin-center-child > *:first-child {
+    transform-origin: center;
+  }
+
+  .transition-transform-child > *:first-child {
+    transition-property: transform;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
   }
 }

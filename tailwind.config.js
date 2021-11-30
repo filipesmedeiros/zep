@@ -14,6 +14,9 @@ module.exports = {
       animation: {
         denied: 'denied 0.6s ease-in-out',
       },
+      transitionProperty: {
+        height: 'height',
+      },
     },
   },
   variants: {

@@ -20,20 +20,13 @@ const Layout: FC<Props> = ({ children }) => {
   useListenToColorMedia()
 
   return (
-    <div
-      className="dark:text-purple-50 bg-purple-50 dark:bg-gray-900 relative w-screen h-screen pt-4 pb-4 px-5 grid justify-center gap-4"
-      style={{
-        gridTemplate:
-          '"top-menu" auto "balance" auto "main" 1fr "bottom-menu" auto / 1fr',
-      }}
-    >
+    <div className="dark:text-purple-50 bg-purple-50 dark:bg-gray-900 relative w-screen h-screen pt-4 pb-4 px-5 flex flex-col gap-4">
       <header
         className={clsx('flex justify-between items-center', {
           'flex-row-reverse': leftHanded,
         })}
-        style={{ gridArea: 'top-menu' }}
       >
-        <div className="flex items-start translate-x-2">
+        <div className="flex items-start">
           <h1 className="font-extrabold text-2xl text-gray-900 dark:text-purple-100">
             zep
           </h1>
@@ -43,19 +36,10 @@ const Layout: FC<Props> = ({ children }) => {
       </header>
       {pathname !== '/' ? (
         <>
-          <div
-            className="flex place-self-center"
-            style={{ gridArea: 'balance' }}
-          >
-            <Balance />
-          </div>
-          <main
-            className="overflow-auto bg-purple-500 rounded border-t-8 border-b-8 border-purple-500 shadow-md py-4 px-4"
-            style={{ gridArea: 'main' }}
-          >
-            {children}
-          </main>
-          <div style={{ gridArea: 'bottom-menu' }}>{<BottomMenu />}</div>
+          <Balance />
+          <hr className="w-3/4 border-2" />
+          {children}
+          <BottomMenu />
         </>
       ) : (
         <main className="pt-32">{children}</main>

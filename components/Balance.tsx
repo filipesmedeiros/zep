@@ -41,41 +41,44 @@ const Balance: FC<Props> = ({ className }) => {
   const xnoBalanceDisplay = rawToNanoDisplay(account?.balance ?? '0')
 
   return (
-    <div
-      className={clsx(
-        'bg-purple-500 dark:text-gray-900 text-purple-50 py-4 px-7 rounded shadow-lg',
-        className
-      )}
-      onClick={() =>
-        setPreference('showCurrencyDash', nextShowCurrency(showCurrencyDash))
-      }
-    >
-      <h3 className="text-4xl text-center">
-        Ӿ
-        <span
-          className={clsx(
-            showXnoBalance ? 'font-medium dark:font-semibold' : 'font-semibold'
-          )}
-        >
-          {showXnoBalance ? (
-            <>
-              {' '}
-              {account?.balance === null
-                ? '0.00'
-                : xnoBalanceDisplay === 'small'
-                ? '<0.01'
-                : xnoBalanceDisplay}
-            </>
-          ) : (
-            'NO'
-          )}
-        </span>
-      </h3>
-      {showFiatBalance && (
-        <h3 className="text-xl text-center">
-          $ {(Number(xnoBalance) * xnoPrice).toFixed(2)}
+    <div className={clsx('dark:text-purple-50 text-gray-900 flex', className)}>
+      <div
+        onClick={() =>
+          setPreference('showCurrencyDash', nextShowCurrency(showCurrencyDash))
+        }
+      >
+        <h3 className="text-4xl">
+          Ӿ
+          <span
+            className={clsx(
+              showXnoBalance
+                ? 'font-medium dark:font-semibold'
+                : 'font-semibold'
+            )}
+          >
+            {showXnoBalance ? (
+              account?.balance === null ? (
+                '0.00'
+              ) : (
+                <>
+                  {' '}
+                  {xnoBalanceDisplay.substring(0, 8)}
+                  <span className="text-base">
+                    {xnoBalanceDisplay.substring(8)}
+                  </span>
+                </>
+              )
+            ) : (
+              'NO'
+            )}
+          </span>
         </h3>
-      )}
+        {showFiatBalance && (
+          <h4 className="text-xl">
+            $ {(Number(xnoBalance) * xnoPrice).toFixed(2)}
+          </h4>
+        )}
+      </div>
     </div>
   )
 }
