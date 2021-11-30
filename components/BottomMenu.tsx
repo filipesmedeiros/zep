@@ -57,7 +57,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
       {pathname !== '/dashboard' && (
         <button
           disabled={isWelcoming}
-          className="bg-purple-400 p-1 h-12 rounded hover:bg-purple-400 disabled:hover:bg-purple-400 shadow-lg disabled:cursor-default"
+          className="h-12 p-1 bg-purple-400 rounded shadow-lg hover:bg-purple-400 disabled:hover:bg-purple-400 disabled:cursor-default"
           onClick={() => push('/dashboard')}
         >
           <HomeIcon className="h-full text-purple-50 dark:text-gray-900" />
@@ -74,7 +74,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
           {'share' in navigator ? (
             <button
               disabled={isWelcoming}
-              className="p-1 h-16 w-10 rounded shadow-lg bg-purple-400 hover:bg-purple-400 disabled:hover:bg-purple-400 disabled:cursor-default"
+              className="w-10 h-16 p-1 bg-purple-400 rounded shadow-lg hover:bg-purple-400 disabled:hover:bg-purple-400 disabled:cursor-default"
               onClick={onShare}
             >
               <ShareIcon className="text-purple-50 dark:text-gray-900" />
@@ -113,7 +113,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
                 }
               />
             </button>
-            <div className="border-purple-400 border-t-2 border-b-2 p-1 h-16 shadow-lg">
+            <div className="h-16 p-1 border-t-2 border-b-2 border-purple-400 shadow-lg">
               <QrcodeIcon className="h-full text-gray-900 dark:text-purple-100" />
             </div>
             <button

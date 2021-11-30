@@ -21,7 +21,7 @@ const Landing = () => {
   }, [push])
 
   return (
-    <main className="flex flex-col items-center justify-evenly h-full w-full">
+    <main className="flex flex-col items-center w-full h-full justify-evenly">
       <header className="flex flex-col justify-center h-24">
         <h1 className="text-4xl">welcome</h1>
       </header>

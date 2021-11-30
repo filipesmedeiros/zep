@@ -8,7 +8,7 @@ const MyQrCode: NextPage = () => {
   const canvasRef = useDrawQrCode({ address: account?.address ?? '' })
 
   return (
-    <div className="grid gap-6 place-content-center h-full w-full">
+    <div className="w-full h-full grid gap-6 place-content-center">
       <h1 className="text-3xl font-extrabold text-center text-purple-100 dark:text-gray-900">
         get scanned!
       </h1>

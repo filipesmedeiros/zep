@@ -20,17 +20,17 @@ const Layout: FC<Props> = ({ children }) => {
   useListenToColorMedia()
 
   return (
-    <div className="dark:text-purple-50 bg-purple-50 dark:bg-gray-900 relative w-screen h-screen pt-4 pb-4 px-5 flex flex-col gap-4">
+    <div className="relative flex flex-col w-screen h-screen px-5 pt-4 pb-4 gap-4 dark:text-purple-50 bg-purple-50 dark:bg-gray-900">
       <header
         className={clsx('flex justify-between items-center', {
           'flex-row-reverse': leftHanded,
         })}
       >
         <div className="flex items-start">
-          <h1 className="font-extrabold text-2xl text-gray-900 dark:text-purple-100">
+          <h1 className="text-2xl font-extrabold text-gray-900 dark:text-purple-100">
             zep
           </h1>
-          <LightningBoltIcon className="text-gray-900 dark:text-purple-100 h-4" />
+          <LightningBoltIcon className="h-4 text-gray-900 dark:text-purple-100" />
         </div>
         <TopMenu />
       </header>

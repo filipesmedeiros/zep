@@ -4,15 +4,15 @@ import { useRouter } from 'next/router'
 const Welcome: NextPage = () => {
   const { push } = useRouter()
   return (
-    <div className="w-full text-center flex flex-col justify-center h-full text-purple-50">
-      <h1 className="text-4xl mb-3 font-bold">hey!</h1>
-      <p className="text-xl font-medium mb-2">
+    <div className="flex flex-col justify-center w-full h-full text-center text-purple-50">
+      <h1 className="mb-3 text-4xl font-bold">hey!</h1>
+      <p className="mb-2 text-xl font-medium">
         do you already have
         <br />a <b>nano</b> passphrase
         <br />
         you wanna use?
       </p>
-      <aside className="text-xs mb-3">
+      <aside className="mb-3 text-xs">
         your passphrase will{' '}
         <b className="font-extrabold">
           <em>never</em>
@@ -21,12 +21,12 @@ const Welcome: NextPage = () => {
         <br />
         and will only be decrypted for a few moments to send nano
       </aside>
-      <div className="flex flex-col gap-3 justify-center w-full mb-6">
-        <button className="dark:bg-gray-900 bg-purple-50 dark:hover:bg-gray-800 py-2 px-5 rounded text-lg font-bold shadow-lg hover:shadow-md active:shadow transition-all duration-100 text-gray-900 dark:text-purple-50">
+      <div className="flex flex-col justify-center w-full mb-6 gap-3">
+        <button className="px-5 py-2 text-lg font-bold text-gray-900 rounded shadow-lg dark:bg-gray-900 bg-purple-50 dark:hover:bg-gray-800 hover:shadow-md active:shadow transition-all duration-100 dark:text-purple-50">
           i have a passphrase/seed
         </button>
         <button
-          className="dark:bg-gray-900 bg-purple-50 dark:hover:bg-gray-800 py-2 px-5 rounded text-lg font-bold shadow-lg hover:shadow-md active:shadow transition-all duration-100 text-gray-900 dark:text-purple-50"
+          className="px-5 py-2 text-lg font-bold text-gray-900 rounded shadow-lg dark:bg-gray-900 bg-purple-50 dark:hover:bg-gray-800 hover:shadow-md active:shadow transition-all duration-100 dark:text-purple-50"
           onClick={() => push('/welcome/new')}
         >
           what&apos;s a passphrase?

@@ -21,7 +21,7 @@ const ReadQrCode: NextPage = () => {
   const { videoLive, videoRef } = useReadQrFromVideo(onQrCodeRead)
 
   return (
-    <div className="flex flex-col gap-4 items-center justify-center w-full h-full">
+    <div className="flex flex-col items-center justify-center w-full h-full gap-4">
       <h1 className="text-3xl font-semibold text-center text-purple-50">
         scan!
       </h1>
@@ -30,7 +30,7 @@ const ReadQrCode: NextPage = () => {
         ref={videoRef}
       />
       {!videoLive && (
-        <div className="w-full h-64 rounded bg-purple-400 animate-pulse"></div>
+        <div className="w-full h-64 bg-purple-400 rounded animate-pulse"></div>
       )}
     </div>
   )

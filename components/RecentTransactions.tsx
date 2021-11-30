@@ -27,13 +27,13 @@ const RecentTransactions: FC<Props> = ({ className }) => {
   return (
     <>
       {hasReceivable && (
-        <section className="flex flex-col gap-3 w-full">
-          <div className="flex justify-between items-center gap-1">
-            <h2 className="text-2xl font-semibold text-purple-50 flex-1">
+        <section className="flex flex-col w-full gap-3">
+          <div className="flex items-center justify-between gap-1">
+            <h2 className="flex-1 text-2xl font-semibold text-purple-50">
               incoming
             </h2>
 
-            <span className="rounded-full w-6 text-center dark:bg-purple-50 text-gray-900 text-base">
+            <span className="w-6 text-base text-center text-gray-900 rounded-full dark:bg-purple-50">
               {receivableBlocks.length}
             </span>
             <ChevronUpIcon
@@ -55,7 +55,7 @@ const RecentTransactions: FC<Props> = ({ className }) => {
             {receivableBlocks.map(receivable => (
               <li
                 key={receivable.hash}
-                className="bg-purple-50 dark:hover:bg-gray-700 dark:bg-gray-800 dark:text-purple-50 shadow rounded px-3 py-3 flex items-center justify-between gap-2 text-black border-r-4 border-blue-400"
+                className="flex items-center justify-between px-3 py-3 text-black border-r-4 border-blue-400 rounded shadow bg-purple-50 dark:hover:bg-gray-700 dark:bg-gray-800 dark:text-purple-50 gap-2"
               >
                 <button
                   className="contents"
@@ -64,9 +64,9 @@ const RecentTransactions: FC<Props> = ({ className }) => {
                     onBlockReceived(receivable.hash)
                   }}
                 >
-                  <ClockIcon className="w-6 flex-shrink-0 text-blue-400" />
+                  <ClockIcon className="flex-shrink-0 w-6 text-blue-400" />
 
-                  <div className="overflow-hidden overflow-ellipsis text-left whitespace-nowrap">
+                  <div className="overflow-hidden text-left overflow-ellipsis whitespace-nowrap">
                     {Intl.DateTimeFormat([], {
                       day: '2-digit',
                       month: '2-digit',
@@ -94,11 +94,11 @@ const RecentTransactions: FC<Props> = ({ className }) => {
         </section>
       )}
       {accountHistory !== undefined && accountHistory.history !== '' && (
-        <section className="flex flex-col gap-3 w-full min-h-0 flex-1">
+        <section className="flex flex-col flex-1 w-full min-h-0 gap-3">
           <h2 className="text-2xl font-semibold text-purple-50">
             recent transactions
           </h2>
-          <ol className="flex flex-col gap-3 w-full overflow-auto">
+          <ol className="flex flex-col w-full overflow-auto gap-3">
             {accountHistory.history.map(txn => (
               <li
                 key={txn.hash}
@@ -109,13 +109,13 @@ const RecentTransactions: FC<Props> = ({ className }) => {
               >
                 <button className="contents" onClick={() => {}}>
                   {txn.type === 'send' ? (
-                    <UploadIcon className="w-6 text-yellow-300 flex-shrink-0" />
+                    <UploadIcon className="flex-shrink-0 w-6 text-yellow-300" />
                   ) : (
                     <DownloadIcon
                       className={clsx('w-6 flex-shrink-0 text-green-300')}
                     />
                   )}
-                  <div className="overflow-hidden overflow-ellipsis text-left flex-1 whitespace-nowrap">
+                  <div className="flex-1 overflow-hidden text-left overflow-ellipsis whitespace-nowrap">
                     {Intl.DateTimeFormat([], {
                       day: '2-digit',
                       month: '2-digit',
@@ -144,7 +144,7 @@ const RecentTransactions: FC<Props> = ({ className }) => {
       )}
       {!hasReceivable &&
         (accountHistory === undefined || accountHistory.history === '') && (
-          <div className="text-center pt-8 text-purple-50">
+          <div className="pt-8 text-center text-purple-50">
             <p className="pb-4">no transactions yet...</p>
             <p>
               get your first nano
@@ -155,7 +155,7 @@ const RecentTransactions: FC<Props> = ({ className }) => {
         )}
       {false && (
         <button
-          className="bg-purple-200 py-2 px-4 rounded dark:text-gray-900 font-bold shadow"
+          className="px-4 py-2 font-bold bg-purple-200 rounded shadow dark:text-gray-900"
           onClick={() => {}}
         >
           load more

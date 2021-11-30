@@ -24,15 +24,15 @@ const New: NextPage = () => {
   }
 
   return (
-    <div className="flex flex-col h-full justify-start items-center text-center px-4 gap-2 text-purple-50">
-      <h1 className="text-9xl font-extrabold">{!storing ? 1 : 2}</h1>
+    <div className="flex flex-col items-center justify-start h-full px-4 text-center gap-2 text-purple-50">
+      <h1 className="font-extrabold text-9xl">{!storing ? 1 : 2}</h1>
       {!storing ? (
         <>
           <p className="text-lg">
             generate a <b>passphrase</b> and copy it to your clipboard
           </p>
           <button
-            className="dark:bg-gray-900 dark:text-purple-100 py-2 px-5 rounded text-xl bg-purple-50 font-bold text-gray-900"
+            className="px-5 py-2 text-xl font-bold text-gray-900 rounded dark:bg-gray-900 dark:text-purple-100 bg-purple-50"
             onClick={lazy}
           >
             generate passphrase
@@ -50,7 +50,7 @@ const New: NextPage = () => {
             store the <b>passphrase</b> securely in zep
           </p>
           <button
-            className="dark:bg-gray-900 dark:text-purple-100 py-2 px-5 rounded text-xl bg-purple-50 font-bold text-gray-900"
+            className="px-5 py-2 text-xl font-bold text-gray-900 rounded dark:bg-gray-900 dark:text-purple-100 bg-purple-50"
             onClick={onStoreClick}
           >
             store passphrase

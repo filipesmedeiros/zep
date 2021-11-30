@@ -49,7 +49,7 @@ const PinPad: FC<Props> = ({}) => {
   }
 
   return (
-    <div className="flex flex-col items-center gap-10 w-full h-72 px-16 max-w-sm">
+    <div className="flex flex-col items-center w-full max-w-sm px-16 gap-10 h-72">
       <div
         ref={pinCirclesWrapRef}
         className={clsx({ 'animate-denied': denied })}
