@@ -1,4 +1,3 @@
-import { useCallback, useEffect } from 'react'
 import useSWRInfinite from 'swr/infinite'
 
 import { useCurrentAccount } from '../context/accountContext'
@@ -23,6 +22,7 @@ const useAccountHistory = (pageSize = 20) => {
     size,
     setSize,
     isValidating,
+    mutate,
   } = useSWRInfinite<AccountHistoryResponse>(getKey, (key: string) =>
     fetchAccountHistory(
       account!.address,
@@ -44,6 +44,7 @@ const useAccountHistory = (pageSize = 20) => {
     hasMore,
     loading: isValidating,
     hasHistory,
+    revalidate: mutate,
   }
 }
 

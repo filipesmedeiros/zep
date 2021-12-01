@@ -1,7 +1,9 @@
+import { Unit, convert } from 'nanocurrency'
 import { useCallback } from 'react'
-import useSWR from 'swr'
+import useSWR, { mutate } from 'swr'
 
 import { useCurrentAccount } from '../context/accountContext'
+import showNotification from '../showNotification'
 import type { ConfirmationMessage } from '../types'
 import fetchAccountReceivable from '../xno/fetchAccountReceivable'
 import fetchBlocksInfo from '../xno/fetchBlocksInfo'
@@ -43,11 +45,12 @@ const useAccountReceivable = () => {
   const onBlockReceived = useCallback(
     (hash: string) => {
       mutateReceivable(current => {
-        if (current === undefined || account === undefined) return current
+        if (current === undefined) return current
         return current.filter(block => block.hash !== hash)
       })
+      mutate('history')
     },
-    [mutateReceivable, account]
+    [mutateReceivable]
   )
 
   const addReceivable = useCallback(
@@ -61,7 +64,7 @@ const useAccountReceivable = () => {
       source: string
     }) => {
       mutateReceivable(async current => {
-        if (current === undefined || account === undefined) return current
+        if (current === undefined) return current
         const blocksInfo = await fetchBlocksInfo([hash])
         return [
           ...current,
@@ -74,16 +77,28 @@ const useAccountReceivable = () => {
         ]
       })
     },
-    [mutateReceivable, account]
+    [mutateReceivable]
   )
 
   const onNewReceivable = useCallback(
-    (confirmation: ConfirmationMessage) =>
+    (confirmation: ConfirmationMessage) => {
       addReceivable({
         hash: confirmation.message.hash,
         amount: confirmation.message.amount,
         source: confirmation.message.account,
-      }),
+      })
+      showNotification({
+        title: 'incoming!',
+        body: `new incoming transaction: Ӿ${convert(
+          confirmation.message.amount,
+          {
+            from: Unit.raw,
+            to: Unit.Nano,
+          }
+        )} from ${confirmation.message.account}`,
+        tag: 'received',
+      })
+    },
     [addReceivable]
   )
 

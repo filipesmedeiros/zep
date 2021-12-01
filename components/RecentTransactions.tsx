@@ -1,11 +1,13 @@
 import { ChevronUpIcon, ClockIcon } from '@heroicons/react/outline'
 import { DownloadIcon, UploadIcon } from '@heroicons/react/solid'
 import clsx from 'clsx'
-import { FC, useState } from 'react'
+import { Unit, convert } from 'nanocurrency'
+import { FC, useEffect, useState } from 'react'
 
 import useAccountHistory from '../lib/hooks/useAccountHistory'
 import useAccountReceivable from '../lib/hooks/useAccountReceivable'
 import useReceiveNano from '../lib/hooks/useReceiveNano'
+import showNotification from '../lib/showNotification'
 import rawToNanoDisplay from '../lib/xno/rawToNanoDisplay'
 
 export interface Props {}
@@ -20,6 +22,7 @@ const RecentTransactions: FC<Props> = () => {
     hasMore,
     loading: loadingHistory,
     hasHistory,
+    revalidate: refetchHistory,
   } = useAccountHistory()
 
   const hasReceivable =
@@ -33,11 +36,34 @@ const RecentTransactions: FC<Props> = () => {
 
   const initialLoading = loadingHistory && accountHistory === undefined
 
+  const onIncomingClick = async (receivable: {
+    hash: string
+    amount: string
+    from: string
+    timestamp: string
+  }) => {
+    await receive(receivable.hash, receivable.amount)
+    onBlockReceived(receivable.hash)
+    refetchHistory()
+
+    showNotification({
+      title: 'received!',
+      body: `received Ӿ${convert(receivable.amount, {
+        from: Unit.raw,
+        to: Unit.Nano,
+      })} from ${receivable.from}`,
+      tag: 'received',
+    })
+  }
+
   return (
     <>
       {hasReceivable && (
         <section className="flex flex-col w-full gap-3">
-          <div className="flex items-center justify-between gap-1">
+          <div
+            className="flex items-center justify-between gap-1"
+            onClick={() => setReceivablesExpanded(prev => !prev)}
+          >
             <h2 className="flex-1 text-2xl font-semibold transition-colors text-gray-900 dark:text-purple-50">
               incoming
             </h2>
@@ -46,7 +72,6 @@ const RecentTransactions: FC<Props> = () => {
               {receivableBlocks.length}
             </span>
             <ChevronUpIcon
-              onClick={() => setReceivablesExpanded(prev => !prev)}
               className={clsx(
                 'h-8 transition-transform-child origin-center-child',
                 {
@@ -68,10 +93,7 @@ const RecentTransactions: FC<Props> = () => {
               >
                 <button
                   className="contents"
-                  onClick={async () => {
-                    await receive(receivable.hash, receivable.amount)
-                    onBlockReceived(receivable.hash)
-                  }}
+                  onClick={() => onIncomingClick(receivable)}
                 >
                   <ClockIcon className="flex-shrink-0 w-6 text-yellow-400" />
 
@@ -165,7 +187,7 @@ const RecentTransactions: FC<Props> = () => {
             )}
           </ol>
         ) : (
-          <div className="pt-8 text-center text-gray-900 dark:text-purple-50">
+          <div className="pt-8 text-center text-xl text-gray-900 dark:text-purple-50">
             <p className="pb-4">no transactions yet...</p>
             <p>
               get your first nano

@@ -8,6 +8,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 import XnoInput from '../../components/XnoInput'
 import useSendNano from '../../lib/hooks/useSendNano'
+import showNotification from '../../lib/showNotification'
 
 const Send: NextPage = () => {
   const { query, push } = useRouter()
@@ -34,15 +35,17 @@ const Send: NextPage = () => {
   useEffect(() => {
     if (sliderPercentage === 1) {
       const sendNano = async () => {
-        try {
-          await send(address as string, amount as string)
-          navigator.serviceWorker
-            .getRegistration()
-            .then(sw => sw?.showNotification('sent!'))
-          push('/dashboard')
-        } catch {
-          backToBase()
-        }
+        backToBase()
+        await send(address as string, amount as string)
+        showNotification({
+          title: 'sent!',
+          body: `sent Ӿ${convert(amount as string, {
+            from: Unit.raw,
+            to: Unit.Nano,
+          })} to ${address}`,
+          tag: 'send',
+        })
+        push('/dashboard')
       }
       sendNano()
     }
@@ -59,7 +62,7 @@ const Send: NextPage = () => {
   return (
     <div className="flex flex-col h-full gap-8 pb-4">
       <span className="flex items-center gap-2">
-        <PaperAirplaneIcon className=" dark:text-purple-50 h-7 xs:h-10 text-gray-900 rotate-[30deg] translate-x-1" />
+        <PaperAirplaneIcon className="transition-colors dark:text-purple-50 h-7 xs:h-10 text-gray-900 rotate-[30deg] translate-x-1" />
         <h1 className="text-3xl sm:text-5xl">send</h1>
       </span>
       <form

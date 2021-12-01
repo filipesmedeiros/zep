@@ -41,22 +41,20 @@ const Balance: FC<Props> = ({ className }) => {
   const xnoBalanceDisplay = rawToNanoDisplay(account?.balance ?? '0')
 
   return (
-    <div
-      className={clsx(
-        'dark:text-purple-50 transition-colors text-gray-900 flex',
-        className
-      )}
-    >
+    <div className={clsx('dark:text-purple-50 text-gray-900 flex', className)}>
       <div
         onClick={() =>
           setPreference('showCurrencyDash', nextShowCurrency(showCurrencyDash))
         }
-        className="hover:cursor-pointer active:translate-y-0.5"
+        className="hover:cursor-pointer"
       >
         <h3 className="text-4xl">
-          Ӿ
+          <span className="transition-colors">Ӿ</span>
           <span
-            className={clsx(showXnoBalance ? 'font-medium' : 'font-semibold')}
+            className={clsx(
+              'transition-colors',
+              showXnoBalance ? 'font-medium' : 'font-semibold'
+            )}
           >
             {showXnoBalance ? (
               account?.balance === null ? (
@@ -76,7 +74,7 @@ const Balance: FC<Props> = ({ className }) => {
           </span>
         </h3>
         {showFiatBalance && (
-          <h4 className="text-xl">
+          <h4 className="text-xl transition-colors">
             $ {(Number(xnoBalance) * xnoPrice).toFixed(2)}
           </h4>
         )}

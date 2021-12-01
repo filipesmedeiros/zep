@@ -117,7 +117,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
             <div className="h-16 p-1 border-t-2 border-b-2 border-purple-400 shadow-lg">
               <QrcodeIcon className="h-full text-gray-900 dark:text-purple-100 transition-colors" />
             </div>
-            <Link href={isWelcoming ? '#' : '/send/qr'}>
+            <Link href={isWelcoming ? '#' : '/send/qrOrAddress'}>
               <a
                 className={clsx(
                   'bg-purple-400 transition-colors px-1 h-16 w-10 hover:bg-purple-400 disabled:hover:bg-purple-400 shadow-md disabled:cursor-default',
