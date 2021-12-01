@@ -1,38 +1,20 @@
 import { ArrowDownIcon } from '@heroicons/react/outline'
 import { PaperAirplaneIcon } from '@heroicons/react/solid'
-import Big from 'bignumber.js'
 import clsx from 'clsx'
 import { Unit, convert } from 'nanocurrency'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 
+import XnoInput from '../../components/XnoInput'
 import useSendNano from '../../lib/hooks/useSendNano'
 
-Big.config({ EXPONENTIAL_AT: 1e9 })
-const bigToConvert = new Big(`1${'0'.repeat(30)}`)
-
 const Send: NextPage = () => {
-  const { query, push, replace, pathname } = useRouter()
+  const { query, push } = useRouter()
   const { address, amount } = query as { address?: string; amount?: string }
 
   const [xnoToSend, setXnoToSend] = useState('')
-  const onXnoAmountChange = useCallback(
-    (value: string) => {
-      setXnoToSend(value)
-      replace({
-        pathname,
-        query: {
-          ...query,
-          amount:
-            value !== ''
-              ? new Big(value).times(bigToConvert).toString() // since nanocurrency-js can't handle decimals :(
-              : '',
-        },
-      })
-    },
-    [replace, pathname, query]
-  )
+
   const { send } = useSendNano()
 
   const [startX, setStartX] = useState(0)
@@ -54,6 +36,9 @@ const Send: NextPage = () => {
       const sendNano = async () => {
         try {
           await send(address as string, amount as string)
+          navigator.serviceWorker
+            .getRegistration()
+            .then(sw => sw?.showNotification('sent!'))
           push('/dashboard')
         } catch {
           backToBase()
@@ -81,22 +66,7 @@ const Send: NextPage = () => {
         onSubmit={ev => ev.preventDefault()}
         className="flex flex-col gap-3 items-center h-full"
       >
-        <div className="flex items-center gap-3 text-2xl rounded transition-colors dark:bg-gray-800 bg-purple-100 focus-within:bg-purple-200 py-2 px-4 w-48 overflow-hidden dark:focus-within:bg-gray-700">
-          <label htmlFor="xnoToSend">Ӿ</label>
-          <input
-            name="xno-amount"
-            id="xno-amount"
-            maxLength={15}
-            className="bg-transparent focus:outline-none"
-            value={xnoToSend}
-            pattern="[0-9]*[\.,]?[0-9]{0,6}"
-            step="0.000001"
-            autoComplete="off"
-            onChange={({ target: { value, validity } }) => {
-              if (!validity.patternMismatch) onXnoAmountChange(value)
-            }}
-          />
-        </div>
+        <XnoInput value={xnoToSend} onChange={setXnoToSend} />
         <span className="flex-1 text-lg text-center">
           <span className="text-extrabold">to</span>
           <br />

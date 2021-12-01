@@ -32,7 +32,7 @@ const ReadQrCode: NextPage = () => {
         ref={videoRef}
       />
       {!videoLive && (
-        <div className="w-full h-64 rounded dark:bg-gray-800 animate-pulse"></div>
+        <div className="w-full h-64 rounded dark:bg-gray-800 bg-purple-50 animate-pulse"></div>
       )}
     </div>
   )

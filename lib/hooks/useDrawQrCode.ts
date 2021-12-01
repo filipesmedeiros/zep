@@ -16,7 +16,7 @@ const useDrawQrCode = ({ raw, address }: { raw?: string; address: string }) => {
     qr.toCanvas(canvasRef.current, genTxnUrl({ address: address, raw }), {
       color: {
         light: darkMode ? colors.coolGray['800'] : colors.white,
-        dark: colors.violet['50'],
+        dark: darkMode ? colors.violet['50'] : colors.violet['400'],
       },
     })
   }, [raw, address, canvasRef, darkMode])

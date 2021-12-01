@@ -56,11 +56,7 @@ const Balance: FC<Props> = ({ className }) => {
         <h3 className="text-4xl">
           Ӿ
           <span
-            className={clsx(
-              showXnoBalance
-                ? 'font-medium dark:font-semibold'
-                : 'font-semibold'
-            )}
+            className={clsx(showXnoBalance ? 'font-medium' : 'font-semibold')}
           >
             {showXnoBalance ? (
               account?.balance === null ? (
