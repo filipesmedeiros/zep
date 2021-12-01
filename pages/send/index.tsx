@@ -53,11 +53,7 @@ const Send: NextPage = () => {
     if (sliderPercentage === 1) {
       const sendNano = async () => {
         try {
-          await send(
-            address as string,
-            (amount as string) ??
-              convert(xnoToSend, { from: Unit.Nano, to: Unit.raw })
-          )
+          await send(address as string, amount as string)
           push('/dashboard')
         } catch {
           backToBase()
@@ -67,8 +63,16 @@ const Send: NextPage = () => {
     }
   }, [sliderPercentage, push, address, amount, xnoToSend, send, backToBase])
 
+  const hasQueryAmount = amount !== undefined && amount !== '' && amount !== '0'
+  const disableSlider = !hasQueryAmount
+
+  useEffect(() => {
+    if (hasQueryAmount && xnoToSend === '')
+      setXnoToSend(convert(amount, { from: Unit.raw, to: Unit.Nano }))
+  }, [amount, xnoToSend, hasQueryAmount])
+
   return (
-    <div className="flex flex-col h-full gap-8">
+    <div className="flex flex-col h-full gap-8 pb-4">
       <span className="flex items-center gap-2">
         <PaperAirplaneIcon className=" dark:text-purple-50 h-7 xs:h-10 text-gray-900 rotate-[30deg] translate-x-1" />
         <h1 className="text-3xl sm:text-5xl">send</h1>
@@ -77,7 +81,7 @@ const Send: NextPage = () => {
         onSubmit={ev => ev.preventDefault()}
         className="flex flex-col gap-3 items-center h-full"
       >
-        <div className="flex items-center gap-3 text-2xl rounded dark:bg-gray-800 py-2 px-4 w-full overflow-hidden dark:focus-within:bg-gray-700">
+        <div className="flex items-center gap-3 text-2xl rounded transition-colors dark:bg-gray-800 bg-purple-100 focus-within:bg-purple-200 py-2 px-4 w-48 overflow-hidden dark:focus-within:bg-gray-700">
           <label htmlFor="xnoToSend">Ӿ</label>
           <input
             name="xno-amount"
@@ -93,9 +97,10 @@ const Send: NextPage = () => {
             }}
           />
         </div>
-        <ArrowDownIcon className="h-7" />
-        <span className="flex-1 text-lg">
-          <span className="dark:text-purple-400 font-medium">
+        <span className="flex-1 text-lg text-center">
+          <span className="text-extrabold">to</span>
+          <br />
+          <span className="text-purple-400 font-medium">
             {address?.substring(0, 10)}
           </span>
           {address?.substring(10, 21)}
@@ -103,61 +108,71 @@ const Send: NextPage = () => {
           {address?.substring(21, 42)}
           <br />
           {address?.substring(42, 56)}
-          <span className="dark:text-purple-400 font-medium">
+          <span className="text-purple-400 font-medium">
             {address?.substring(56)}
           </span>
         </span>
         <div
           className={clsx(
-            'dark:bg-gray-800 rounded-full p-2 relative w-72 z-10 transition-opacity',
+            'dark:bg-gray-800 bg-purple-100 rounded-2xl p-2 relative w-72 z-10 transition-all hover:cursor-pointer',
             {
-              'opacity-50': xnoToSend === '',
+              'opacity-50': disableSlider,
             }
           )}
           onMouseMove={ev => {
-            if (sliding) setCurrentX(ev.clientX)
+            if (sliding && !disableSlider) setCurrentX(ev.clientX)
           }}
           onMouseUp={() => {
-            if (sliderPercentage !== 1) backToBase()
+            if (sliderPercentage !== 1 && !disableSlider) backToBase()
           }}
           onMouseLeave={() => {
-            if (sliderPercentage !== 1) backToBase()
+            if (sliderPercentage !== 1 && !disableSlider) backToBase()
           }}
         >
           <div
             className={clsx(
-              'dark:bg-purple-50 p-2 rounded-full w-11 z-30 transform-gpu',
+              'dark:bg-purple-50 bg-purple-400 p-2 rounded-xl w-11 z-30 transform-gpu transition-colors',
               {
-                'transition-transform': !sliding,
+                'transition-all': !sliding,
               }
             )}
             style={{
               transform: `translate3d(${sliderPercentage * 228}px, 0, 0)`,
             }}
             onTouchStart={ev => {
-              setSliding(true)
-              setStartX(ev.touches.item(0).clientX)
+              if (!disableSlider) {
+                setSliding(true)
+                setStartX(ev.touches.item(0).clientX)
+              }
             }}
             onTouchMove={ev => {
-              if (sliding) setCurrentX(ev.touches.item(0).clientX)
+              if (sliding && !disableSlider)
+                setCurrentX(ev.touches.item(0).clientX)
             }}
-            onTouchEnd={() => backToBase()}
+            onTouchEnd={() => {
+              if (!disableSlider) backToBase()
+            }}
             onMouseDown={ev => {
-              setSliding(true)
-              setStartX(ev.clientX)
+              if (!disableSlider) {
+                setSliding(true)
+                setStartX(ev.clientX)
+              }
             }}
           >
-            <PaperAirplaneIcon
+            {/* <PaperAirplaneIcon
               className="h-7 dark:text-gray-900 translate-x-0.5"
               style={{
                 transform: `translateX(var(--tw-translate-x)) rotate(${
                   30 + 60 * sliderPercentage
                 }deg)`,
               }}
-            />
+            /> */}
+            <span className="dark:text-gray-900 text-purple-50 text-3xl font-medium flex justify-center select-none">
+              Ӿ
+            </span>
           </div>
           <span
-            className="absolute text-purple-50 text-2xl left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none"
+            className="absolute dark:text-purple-50 text-purple-400 text-2xl left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none transition-colors"
             style={{ opacity: 0.7 - 0.7 * sliderPercentage, zIndex: -10 }}
           >
             slide to send

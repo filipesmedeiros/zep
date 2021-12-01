@@ -1,12 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback } from 'react'
 import useSWR from 'swr'
 
 import { useCurrentAccount } from '../context/accountContext'
-import type {
-  AccountReceivableResponse,
-  BlocksInfoResponse,
-  ConfirmationMessage,
-} from '../types'
+import type { ConfirmationMessage } from '../types'
 import fetchAccountReceivable from '../xno/fetchAccountReceivable'
 import fetchBlocksInfo from '../xno/fetchBlocksInfo'
 import useListenToReceivable from './useListenToReceivable'
@@ -40,7 +36,8 @@ const useAccountReceivable = () => {
             })
           )
         }
-      })
+      }),
+    { revalidateOnFocus: false }
   )
 
   const onBlockReceived = useCallback(

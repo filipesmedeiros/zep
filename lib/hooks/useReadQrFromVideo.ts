@@ -11,7 +11,9 @@ const useReadQrFromVideo = (onQrCodeRead: (content: string) => void) => {
 
     const start = async () => {
       stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment' },
+        video: {
+          facingMode: 'environment',
+        },
       })
       video.srcObject = stream
       video.setAttribute('playsinline', 'true') // required to tell iOS safari we don't want fullscreen
@@ -35,7 +37,8 @@ const useReadQrFromVideo = (onQrCodeRead: (content: string) => void) => {
           video.height
         )
 
-        if (qr !== null) {
+        if (qr !== null && qr.data !== '') {
+          console.log(qr)
           onQrCodeRead(qr.data)
           return
         }
@@ -48,7 +51,6 @@ const useReadQrFromVideo = (onQrCodeRead: (content: string) => void) => {
     start()
 
     return () => {
-      console.log(stream, video, stream?.getTracks())
       if (stream !== undefined) {
         stream.getTracks().forEach(track => track.stop())
         stream.addEventListener('addtrack', track => track.track.stop())

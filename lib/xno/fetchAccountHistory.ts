@@ -2,7 +2,7 @@ import fetcher from '../fetcher'
 import { AccountHistoryResponse } from '../types'
 import { defaultUrls } from './constants'
 
-const fetchAccountHistory = (address: string, count = 20, head = undefined) =>
+const fetchAccountHistory = (address: string, count = 20, head?: string) =>
   fetcher(defaultUrls.rpc, {
     method: 'POST',
     body: {

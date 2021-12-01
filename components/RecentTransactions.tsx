@@ -8,31 +8,41 @@ import useAccountReceivable from '../lib/hooks/useAccountReceivable'
 import useReceiveNano from '../lib/hooks/useReceiveNano'
 import rawToNanoDisplay from '../lib/xno/rawToNanoDisplay'
 
-export interface Props {
-  className?: string
-}
+export interface Props {}
 
-const RecentTransactions: FC<Props> = ({ className }) => {
+const RecentTransactions: FC<Props> = () => {
   const { receive } = useReceiveNano()
 
   const { receivableBlocks, onBlockReceived } = useAccountReceivable()
-  const { data: accountHistory } = useAccountHistory()
+  const {
+    accountHistory,
+    loadMore,
+    hasMore,
+    loading: loadingHistory,
+    hasHistory,
+  } = useAccountHistory()
 
   const hasReceivable =
     receivableBlocks !== undefined && receivableBlocks.length > 0
 
   const [receivablesExpanded, setReceivablesExpanded] = useState(false)
 
+  const mappedHistory = (accountHistory ?? []).flatMap(historyPage =>
+    historyPage.history !== '' ? historyPage.history : []
+  )
+
+  const initialLoading = loadingHistory && accountHistory === undefined
+
   return (
     <>
       {hasReceivable && (
         <section className="flex flex-col w-full gap-3">
           <div className="flex items-center justify-between gap-1">
-            <h2 className="flex-1 text-2xl font-semibold text-purple-50">
+            <h2 className="flex-1 text-2xl font-semibold transition-colors text-gray-900 dark:text-purple-50">
               incoming
             </h2>
 
-            <span className="w-6 text-base text-center text-gray-900 rounded-full dark:bg-purple-50">
+            <span className="w-6 text-base text-center dark:text-gray-900 text-purple-50 rounded-full bg-purple-400 dark:bg-purple-50">
               {receivableBlocks.length}
             </span>
             <ChevronUpIcon
@@ -47,14 +57,14 @@ const RecentTransactions: FC<Props> = ({ className }) => {
           </div>
           <ol
             className={clsx(
-              'flex flex-col gap-3 w-full overflow-auto transition-height duration-300',
-              receivablesExpanded ? 'h-32' : 'h-0'
+              'flex flex-col gap-3 w-full overflow-auto transition-all duration-300 px-1',
+              receivablesExpanded ? 'max-h-32 pb-1' : 'max-h-0'
             )}
           >
             {receivableBlocks.map(receivable => (
               <li
                 key={receivable.hash}
-                className="flex items-center justify-between px-3 py-3 text-black border-r-4 border-yellow-400 rounded shadow bg-purple-50 dark:hover:bg-gray-700 dark:bg-gray-800 dark:text-purple-50 gap-2"
+                className="flex items-center justify-between px-3 py-3 text-black border-r-4 border-yellow-400 rounded shadow bg-gray-50 transition-colors dark:hover:bg-gray-700 dark:bg-gray-800 dark:text-purple-50 gap-2"
               >
                 <button
                   className="contents"
@@ -93,16 +103,23 @@ const RecentTransactions: FC<Props> = ({ className }) => {
         </section>
       )}
       <section className="flex flex-col flex-1 w-full min-h-0 gap-3">
-        <h2 className="text-2xl font-semibold text-purple-50">
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-purple-50">
           recent transactions
         </h2>
-        {accountHistory !== undefined && accountHistory.history !== '' ? (
-          <ol className="flex flex-col w-full overflow-auto gap-3">
-            {accountHistory.history.map(txn => (
+        {initialLoading ? (
+          <ul className="flex flex-col w-full overflow-auto px-0.5 pb-0.5 gap-2">
+            <li className="bg-gray-100 dark:bg-gray-800 shadow rounded h-12 animate-pulse transition-colors" />
+            <li className="bg-gray-100 dark:bg-gray-800 shadow rounded h-12 animate-pulse transition-colors" />
+            <li className="bg-gray-100 dark:bg-gray-800 shadow rounded h-12 animate-pulse transition-colors" />
+            <li className="bg-gray-100 dark:bg-gray-800 shadow rounded h-12 animate-pulse transition-colors" />
+          </ul>
+        ) : hasHistory ? (
+          <ol className="flex flex-col w-full overflow-auto px-0.5 pb-0.5 gap-2">
+            {mappedHistory.map(txn => (
               <li
                 key={txn.hash}
                 className={clsx(
-                  'bg-purple-50 dark:bg-gray-800 dark:text-purple-50 shadow rounded px-3 py-3 flex items-center justify-between gap-2 text-black border-r-4',
+                  'bg-gray-50 dark:bg-gray-800 dark:text-purple-50 shadow rounded px-3 py-3 flex items-center justify-between gap-2 text-black border-r-4 transition-colors',
                   txn.type === 'send' ? 'border-yellow-300' : 'border-green-300'
                 )}
               >
@@ -138,9 +155,17 @@ const RecentTransactions: FC<Props> = ({ className }) => {
                 </button>
               </li>
             ))}
+            {hasMore && (
+              <button
+                className="px-4 py-1.5 font-bold transition-colors bg-purple-400 rounded text-purple-50 shadow dark:text-gray-900 place-self-center"
+                onClick={loadMore}
+              >
+                load more
+              </button>
+            )}
           </ol>
         ) : (
-          <div className="pt-8 text-center text-purple-50">
+          <div className="pt-8 text-center text-gray-900 dark:text-purple-50">
             <p className="pb-4">no transactions yet...</p>
             <p>
               get your first nano
@@ -150,14 +175,6 @@ const RecentTransactions: FC<Props> = ({ className }) => {
           </div>
         )}
       </section>
-      {false && (
-        <button
-          className="px-4 py-2 font-bold bg-purple-200 rounded shadow dark:text-gray-900"
-          onClick={() => {}}
-        >
-          load more
-        </button>
-      )}
     </>
   )
 }

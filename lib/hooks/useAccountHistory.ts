@@ -1,15 +1,50 @@
-import useSWR from 'swr'
+import { useCallback, useEffect } from 'react'
+import useSWRInfinite from 'swr/infinite'
 
 import { useCurrentAccount } from '../context/accountContext'
 import type { AccountHistoryResponse } from '../types'
 import fetchAccountHistory from '../xno/fetchAccountHistory'
 
-const useAccountHistory = () => {
+const useAccountHistory = (pageSize = 20) => {
   const account = useCurrentAccount()
-  return useSWR<AccountHistoryResponse>(
-    account !== undefined ? `history:${account.address}` : null,
-    (key: string) => fetchAccountHistory(key.split(':')[1])
+
+  const getKey = (index: number, prevPage: AccountHistoryResponse | null) => {
+    if (account === undefined) return null
+
+    if (prevPage !== null && prevPage.previous === undefined) return null
+
+    if (index === 0) return `history`
+
+    return `history?cursor=${prevPage!.previous}`
+  }
+
+  const {
+    data: accountHistory,
+    size,
+    setSize,
+    isValidating,
+  } = useSWRInfinite<AccountHistoryResponse>(getKey, (key: string) =>
+    fetchAccountHistory(
+      account!.address,
+      pageSize,
+      key.split('=')[1] === key ? undefined : key.split('=')[1]
+    )
   )
+
+  const hasMore = accountHistory?.[size - 1]?.previous !== undefined
+  const loadMore = () => setSize(prev => prev + 1)
+  const hasHistory =
+    accountHistory !== undefined &&
+    accountHistory.length > 0 &&
+    accountHistory[0].history !== ''
+
+  return {
+    accountHistory,
+    loadMore,
+    hasMore,
+    loading: isValidating,
+    hasHistory,
+  }
 }
 
 export default useAccountHistory

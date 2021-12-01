@@ -22,13 +22,13 @@ const ReadQrCode: NextPage = () => {
   const { videoLive, videoRef } = useReadQrFromVideo(onQrCodeRead)
 
   return (
-    <div className="flex flex-col h-full gap-8">
+    <div className="flex flex-col h-full min-h-0 gap-8">
       <span className="flex items-center gap-2">
         <PaperAirplaneIcon className=" dark:text-purple-50 h-7 xs:h-10 text-gray-900 rotate-[30deg] translate-x-1" />
         <h1 className="text-3xl sm:text-5xl">send</h1>
       </span>
       <video
-        className={clsx('rounded shadow-md', { hidden: !videoLive })}
+        className={clsx('rounded shadow-md min-h-0', { hidden: !videoLive })}
         ref={videoRef}
       />
       {!videoLive && (
