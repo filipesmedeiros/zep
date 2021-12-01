@@ -8,6 +8,7 @@ import {
   ShareIcon,
 } from '@heroicons/react/solid'
 import clsx from 'clsx'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { FC, useState } from 'react'
 
@@ -55,13 +56,11 @@ const BottomMenu: FC<Props> = ({ className }) => {
       )}
     >
       {pathname !== '/dashboard' && (
-        <button
-          disabled={isWelcoming}
-          className="h-12 p-1 bg-purple-400 rounded shadow-lg hover:bg-purple-400 disabled:hover:bg-purple-400 disabled:cursor-default"
-          onClick={() => push('/dashboard')}
-        >
-          <HomeIcon className="h-full text-purple-50 dark:text-gray-900" />
-        </button>
+        <Link href={isWelcoming ? '#' : '/dashboard'}>
+          <a className="h-12 p-1 bg-purple-400 rounded shadow-lg hover:bg-purple-400 disabled:hover:bg-purple-400 disabled:cursor-default">
+            <HomeIcon className="h-full text-purple-50 dark:text-gray-900" />
+          </a>
+        </Link>
       )}
 
       <div>
@@ -98,34 +97,36 @@ const BottomMenu: FC<Props> = ({ className }) => {
             </button>
           )}
 
-          <div className="flex h-16">
-            <button
-              disabled={isWelcoming}
-              className={clsx(
-                'bg-purple-400 px-1 h-16 w-10 hover:bg-purple-400 disabled:hover:bg-purple-400 shadow-md disabled:cursor-default',
-                leftHanded ? 'rounded-r' : 'rounded-l'
-              )}
-              onClick={() => push('/receive/qr')}
-            >
-              <LoginIcon
-                className={
-                  'h-full text-purple-50 dark:text-gray-900 w-full -rotate-child-90'
-                }
-              />
-            </button>
+          <div
+            className={clsx('flex h-16', { 'flex-row-reverse': leftHanded })}
+          >
+            <Link href={isWelcoming ? '#' : '/receive/qr'}>
+              <a
+                className={clsx(
+                  'bg-purple-400 px-1 h-16 w-10 hover:bg-purple-400 disabled:hover:bg-purple-400 shadow-md disabled:cursor-default',
+                  leftHanded ? 'rounded-r' : 'rounded-l'
+                )}
+              >
+                <LoginIcon
+                  className={
+                    'h-full text-purple-50 dark:text-gray-900 w-full -rotate-child-90'
+                  }
+                />
+              </a>
+            </Link>
             <div className="h-16 p-1 border-t-2 border-b-2 border-purple-400 shadow-lg">
               <QrcodeIcon className="h-full text-gray-900 dark:text-purple-100" />
             </div>
-            <button
-              disabled={isWelcoming}
-              className={clsx(
-                'bg-purple-400 px-1 h-16 w-10 rounded-r hover:bg-purple-400 disabled:hover:bg-purple-400 shadow-md disabled:cursor-default',
-                leftHanded ? 'rounded-l' : 'rounded-r'
-              )}
-              onClick={() => push('/send/qr')}
-            >
-              <PaperAirplaneIcon className="h-full text-purple-50 dark:text-gray-900 w-full rotate-[30deg] translate-x-1" />
-            </button>
+            <Link href={isWelcoming ? '#' : '/send/qr'}>
+              <a
+                className={clsx(
+                  'bg-purple-400 px-1 h-16 w-10 hover:bg-purple-400 disabled:hover:bg-purple-400 shadow-md disabled:cursor-default',
+                  leftHanded ? 'rounded-l' : 'rounded-r'
+                )}
+              >
+                <PaperAirplaneIcon className="h-full text-purple-50 dark:text-gray-900 w-full rotate-[30deg] translate-x-1" />
+              </a>
+            </Link>
           </div>
         </div>
       </div>

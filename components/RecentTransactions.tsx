@@ -3,7 +3,6 @@ import { DownloadIcon, UploadIcon } from '@heroicons/react/solid'
 import clsx from 'clsx'
 import { FC, useState } from 'react'
 
-import { useCurrentAccount } from '../lib/context/accountContext'
 import useAccountHistory from '../lib/hooks/useAccountHistory'
 import useAccountReceivable from '../lib/hooks/useAccountReceivable'
 import useReceiveNano from '../lib/hooks/useReceiveNano'
@@ -55,7 +54,7 @@ const RecentTransactions: FC<Props> = ({ className }) => {
             {receivableBlocks.map(receivable => (
               <li
                 key={receivable.hash}
-                className="flex items-center justify-between px-3 py-3 text-black border-r-4 border-blue-400 rounded shadow bg-purple-50 dark:hover:bg-gray-700 dark:bg-gray-800 dark:text-purple-50 gap-2"
+                className="flex items-center justify-between px-3 py-3 text-black border-r-4 border-yellow-400 rounded shadow bg-purple-50 dark:hover:bg-gray-700 dark:bg-gray-800 dark:text-purple-50 gap-2"
               >
                 <button
                   className="contents"
@@ -64,7 +63,7 @@ const RecentTransactions: FC<Props> = ({ className }) => {
                     onBlockReceived(receivable.hash)
                   }}
                 >
-                  <ClockIcon className="flex-shrink-0 w-6 text-blue-400" />
+                  <ClockIcon className="flex-shrink-0 w-6 text-yellow-400" />
 
                   <div className="overflow-hidden text-left overflow-ellipsis whitespace-nowrap">
                     {Intl.DateTimeFormat([], {
@@ -93,11 +92,11 @@ const RecentTransactions: FC<Props> = ({ className }) => {
           </ol>
         </section>
       )}
-      {accountHistory !== undefined && accountHistory.history !== '' && (
-        <section className="flex flex-col flex-1 w-full min-h-0 gap-3">
-          <h2 className="text-2xl font-semibold text-purple-50">
-            recent transactions
-          </h2>
+      <section className="flex flex-col flex-1 w-full min-h-0 gap-3">
+        <h2 className="text-2xl font-semibold text-purple-50">
+          recent transactions
+        </h2>
+        {accountHistory !== undefined && accountHistory.history !== '' ? (
           <ol className="flex flex-col w-full overflow-auto gap-3">
             {accountHistory.history.map(txn => (
               <li
@@ -140,10 +139,7 @@ const RecentTransactions: FC<Props> = ({ className }) => {
               </li>
             ))}
           </ol>
-        </section>
-      )}
-      {!hasReceivable &&
-        (accountHistory === undefined || accountHistory.history === '') && (
+        ) : (
           <div className="pt-8 text-center text-purple-50">
             <p className="pb-4">no transactions yet...</p>
             <p>
@@ -153,6 +149,7 @@ const RecentTransactions: FC<Props> = ({ className }) => {
             </p>
           </div>
         )}
+      </section>
       {false && (
         <button
           className="px-4 py-2 font-bold bg-purple-200 rounded shadow dark:text-gray-900"

@@ -20,7 +20,7 @@ const Layout: FC<Props> = ({ children }) => {
   useListenToColorMedia()
 
   return (
-    <div className="relative flex flex-col w-screen h-screen px-5 pt-4 pb-4 gap-4 dark:text-purple-50 bg-purple-50 dark:bg-gray-900">
+    <div className="relative flex flex-col w-screen h-screen gap-4 px-5 pt-4 pb-4 dark:text-purple-50 bg-purple-50 dark:bg-gray-900">
       <header
         className={clsx('flex justify-between items-center', {
           'flex-row-reverse': leftHanded,
@@ -37,7 +37,7 @@ const Layout: FC<Props> = ({ children }) => {
       {pathname !== '/' ? (
         <>
           <Balance />
-          <hr className="w-3/4 border-2" />
+          <hr className="w-1/3 border-2 " />
           {children}
           <BottomMenu />
         </>

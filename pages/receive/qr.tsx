@@ -1,3 +1,4 @@
+import { LoginIcon } from '@heroicons/react/outline'
 import type { NextPage } from 'next'
 
 import { useAccount } from '../../lib/context/accountContext'
@@ -8,12 +9,16 @@ const MyQrCode: NextPage = () => {
   const canvasRef = useDrawQrCode({ address: account?.address ?? '' })
 
   return (
-    <div className="w-full h-full grid gap-6 place-content-center">
-      <h1 className="text-3xl font-extrabold text-center text-purple-100 dark:text-gray-900">
-        get scanned!
-      </h1>
+    <div className="h-full flex flex-col gap-8">
+      <span className="flex items-center justify-start gap-2">
+        <LoginIcon className="-rotate-child-90 dark:text-purple-50 h-7 xs:h-10 text-gray-900 translate-x-1" />
+        <h1 className="text-3xl sm:text-5xl">receive</h1>
+      </span>
 
-      <canvas className="!w-64 !h-64 rounded-lg shadow-lg" ref={canvasRef} />
+      <canvas
+        className="!w-64 !h-64 rounded place-self-center shadow-lg"
+        ref={canvasRef}
+      />
     </div>
   )
 }
