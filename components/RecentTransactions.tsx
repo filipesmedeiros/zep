@@ -1,5 +1,5 @@
 import { ChevronUpIcon, ClockIcon } from '@heroicons/react/outline'
-import { DownloadIcon, UploadIcon } from '@heroicons/react/solid'
+import { DownloadIcon, RefreshIcon, UploadIcon } from '@heroicons/react/solid'
 import clsx from 'clsx'
 import { Unit, convert } from 'nanocurrency'
 import { FC, useEffect, useState } from 'react'
@@ -34,7 +34,13 @@ const RecentTransactions: FC<Props> = () => {
     historyPage.history !== '' ? historyPage.history : []
   )
 
-  const initialLoading = loadingHistory && accountHistory === undefined
+  const initialLoadingHistory = loadingHistory && accountHistory === undefined
+
+  const [refetchingHistory, setRefectingHistory] = useState(false)
+  useEffect(() => {
+    if (!loadingHistory && accountHistory !== undefined)
+      setRefectingHistory(false)
+  }, [loadingHistory, accountHistory])
 
   const onIncomingClick = async (receivable: {
     hash: string
@@ -125,10 +131,20 @@ const RecentTransactions: FC<Props> = () => {
         </section>
       )}
       <section className="flex flex-col flex-1 w-full min-h-0 gap-3">
-        <h2 className="text-2xl font-semibold text-gray-900 dark:text-purple-50">
-          recent transactions
-        </h2>
-        {initialLoading ? (
+        <div className="flex items-center justify-between gap-1">
+          <h2 className="text-2xl font-semibold text-gray-900 dark:text-purple-50">
+            recent transactions
+          </h2>
+          <button
+            onClick={() => {
+              setRefectingHistory(true)
+              refetchHistory()
+            }}
+          >
+            <RefreshIcon className="h-6" />
+          </button>
+        </div>
+        {initialLoadingHistory || refetchingHistory ? (
           <ul className="flex flex-col w-full overflow-auto px-0.5 pb-0.5 gap-2">
             <li className="bg-gray-100 dark:bg-gray-800 shadow rounded h-12 animate-pulse transition-colors" />
             <li className="bg-gray-100 dark:bg-gray-800 shadow rounded h-12 animate-pulse transition-colors" />

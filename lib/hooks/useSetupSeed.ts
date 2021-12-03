@@ -28,7 +28,7 @@ const useSetupSeed = (skip?: boolean) => {
       }
 
       const [{ seed: generatedSeed, mnemonic }] = await Promise.all([
-        wallet.generate(),
+        wallet.generateLegacy(),
         registerBiometrics(),
       ])
       const { address, publicKey } = accountAtIndex(generatedSeed, 0)

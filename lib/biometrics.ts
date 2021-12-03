@@ -66,8 +66,8 @@ export const checkBiometrics = async () => {
       allowCredentials: [
         {
           id: credentialId.cryptoAsset,
-          transports: ['internal'] as AuthenticatorTransport[],
-          type: 'public-key' as 'public-key',
+          transports: ['internal'],
+          type: 'public-key',
         },
       ],
       userVerification: 'required',
