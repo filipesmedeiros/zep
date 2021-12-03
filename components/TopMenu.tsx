@@ -100,7 +100,7 @@ const TopMenu: FC<Props> = () => {
               <li>
                 <button
                   className={clsx(
-                    'p-1 rounded transition-colors duration-100 w-full hover:text-purple-400 bg-purple-400 dark:text-gray-900 text-purple-50 dark:hover:text-purple-50'
+                    'p-1 rounded transition-colors duration-100 w-full hover:bg-purple-300 bg-purple-400 dark:text-gray-900 text-purple-50 dark:hover:text-purple-50'
                   )}
                   onClick={onCopySeed}
                 >
@@ -181,10 +181,7 @@ const TopMenu: FC<Props> = () => {
               <button
                 disabled={!showPreferences}
                 className={clsx(
-                  'p-1 rounded transition-colors duration-100 w-full dark:hover:text-purple-50',
-                  darkMode
-                    ? 'dark:text-purple-400 dark:bg-gray-900 shadow-md hover:bg-purple-400 bg-purple-50 text-purple-400'
-                    : 'hover:text-purple-400 bg-purple-400 dark:text-gray-900 text-purple-50',
+                  'p-1 rounded transition-colors duration-100 w-full dark:hover:text-purple-50 hover:bg-purple-300 dark:text-purple-400 dark:bg-gray-900 bg-purple-400 text-purple-50',
                   showPreferences ? 'hover:cursor-pointer' : 'cursor-default'
                 )}
                 onClick={() => {
@@ -199,10 +196,10 @@ const TopMenu: FC<Props> = () => {
               <button
                 disabled={!showPreferences}
                 className={clsx(
-                  'p-1 rounded transition-colors duration-100 w-full dark:hover:text-purple-50',
+                  'p-1 rounded transition-colors duration-100 w-full dark:hover:text-purple-50 bg-purple-400',
                   leftHanded
-                    ? 'dark:text-purple-400 dark:bg-gray-900 shadow-md hover:bg-purple-400 bg-purple-50 text-purple-400'
-                    : 'hover:text-purple-400 bg-purple-400 dark:text-gray-900 text-purple-50',
+                    ? 'dark:text-purple-400 dark:bg-gray-900 bg-purple-50 text-purple-400 hover:text-purple-300'
+                    : 'text-purple-50 hover:bg-purple-300',
                   showPreferences ? 'hover:cursor-pointer' : 'cursor-default'
                 )}
                 onClick={() => {
