@@ -8,7 +8,7 @@ export interface Props {
 
 const AddressInput: FC<Props> = ({ value, onChange }) => {
   return (
-    <div className="flex items-center w-full gap-3 text-2xl rounded transition-colors dark:bg-gray-800 bg-purple-50 focus-within:bg-purple-100 border-2 border-purple-200 dark:border-gray-700 py-2 px-4 overflow-hidden dark:focus-within:bg-gray-700">
+    <div className="flex items-center w-full gap-3 text-2xl rounded transition-colors dark:bg-gray-800 bg-purple-50 focus-within:bg-purple-100 py-2 px-4 overflow-hidden dark:focus-within:bg-gray-700">
       <label htmlFor="xno-address">@</label>
       <input
         name="xno-address"
@@ -19,7 +19,6 @@ const AddressInput: FC<Props> = ({ value, onChange }) => {
         value={value}
         pattern="^(nano|xrb)_[13]{1}[13456789abcdefghijkmnopqrstuwxyz]{59}$"
         onChange={({ target: { value, validity } }) => {
-          console.log(value, validity.patternMismatch)
           if (!validity.patternMismatch) onChange(value)
         }}
       />

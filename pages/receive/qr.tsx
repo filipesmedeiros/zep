@@ -26,7 +26,7 @@ const MyQrCode: NextPage = () => {
       </span>
 
       <canvas
-        className="!w-64 border-2 border-purple-200 dark:border-gray-700 !h-64 rounded place-self-center shadow-lg"
+        className="!w-64 !h-64 rounded place-self-center shadow-lg"
         ref={canvasRef}
       />
 

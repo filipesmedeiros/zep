@@ -2,7 +2,7 @@ import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 
-import useSetupSeed from '../../../lib/hooks/useSetupSeed'
+import useSetupSeed from '../../lib/hooks/useSetupSeed'
 
 const New: NextPage = () => {
   const { lazy: storeSeedLazy, seed, storeSeed } = useSetupSeed(true)
@@ -20,7 +20,7 @@ const New: NextPage = () => {
 
   const onStoreClick = async () => {
     await storeSeed()
-    push('/welcome/new/done')
+    push('/welcome/done')
   }
 
   return (

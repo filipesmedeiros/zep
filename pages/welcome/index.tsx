@@ -13,9 +13,11 @@ const Welcome: NextPage = () => {
       </p>
 
       <div className="flex flex-col justify-center w-full gap-3 mb-6">
-        <button className="px-5 py-2 text-lg font-bold text-purple-50 transition-all rounded shadow-lg bg-purple-400 dark:bg-gray-800 dark:text-purple-50 hover:bg-purple-300 dark:hover:bg-gray-800 hover:shadow-md active:shadow">
-          i have a passphrase/seed
-        </button>
+        <Link href="/welcome/seedOrPassphrase">
+          <a className="px-5 py-2 text-lg font-bold text-purple-50 transition-all rounded shadow-lg bg-purple-400 dark:bg-gray-800 dark:text-purple-50 hover:bg-purple-300 dark:hover:bg-gray-800 hover:shadow-md active:shadow">
+            i have a passphrase/seed
+          </a>
+        </Link>
         <Link href="/welcome/new">
           <a className="px-5 py-2 text-lg font-bold text-purple-50 transition-all rounded shadow-lg bg-purple-400 dark:bg-gray-800 dark:text-purple-50 hover:bg-purple-300 dark:hover:bg-gray-800 hover:shadow-md active:shadow">
             what&apos;s a passphrase?

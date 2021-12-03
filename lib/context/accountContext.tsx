@@ -30,9 +30,10 @@ const refreshAccountFromNetwork = async (account: AccountInfoCache) => {
   const frontier =
     'error' in infoResponse ? null : infoResponse.confirmed_frontier
   const representative =
-    'error' in infoResponse ? null : infoResponse.confirmed_representative
-  const balance =
-    'error' in infoResponse ? null : infoResponse.confirmed_balance
+    'error' in infoResponse
+      ? account.address
+      : infoResponse.confirmed_representative
+  const balance = 'error' in infoResponse ? '0' : infoResponse.confirmed_balance
   const freshAccountInfo: AccountInfoCache = {
     ...account,
     frontier,

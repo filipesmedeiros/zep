@@ -140,7 +140,14 @@ const Send: NextPage = () => {
                 }deg)`,
               }}
             /> */}
-            <span className="dark:text-gray-900 text-purple-50 text-3xl font-medium flex justify-center select-none">
+            <span
+              className="dark:text-gray-900 text-purple-50 text-3xl font-medium flex justify-center select-none"
+              style={{
+                transform: `scale3d(${1 + 0.4 * sliderPercentage}, ${
+                  1 + 0.4 * sliderPercentage
+                }, 1)`,
+              }}
+            >
               Ӿ
             </span>
           </div>
