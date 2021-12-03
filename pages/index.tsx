@@ -1,16 +1,19 @@
+import { FingerPrintIcon } from '@heroicons/react/outline'
 import { useRouter } from 'next/dist/client/router'
 import { useEffect } from 'react'
 
-import PinPad from '../components/PinPad'
 import { checkBiometrics } from '../lib/biometrics'
-import { getPreference } from '../lib/db/preferences'
+import { usePreferences } from '../lib/context/preferencesContext'
 
 const Landing = () => {
   const { push } = useRouter()
+  const {
+    preferences: { biometricsAuth },
+  } = usePreferences()
 
   useEffect(() => {
     const auth = async () => {
-      if (await getPreference('biometricsAuth')) {
+      if (biometricsAuth) {
         try {
           await checkBiometrics()
           push('/dashboard')
@@ -18,14 +21,15 @@ const Landing = () => {
       }
     }
     auth()
-  }, [push])
+  }, [push, biometricsAuth])
 
   return (
-    <main className="flex flex-col items-center w-full h-full justify-evenly">
-      <header className="flex flex-col justify-center h-24">
-        <h1 className="text-4xl">welcome</h1>
-      </header>
-      <PinPad />
+    <main className="flex flex-col items-center w-full h-full">
+      <h1 className="text-4xl font-medium mb-16">welcome</h1>
+      <button className="p-3 dark:bg-gray-800 bg-purple-50 mb-3 rounded shadow hover:cursor-pointer">
+        <FingerPrintIcon className="h-16 text-gray-900 dark:text-purple-50" />
+      </button>
+      <h2>please sign in with your biometrics</h2>
     </main>
   )
 }

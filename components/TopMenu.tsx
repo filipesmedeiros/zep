@@ -145,7 +145,7 @@ const TopMenu: FC<Props> = () => {
               boxShadow: `${colors.coolGray[900]} 0px 2px 15px`,
             }}
           >
-            {!isiOS && (
+            {/* {!isiOS && (
               <li role="menuitem">
                 <button
                   disabled={!showPreferences}
@@ -164,7 +164,7 @@ const TopMenu: FC<Props> = () => {
                   <FingerPrintIcon className="h-full" />
                 </button>
               </li>
-            )}
+            )} */}
             <li role="menuitem">
               <button
                 disabled={!showPreferences}
