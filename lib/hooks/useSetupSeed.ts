@@ -31,7 +31,10 @@ const useSetupSeed = (skip?: boolean) => {
         wallet.generateLegacy(),
         registerBiometrics(),
       ])
-      const { address, publicKey } = accountAtIndex(generatedSeed, 0)
+      const { address, publicKey } = accountAtIndex(
+        generatedSeed.toLocaleUpperCase(),
+        0
+      )
 
       const account: AccountInfoCache = {
         frontier: null,
@@ -42,7 +45,7 @@ const useSetupSeed = (skip?: boolean) => {
         publicKey,
         precomputedWork: null,
       }
-      setSeed({ seed: generatedSeed, mnemonic })
+      setSeed({ seed: generatedSeed.toLocaleUpperCase(), mnemonic })
       setAccount(account)
       addAccount(0, account)
 

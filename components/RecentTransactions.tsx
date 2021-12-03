@@ -135,14 +135,16 @@ const RecentTransactions: FC<Props> = () => {
           <h2 className="text-2xl font-semibold text-gray-900 dark:text-purple-50">
             recent transactions
           </h2>
-          <button
-            onClick={() => {
-              setRefectingHistory(true)
-              refetchHistory()
-            }}
-          >
-            <RefreshIcon className="h-6" />
-          </button>
+          {hasHistory && (
+            <button
+              onClick={() => {
+                setRefectingHistory(true)
+                refetchHistory()
+              }}
+            >
+              <RefreshIcon className="h-6" />
+            </button>
+          )}
         </div>
         {initialLoadingHistory || refetchingHistory ? (
           <ul className="flex flex-col w-full overflow-auto px-0.5 pb-0.5 gap-2">
