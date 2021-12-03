@@ -76,7 +76,7 @@ const TopMenu: FC<Props> = () => {
         <div className="relative z-20" ref={advancedButtonRef}>
           <button
             className={clsx(
-              'w-10 p-1 rounded bg-purple-400 shadow-md text-purple-50 dark:text-gray-900 hover:cursor-pointer hover:bg-purple-400 transition-colors dark:hover:text-purple-50'
+              'w-10 p-1 rounded bg-purple-400 shadow text-purple-50 dark:text-gray-900 hover:cursor-pointer hover:bg-purple-400 transition-colors dark:hover:text-purple-50'
             )}
             onClick={toggleAdvanced}
           >
@@ -90,17 +90,14 @@ const TopMenu: FC<Props> = () => {
               role="menu"
               ref={advancedRef}
               className={clsx(
-                'transition-all flex flex-col gap-2 absolute w-10 bg-purple-400 p-1 rounded mt-3 hover:text-white',
+                'transition-all shadow flex flex-col gap-2 absolute w-10 bg-purple-400 p-1 rounded mt-3 hover:text-white',
                 showAdvanced ? 'opacity-100' : 'opacity-0 -translate-y-2'
               )}
-              style={{
-                boxShadow: `${colors.coolGray[900]} 0px 2px 15px`,
-              }}
             >
               <li>
                 <button
                   className={clsx(
-                    'p-1 rounded transition-colors duration-100 w-full hover:bg-purple-300 bg-purple-400 dark:text-gray-900 text-purple-50 dark:hover:text-purple-50'
+                    'p-1 rounded transition-colors dark:hover:text-gray-900 w-full hover:bg-purple-300 bg-purple-400 dark:text-gray-900 text-purple-50'
                   )}
                   onClick={onCopySeed}
                 >
@@ -137,7 +134,7 @@ const TopMenu: FC<Props> = () => {
       <div className="relative z-20" ref={preferencesButtonRef}>
         <button
           className={clsx(
-            'w-10 p-1 rounded bg-purple-400 shadow-md text-purple-50 hover:cursor-pointer hover:bg-purple-400 transition-colors dark:hover:text-purple-50 dark:text-gray-900'
+            'w-10 p-1 rounded bg-purple-400 shadow text-purple-50 hover:cursor-pointer hover:bg-purple-400 transition-colors dark:hover:text-purple-50 dark:text-gray-900'
           )}
           onClick={togglePreferences}
         >
@@ -150,12 +147,9 @@ const TopMenu: FC<Props> = () => {
               if (!showPreferences) setRenderPreferences(false)
             }}
             className={clsx(
-              'transition-all flex flex-col gap-2 absolute w-10 bg-purple-400 p-1 rounded mt-3',
+              'transition-all shadow flex flex-col gap-2 absolute w-10 bg-purple-400 p-1 rounded mt-3',
               showPreferences ? 'opacity-100' : 'opacity-0 -translate-y-2'
             )}
-            style={{
-              boxShadow: `${colors.coolGray[900]} 0px 2px 15px`,
-            }}
           >
             {/* {!isiOS && (
               <li role="menuitem">
@@ -199,7 +193,7 @@ const TopMenu: FC<Props> = () => {
                   'p-1 rounded transition-colors duration-100 w-full dark:hover:text-purple-50 bg-purple-400',
                   leftHanded
                     ? 'dark:text-purple-400 dark:bg-gray-900 bg-purple-50 text-purple-400 hover:text-purple-300'
-                    : 'text-purple-50 hover:bg-purple-300',
+                    : 'text-purple-50 dark:text-gray-900 dark:hover:text-gray-900 hover:bg-purple-300',
                   showPreferences ? 'hover:cursor-pointer' : 'cursor-default'
                 )}
                 onClick={() => {
