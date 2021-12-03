@@ -17,6 +17,7 @@ import decryptSeed from '../lib/decryptSeed'
 import useClickAway from '../lib/hooks/useClickAway'
 import useIsWelcoming from '../lib/hooks/useIsWelcoming'
 import useIsiOS from '../lib/hooks/useIsiOS'
+import showNotification from '../lib/showNotification'
 
 export interface Props {}
 
@@ -52,12 +53,17 @@ const TopMenu: FC<Props> = () => {
     if (renderAdvanced) setShowAdvanced(true)
   }, [renderAdvanced])
 
-  const isiOS = useIsiOS()
+  // const isiOS = useIsiOS()
   const isWelcoming = useIsWelcoming()
 
   const onCopySeed = async () => {
     const seed = await decryptSeed('os')
-    navigator.clipboard.writeText(seed)
+    await navigator.clipboard.writeText(seed)
+    showNotification({
+      title: 'seed copied to clipboard',
+      body: 'you just copied your seed to your clipboard, you can use it anywhere',
+      tag: 'copy-seed',
+    })
   }
 
   return (
@@ -91,32 +97,38 @@ const TopMenu: FC<Props> = () => {
                 boxShadow: `${colors.coolGray[900]} 0px 2px 15px`,
               }}
             >
-              <button
-                className={clsx(
-                  'p-1 rounded transition-colors duration-100 w-full hover:text-purple-400 bg-purple-400 dark:text-gray-900 text-purple-50 dark:hover:text-purple-50'
-                )}
-                onClick={onCopySeed}
-              >
-                <KeyIcon className="h-full" />
-              </button>
-              <button
-                className={clsx(
-                  'p-1 rounded transition-colors duration-100 w-full hover:text-purple-400 bg-purple-400 dark:text-gray-900 text-purple-50 dark:hover:text-purple-50'
-                )}
-                onClick={() => {
-                  // todo
-                }}
-              >
-                <LibraryIcon className="h-full" />
-              </button>
-              <button
-                className={clsx(
-                  'p-1 rounded transition-colors duration-100 w-full hover:text-purple-400 bg-purple-400 dark:text-gray-900 text-purple-50 dark:hover:text-purple-50'
-                )}
-                onClick={onCopySeed}
-              >
-                <UsersIcon className="h-full" />
-              </button>
+              <li>
+                <button
+                  className={clsx(
+                    'p-1 rounded transition-colors duration-100 w-full hover:text-purple-400 bg-purple-400 dark:text-gray-900 text-purple-50 dark:hover:text-purple-50'
+                  )}
+                  onClick={onCopySeed}
+                >
+                  <KeyIcon className="h-full" />
+                </button>
+              </li>
+              {/* <li>
+                <button
+                  className={clsx(
+                    'p-1 rounded transition-colors duration-100 w-full hover:text-purple-400 bg-purple-400 dark:text-gray-900 text-purple-50 dark:hover:text-purple-50'
+                  )}
+                  onClick={() => {
+                    // todo
+                  }}
+                >
+                  <LibraryIcon className="h-full" />
+                </button>
+              </li>
+              <li>
+                <button
+                  className={clsx(
+                    'p-1 rounded transition-colors duration-100 w-full hover:text-purple-400 bg-purple-400 dark:text-gray-900 text-purple-50 dark:hover:text-purple-50'
+                  )}
+                  onClick={onCopySeed}
+                >
+                  <UsersIcon className="h-full" />
+                </button>
+              </li> */}
             </ul>
           )}
         </div>
