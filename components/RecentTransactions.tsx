@@ -2,6 +2,7 @@ import { ChevronUpIcon, ClockIcon } from '@heroicons/react/outline'
 import { DownloadIcon, RefreshIcon, UploadIcon } from '@heroicons/react/solid'
 import clsx from 'clsx'
 import { Unit, convert } from 'nanocurrency'
+import Link from 'next/link'
 import { FC, useEffect, useState } from 'react'
 
 import useAccountHistory from '../lib/hooks/useAccountHistory'
@@ -70,9 +71,9 @@ const RecentTransactions: FC<Props> = () => {
             className="flex items-center justify-between gap-1"
             onClick={() => setReceivablesExpanded(prev => !prev)}
           >
-            <h2 className="flex-1 text-2xl font-semibold transition-colors text-gray-900 dark:text-purple-50">
+            <h1 className="flex-1 text-2xl font-semibold transition-colors text-gray-900 dark:text-purple-50">
               incoming
-            </h2>
+            </h1>
 
             <span className="w-6 text-base text-center dark:text-gray-900 text-purple-50 rounded-full bg-purple-400 dark:bg-purple-50">
               {receivableBlocks.length}
@@ -98,6 +99,7 @@ const RecentTransactions: FC<Props> = () => {
                 className="flex items-center justify-between px-3 py-3 text-black border-r-4 border-yellow-400 rounded shadow bg-gray-50 transition-colors dark:hover:bg-gray-700 dark:bg-gray-800 dark:text-purple-50 gap-2"
               >
                 <button
+                  aria-label={`Receive transaction from ${receivable.from}`}
                   className="contents"
                   onClick={() => onIncomingClick(receivable)}
                 >
@@ -132,11 +134,12 @@ const RecentTransactions: FC<Props> = () => {
       )}
       <section className="flex flex-col flex-1 w-full min-h-0 gap-3">
         <div className="flex items-center justify-between gap-1">
-          <h2 className="text-2xl font-semibold text-gray-900 dark:text-purple-50">
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-purple-50">
             recent transactions
-          </h2>
+          </h1>
           {hasHistory && (
             <button
+              aria-label="Refresh transaction history"
               onClick={() => {
                 setRefectingHistory(true)
                 refetchHistory()
@@ -163,40 +166,46 @@ const RecentTransactions: FC<Props> = () => {
                   txn.type === 'send' ? 'border-yellow-300' : 'border-green-300'
                 )}
               >
-                <button className="contents" onClick={() => {}}>
-                  {txn.type === 'send' ? (
-                    <UploadIcon className="flex-shrink-0 w-6 text-yellow-300" />
-                  ) : (
-                    <DownloadIcon
-                      className={clsx('w-6 flex-shrink-0 text-green-300')}
-                    />
-                  )}
-                  <div className="flex-1 overflow-hidden text-left overflow-ellipsis whitespace-nowrap">
-                    {Intl.DateTimeFormat([], {
-                      day: '2-digit',
-                      month: '2-digit',
-                      year: '2-digit',
-                    }).format(Number(txn.local_timestamp) * 1000)}{' '}
-                    - {<span className="text-xs">{txn.account}</span>}
-                  </div>
-                  <span className="flex-shrink-0 font-medium">
-                    Ӿ{' '}
-                    {rawToNanoDisplay(txn.amount) === 'small' ? (
-                      '<0.01'
-                    ) : rawToNanoDisplay(txn.amount).startsWith('0.') ? (
-                      <>
-                        <span className="text-sm font-semibold">0</span>
-                        {rawToNanoDisplay(txn.amount).substring(1)}
-                      </>
+                <Link href={`/transaction/${txn.hash}`}>
+                  <a className="contents pointer-events-none">
+                    <span className="hidden">
+                      see {txn.hash} transaction details
+                    </span>
+                    {txn.type === 'send' ? (
+                      <UploadIcon className="flex-shrink-0 w-6 text-yellow-300" />
                     ) : (
-                      rawToNanoDisplay(txn.amount)
+                      <DownloadIcon
+                        className={clsx('w-6 flex-shrink-0 text-green-300')}
+                      />
                     )}
-                  </span>
-                </button>
+                    <div className="flex-1 overflow-hidden text-left overflow-ellipsis whitespace-nowrap">
+                      {Intl.DateTimeFormat([], {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: '2-digit',
+                      }).format(Number(txn.local_timestamp) * 1000)}{' '}
+                      - {<span className="text-xs">{txn.account}</span>}
+                    </div>
+                    <span className="flex-shrink-0 font-medium">
+                      Ӿ{' '}
+                      {rawToNanoDisplay(txn.amount) === 'small' ? (
+                        '<0.01'
+                      ) : rawToNanoDisplay(txn.amount).startsWith('0.') ? (
+                        <>
+                          <span className="text-sm font-semibold">0</span>
+                          {rawToNanoDisplay(txn.amount).substring(1)}
+                        </>
+                      ) : (
+                        rawToNanoDisplay(txn.amount)
+                      )}
+                    </span>
+                  </a>
+                </Link>
               </li>
             ))}
             {hasMore && (
               <button
+                aria-label="Load more transactions"
                 className="px-4 py-1.5 font-bold transition-colors bg-purple-400 rounded text-purple-50 shadow dark:text-gray-900 place-self-center"
                 onClick={loadMore}
               >

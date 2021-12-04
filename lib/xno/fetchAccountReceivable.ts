@@ -21,8 +21,8 @@ const _fetchAccountReceivable = (
 // most nodes haven't upgraded yet https://docs.nano.org/commands/rpc-protocol/#accounts_pending
 // this will be the future api for this function
 const fetchAccountReceivable = async (address: string, count = 20) =>
-  _fetchAccountReceivable(address, count).catch(() =>
-    _fetchAccountReceivable(address, count, true)
+  _fetchAccountReceivable(address, count, true).catch(() =>
+    _fetchAccountReceivable(address, count)
   )
 
 export default fetchAccountReceivable

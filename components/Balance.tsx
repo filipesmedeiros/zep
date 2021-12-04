@@ -48,7 +48,7 @@ const Balance: FC<Props> = ({ className }) => {
         }
         className="hover:cursor-pointer"
       >
-        <h3 className="text-4xl">
+        <h1 className="text-4xl">
           <span className="transition-colors">Ӿ</span>
           <span
             className={clsx(
@@ -72,11 +72,11 @@ const Balance: FC<Props> = ({ className }) => {
               'NO'
             )}
           </span>
-        </h3>
+        </h1>
         {showFiatBalance && (
-          <h4 className="text-xl transition-colors">
+          <h2 className="text-xl transition-colors">
             $ {(Number(xnoBalance) * xnoPrice).toFixed(2)}
-          </h4>
+          </h2>
         )}
       </div>
     </div>

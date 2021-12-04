@@ -5,6 +5,7 @@ import withAnalyzer from '@next/bundle-analyzer'
  */
 const nextConfig = {
   compress: true,
+  productionBrowserSourceMaps: true,
 }
 
 export default withAnalyzer({

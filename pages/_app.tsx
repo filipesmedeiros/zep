@@ -1,4 +1,5 @@
 import type { AppProps } from 'next/app'
+import Head from 'next/head'
 import { FC } from 'react'
 import { SWRConfig } from 'swr'
 
@@ -18,13 +19,18 @@ const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
   if (validatingCredential) return null // todo
 
   return (
-    <SWRConfig value={{ fetcher }}>
-      <MemCacheProvider>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </MemCacheProvider>
-    </SWRConfig>
+    <>
+      <Head>
+        <title>zep⚡️ - nano wallet</title>
+      </Head>
+      <SWRConfig value={{ fetcher }}>
+        <MemCacheProvider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </MemCacheProvider>
+      </SWRConfig>
+    </>
   )
 }
 

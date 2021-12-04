@@ -75,6 +75,7 @@ const TopMenu: FC<Props> = () => {
       {!isWelcoming && (
         <div className="relative z-20" ref={advancedButtonRef}>
           <button
+            aria-label="Open adavanced menu"
             className={clsx(
               'w-10 p-1 rounded bg-purple-400 shadow text-purple-50 dark:text-gray-900 hover:cursor-pointer hover:bg-purple-400 transition-colors dark:hover:text-purple-50'
             )}
@@ -96,6 +97,7 @@ const TopMenu: FC<Props> = () => {
             >
               <li>
                 <button
+                  aria-label="Copy your nano seed to your clipboard"
                   className={clsx(
                     'p-1 rounded transition-colors dark:hover:text-gray-900 w-full hover:bg-purple-300 bg-purple-400 dark:text-gray-900 text-purple-50'
                   )}
@@ -133,6 +135,7 @@ const TopMenu: FC<Props> = () => {
 
       <div className="relative z-20" ref={preferencesButtonRef}>
         <button
+          aria-label="Open preferences menu"
           className={clsx(
             'w-10 p-1 rounded bg-purple-400 shadow text-purple-50 hover:cursor-pointer hover:bg-purple-400 transition-colors dark:hover:text-purple-50 dark:text-gray-900'
           )}
@@ -173,6 +176,7 @@ const TopMenu: FC<Props> = () => {
             )} */}
             <li role="menuitem">
               <button
+                aria-label="Toggle dark mode"
                 disabled={!showPreferences}
                 className={clsx(
                   'p-1 rounded transition-colors duration-100 w-full dark:hover:text-purple-50 hover:bg-purple-300 dark:text-purple-400 dark:bg-gray-900 bg-purple-400 text-purple-50',
@@ -188,6 +192,7 @@ const TopMenu: FC<Props> = () => {
             </li>
             <li role="menuitem">
               <button
+                aria-label="Toggle left handed mode"
                 disabled={!showPreferences}
                 className={clsx(
                   'p-1 rounded transition-colors duration-100 w-full dark:hover:text-purple-50 bg-purple-400',

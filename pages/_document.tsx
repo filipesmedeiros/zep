@@ -13,7 +13,7 @@ class MyDocument extends Document {
 
   render() {
     return (
-      <Html className="dark">
+      <Html className="dark" lang="en">
         <Head>
           <link rel="manifest" href="/manifest.json" />
           <link rel="apple-touch-icon" href="/images/icon-small.png" />
@@ -30,6 +30,7 @@ class MyDocument extends Document {
             href="/images/favicon-16x16.png"
           />
           <meta name="theme-color" content="#8a5cf6" />
+          <meta name="description" content="nano digital currency wallet" />
         </Head>
         <body>
           <Main />

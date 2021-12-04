@@ -59,17 +59,20 @@ const BottomMenu: FC<Props> = ({ className }) => {
       {pathname !== '/dashboard' && (
         <Link href="/dashboard">
           <a
+            role="menuitem"
             className={clsx(
               'h-12 p-1 bg-purple-400 transition-colors rounded shadow hover:bg-purple-400 disabled:hover:bg-purple-400 disabled:cursor-default',
               { 'pointer-events-none': isWelcoming }
             )}
           >
+            <span className="hidden">go back to the dashboard</span>
             <HomeIcon className="h-full text-purple-50 dark:text-gray-900 transition-colors" />
           </a>
         </Link>
       )}
 
       <div
+        role="menuitem"
         className={clsx(
           'flex gap-4 xs:gap-6 items-end',
           leftHanded ? 'flex-row-reverse' : 'flex-row'
@@ -77,6 +80,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
       >
         {'share' in navigator ? (
           <button
+            aria-label="Share your nano address"
             disabled={isWelcoming}
             className="w-10 h-16 p-1 bg-purple-400 transition-colors rounded shadow hover:bg-purple-400 disabled:hover:bg-purple-400 disabled:cursor-default"
             onClick={onShare}
@@ -85,6 +89,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
           </button>
         ) : (
           <button
+            aria-label="Copy your nano address to the clipboard"
             disabled={isWelcoming || confirmCopyAddress}
             className={clsx(
               'p-1 h-16 w-10 rounded shadow transition-colors',
@@ -105,12 +110,14 @@ const BottomMenu: FC<Props> = ({ className }) => {
         <div className={clsx('flex h-16', { 'flex-row-reverse': leftHanded })}>
           <Link href="/receive/qr">
             <a
+              role="navigation"
               className={clsx(
                 'bg-purple-400 transition-colors h-16 px-1 xs:px-2 w-10 xs:w-14 hover:bg-purple-400 disabled:hover:bg-purple-400 shadow disabled:cursor-default',
                 leftHanded ? 'rounded-r' : 'rounded-l',
                 { 'pointer-events-none': isWelcoming }
               )}
             >
+              <span className="hidden">see your qrcode</span>
               <LoginIcon
                 className={
                   'h-full text-purple-50 dark:text-gray-900 transition-colors w-full -rotate-child-90'
@@ -118,17 +125,22 @@ const BottomMenu: FC<Props> = ({ className }) => {
               />
             </a>
           </Link>
-          <div className="h-16 p-1 border-t-2 border-b-2 border-purple-400 shadow">
+          <div
+            role="presentation"
+            className="h-16 p-1 border-t-2 border-b-2 border-purple-400 shadow"
+          >
             <QrcodeIcon className="h-full text-gray-900 dark:text-purple-100 transition-colors" />
           </div>
           <Link href="/send/qrOrAddress">
             <a
+              role="navigation"
               className={clsx(
                 'bg-purple-400 transition-colors h-16 px-1 xs:px-2 w-10 xs:w-14 hover:bg-purple-400 disabled:hover:bg-purple-400 shadow disabled:cursor-default',
                 leftHanded ? 'rounded-l' : 'rounded-r',
                 { 'pointer-events-none': isWelcoming }
               )}
             >
+              <span className="hidden">send ӾNO</span>
               <PaperAirplaneIcon className="h-full text-purple-50 dark:text-gray-900 transition-colors w-full rotate-[30deg] translate-x-1 -translate-y-0.5" />
             </a>
           </Link>
