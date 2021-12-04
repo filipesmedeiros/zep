@@ -7,6 +7,8 @@ import { FC, useEffect, useState } from 'react'
 
 import useAccountHistory from '../lib/hooks/useAccountHistory'
 import useAccountReceivable from '../lib/hooks/useAccountReceivable'
+import useChallenge from '../lib/hooks/useChallenge'
+import useCredentialId from '../lib/hooks/useCredentialId'
 import useReceiveNano from '../lib/hooks/useReceiveNano'
 import showNotification from '../lib/showNotification'
 import rawToNanoDisplay from '../lib/xno/rawToNanoDisplay'
@@ -23,7 +25,7 @@ const RecentTransactions: FC<Props> = () => {
     hasMore,
     loading: loadingHistory,
     hasHistory,
-    revalidate: refetchHistory,
+    revalidate: refetchHistory
   } = useAccountHistory()
 
   const hasReceivable =
@@ -43,13 +45,19 @@ const RecentTransactions: FC<Props> = () => {
       setRefectingHistory(false)
   }, [loadingHistory, accountHistory])
 
+  const challenge = useChallenge()
+  const crendentialId = useCredentialId()
+
   const onIncomingClick = async (receivable: {
     hash: string
     amount: string
     from: string
     timestamp: string
   }) => {
-    await receive(receivable.hash, receivable.amount)
+    await receive(receivable.hash, receivable.amount, {
+      challenge: challenge!,
+      rawId: crendentialId!
+    })
     onBlockReceived(receivable.hash)
     refetchHistory()
 
@@ -57,9 +65,9 @@ const RecentTransactions: FC<Props> = () => {
       title: 'received!',
       body: `received Ӿ${convert(receivable.amount, {
         from: Unit.raw,
-        to: Unit.Nano,
+        to: Unit.Nano
       })} from ${receivable.from}`,
-      tag: 'received',
+      tag: 'received'
     })
   }
 
@@ -82,7 +90,7 @@ const RecentTransactions: FC<Props> = () => {
               className={clsx(
                 'h-8 transition-transform-child origin-center-child',
                 {
-                  '-rotate-child-180': receivablesExpanded,
+                  '-rotate-child-180': receivablesExpanded
                 }
               )}
             />
@@ -109,7 +117,7 @@ const RecentTransactions: FC<Props> = () => {
                     {Intl.DateTimeFormat([], {
                       day: '2-digit',
                       month: '2-digit',
-                      year: '2-digit',
+                      year: '2-digit'
                     }).format(Number(receivable.timestamp) * 1000)}{' '}
                     - {<span className="text-xs">{receivable.from}</span>}
                   </div>
@@ -182,7 +190,7 @@ const RecentTransactions: FC<Props> = () => {
                       {Intl.DateTimeFormat([], {
                         day: '2-digit',
                         month: '2-digit',
-                        year: '2-digit',
+                        year: '2-digit'
                       }).format(Number(txn.local_timestamp) * 1000)}{' '}
                       - {<span className="text-xs">{txn.account}</span>}
                     </div>

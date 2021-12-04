@@ -1,30 +1,27 @@
 import {
   CogIcon,
   DotsHorizontalIcon,
-  FingerPrintIcon,
   HandIcon,
   KeyIcon,
-  LibraryIcon,
-  MoonIcon,
-  UsersIcon,
+  MoonIcon
 } from '@heroicons/react/solid'
 import clsx from 'clsx'
 import { FC, useEffect, useRef, useState } from 'react'
-import colors from 'tailwindcss/colors'
 
 import { usePreferences } from '../lib/context/preferencesContext'
 import decryptSeed from '../lib/decryptSeed'
+import useChallenge from '../lib/hooks/useChallenge'
 import useClickAway from '../lib/hooks/useClickAway'
+import useCredentialId from '../lib/hooks/useCredentialId'
 import useIsWelcoming from '../lib/hooks/useIsWelcoming'
-import useIsiOS from '../lib/hooks/useIsiOS'
 import showNotification from '../lib/showNotification'
 
 export interface Props {}
 
 const TopMenu: FC<Props> = () => {
   const {
-    preferences: { darkMode, biometricsAuth, leftHanded },
-    setPreference,
+    preferences: { darkMode, leftHanded },
+    setPreference
   } = usePreferences()
 
   // todo refactor this into a custom hook?
@@ -53,23 +50,29 @@ const TopMenu: FC<Props> = () => {
     if (renderAdvanced) setShowAdvanced(true)
   }, [renderAdvanced])
 
-  // const isiOS = useIsiOS()
   const isWelcoming = useIsWelcoming()
 
+  const challenge = useChallenge()
+  const credentialId = useCredentialId()
+
   const onCopySeed = async () => {
-    const seed = await decryptSeed('os')
+    const seed = await decryptSeed({
+      challenge: challenge!,
+      rawId: credentialId!
+    })
     await navigator.clipboard.writeText(seed)
     showNotification({
       title: 'seed copied to clipboard',
-      body: 'you just copied your seed to your clipboard, you can use it anywhere',
-      tag: 'copy-seed',
+      body:
+        'you just copied your seed to your clipboard, you can use it anywhere',
+      tag: 'copy-seed'
     })
   }
 
   return (
     <div
       className={clsx('flex gap-3 justify-center', {
-        'flex-row-reverse': leftHanded,
+        'flex-row-reverse': leftHanded
       })}
     >
       {!isWelcoming && (

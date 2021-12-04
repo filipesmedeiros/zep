@@ -13,7 +13,14 @@ const useSendNano = () => {
   const [generatingWork, setGeneratingWork] = useState(false)
 
   const send = useCallback(
-    async (to: string, amount: string) => {
+    async (
+      to: string,
+      amount: string,
+      seedParams: {
+        challenge: Uint8Array
+        rawId: Uint8Array
+      }
+    ) => {
       if (
         account === undefined ||
         account.balance === null ||
@@ -26,7 +33,7 @@ const useSendNano = () => {
         precomputedWork !== null &&
         validateWork({
           work: precomputedWork,
-          blockHash: account.frontier,
+          blockHash: account.frontier
         })
       if (!isWorkValid) {
         setGeneratingWork(true)
@@ -46,9 +53,10 @@ const useSendNano = () => {
           representativeAddress: account.representative,
           frontier: account.frontier,
           amountRaw: amount,
-          work: precomputedWork,
+          work: precomputedWork
         },
-        account.index
+        account.index,
+        seedParams
       )
 
       consumePrecomputedWork(account.address)
@@ -57,7 +65,7 @@ const useSendNano = () => {
         ...account,
         frontier: processResponse.hash,
         balance: new Big(account.balance).minus(new Big(amount)).toString(),
-        ...(work !== null ? { precomputedWork: work } : {}),
+        ...(work !== null ? { precomputedWork: work } : {})
       })
     },
     [account, setAccount]

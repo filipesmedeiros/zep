@@ -14,14 +14,21 @@ const useReceiveNano = () => {
   const [generatingWork, setGeneratingWork] = useState(false)
 
   const receive = useCallback(
-    async (hash: string, amount: string) => {
+    async (
+      hash: string,
+      amount: string,
+      seedParams: {
+        challenge: Uint8Array
+        rawId: Uint8Array
+      }
+    ) => {
       if (account === undefined) return
       let precomputedWork = await getPrecomputedWork(account.address)
       const isWorkValid =
         precomputedWork !== null &&
         validateWork({
           work: precomputedWork,
-          blockHash: account.frontier ?? account.publicKey,
+          blockHash: account.frontier ?? account.publicKey
         })
       if (!isWorkValid) {
         setGeneratingWork(true)
@@ -40,20 +47,21 @@ const useReceiveNano = () => {
           representativeAddress: account.representative ?? account.address,
           frontier: account.frontier ?? zeroString,
           amountRaw: amount,
-          work: precomputedWork,
+          work: precomputedWork
         },
-        account.index
+        account.index,
+        seedParams
       )
 
       const [, work] = await Promise.all([
         consumePrecomputedWork(account.address),
-        computeWorkAsync(processResponse.hash, { send: true }),
+        computeWorkAsync(processResponse.hash, { send: true })
       ])
       setAccount({
         ...account,
         frontier: processResponse.hash,
         balance: new Big(account.balance ?? 0).plus(new Big(amount)).toString(),
-        ...(work !== null ? { precomputedWork: work } : {}),
+        ...(work !== null ? { precomputedWork: work } : {})
       })
     },
     [account, setAccount]

@@ -1,4 +1,3 @@
-import { ArrowDownIcon } from '@heroicons/react/outline'
 import { PaperAirplaneIcon } from '@heroicons/react/solid'
 import clsx from 'clsx'
 import { Unit, convert } from 'nanocurrency'
@@ -8,6 +7,8 @@ import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 
 import XnoInput from '../../components/XnoInput'
+import useChallenge from '../../lib/hooks/useChallenge'
+import useCredentialId from '../../lib/hooks/useCredentialId'
 import useSendNano from '../../lib/hooks/useSendNano'
 import showNotification from '../../lib/showNotification'
 
@@ -27,6 +28,9 @@ const Send: NextPage = () => {
   )
   const [sliding, setSliding] = useState(false)
 
+  const challenge = useChallenge()
+  const crendentialId = useCredentialId()
+
   const backToBase = useCallback(() => {
     setStartX(0)
     setCurrentX(0)
@@ -37,20 +41,33 @@ const Send: NextPage = () => {
     if (sliderPercentage === 1) {
       const sendNano = async () => {
         backToBase()
-        await send(address as string, amount as string)
+        await send(address as string, amount as string, {
+          challenge: challenge!,
+          rawId: crendentialId!
+        })
         showNotification({
           title: 'sent!',
           body: `sent Ӿ${convert(amount as string, {
             from: Unit.raw,
-            to: Unit.Nano,
+            to: Unit.Nano
           })} to ${address}`,
-          tag: 'send',
+          tag: 'send'
         })
         push('/dashboard')
       }
       sendNano()
     }
-  }, [sliderPercentage, push, address, amount, xnoToSend, send, backToBase])
+  }, [
+    sliderPercentage,
+    push,
+    address,
+    amount,
+    xnoToSend,
+    send,
+    backToBase,
+    challenge,
+    crendentialId
+  ])
 
   const hasQueryAmount = amount !== undefined && amount !== '' && amount !== '0'
   const disableSlider = !hasQueryAmount
@@ -94,7 +111,7 @@ const Send: NextPage = () => {
             className={clsx(
               'dark:bg-gray-800 bg-purple-100 rounded-2xl p-2 relative w-72 z-10 transition-all hover:cursor-pointer',
               {
-                'opacity-50': disableSlider,
+                'opacity-50': disableSlider
               }
             )}
             onMouseMove={ev => {
@@ -111,11 +128,11 @@ const Send: NextPage = () => {
               className={clsx(
                 'dark:bg-purple-50 bg-purple-400 p-2 rounded-xl w-11 z-30 transform-gpu transition-colors',
                 {
-                  'transition-all': !sliding,
+                  'transition-all': !sliding
                 }
               )}
               style={{
-                transform: `translate3d(${sliderPercentage * 228}px, 0, 0)`,
+                transform: `translate3d(${sliderPercentage * 228}px, 0, 0)`
               }}
               onTouchStart={ev => {
                 if (!disableSlider) {
@@ -150,7 +167,7 @@ const Send: NextPage = () => {
                 style={{
                   transform: `scale3d(${1 + 0.4 * sliderPercentage}, ${
                     1 + 0.4 * sliderPercentage
-                  }, 1)`,
+                  }, 1)`
                 }}
               >
                 Ӿ
