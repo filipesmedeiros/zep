@@ -16,14 +16,16 @@ self.addEventListener('install', event => {
 })
 
 self.addEventListener('fetch', async event => {
-  let resp = await caches.match(event.request)
-  if (resp === undefined) {
-    resp = await fetch(event.request)
+  event.waitUntil(async () => {
+    let resp = await caches.match(event.request)
+    if (resp === undefined) {
+      resp = await fetch(event.request)
 
-    if (event.request.method === 'GET') {
-      const cache = await caches.open('v1')
-      cache.put(event.request, resp.clone())
+      if (event.request.method === 'GET') {
+        const cache = await caches.open('v1')
+        await cache.put(event.request, resp.clone())
+      }
     }
-  }
-  event.respondWith(resp)
+    return event.respondWith(resp)
+  })
 })
