@@ -4,6 +4,9 @@ module.exports = {
   darkMode: 'class',
   theme: {
     extend: {
+      screens: {
+        xs: '340px',
+      },
       keyframes: {
         denied: {
           '0%, 100%': { transform: 'translateX(0)' },
