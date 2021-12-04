@@ -140,7 +140,7 @@ const SeedOrPassphrase: NextPage = () => {
               <li className="min-w-[150px]">
                 <MnemonicInput
                   onPaste={onPaste}
-                  number={0}
+                  number={1}
                   value={passphraseInputs[0] ?? ''}
                   onChange={value => {
                     console.log(value)
@@ -153,14 +153,13 @@ const SeedOrPassphrase: NextPage = () => {
                   }}
                 />
               </li>
-              {new Array(24).fill(0, 0, 24).map((_, idx) => (
+              {new Array(24).fill(0, 0, 23).map((_, idx) => (
                 <li key={idx} className="min-w-[150px]">
                   <MnemonicInput
                     onPaste={onPaste}
                     number={idx + 2}
                     value={passphraseInputs[idx] ?? ''}
                     onChange={value => {
-                      console.log(value)
                       if (value.split(' ').length !== 24)
                         setpassphraseInputs(prev => {
                           const newInputs = [...prev]
@@ -175,7 +174,10 @@ const SeedOrPassphrase: NextPage = () => {
           )}
           <button
             className="px-5 py-2 text-xl font-bold bg-purple-400 transition-all text-purple-50 rounded dark:bg-gray-800 disabled:cursor-default disabled:opacity-60"
-            disabled={seedInput === ''}
+            disabled={
+              (seedInput === '' && !isPassphrase) ||
+              (passphraseInputs.length !== 24 && isPassphrase)
+            }
             onClick={onStoreClick}
           >
             store passphrase
