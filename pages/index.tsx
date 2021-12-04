@@ -11,16 +11,16 @@ const Landing = () => {
     preferences: { biometricsAuth },
   } = usePreferences()
 
+  console.log(push, biometricsAuth)
+
   useEffect(() => {
     const auth = async () => {
-      if (biometricsAuth) {
-        try {
-          await checkBiometrics()
-          push('/dashboard')
-        } catch {}
-      }
+      try {
+        await checkBiometrics()
+        push('/dashboard')
+      } catch {}
     }
-    auth()
+    if (biometricsAuth) auth()
   }, [push, biometricsAuth])
 
   return (
@@ -29,7 +29,9 @@ const Landing = () => {
       <button className="p-3 dark:bg-gray-800 bg-purple-50 mb-3 rounded shadow hover:cursor-pointer">
         <FingerPrintIcon className="h-16 text-gray-900 dark:text-purple-50" />
       </button>
-      <h2>please sign in with your biometrics</h2>
+      <h2 className="text-2xl text-center">
+        please sign in with your biometrics
+      </h2>
     </main>
   )
 }

@@ -12,7 +12,6 @@ onmessage = async ev => {
     id: number
     frontier: string
   }
-  console.log(`started calculating work`)
   console.table({
     workerId: id,
     frontier: hash,
@@ -23,6 +22,5 @@ onmessage = async ev => {
   const work = await computeWork(hash, {
     workThreshold: send ? sendDiff : receiveDiff,
   })
-  console.log(`worker ${id} finished computing work: ${work}`)
   postMessage(work)
 }
