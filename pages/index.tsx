@@ -11,8 +11,6 @@ const Landing = () => {
     preferences: { biometricsAuth },
   } = usePreferences()
 
-  console.log(push, biometricsAuth)
-
   useEffect(() => {
     const auth = async () => {
       try {
