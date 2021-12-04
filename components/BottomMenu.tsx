@@ -49,9 +49,10 @@ const BottomMenu: FC<Props> = ({ className }) => {
     <footer
       role="menubar"
       className={clsx(
-        'flex w-full items-end',
+        'flex w-full items-end transition-opacity',
         leftHanded ? 'flex-row-reverse' : 'flex-row',
         pathname === '/dashboard' ? 'justify-end' : 'justify-between',
+        { 'opacity-50': isWelcoming },
         className
       )}
     >

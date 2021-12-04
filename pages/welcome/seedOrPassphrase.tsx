@@ -42,7 +42,7 @@ const SeedOrPassphrase: NextPage = () => {
 
   const onStoreClick = async () => {
     const inputSeed = isPassphrase
-      ? wallet.fromMnemonic(seedInput).seed
+      ? wallet.fromLegacyMnemonic(passphraseInputs.join(' ')).seed
       : seedInput
     await addEncryptedSeed('os', await encryptSeed(inputSeed))
 
