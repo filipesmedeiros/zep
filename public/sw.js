@@ -17,18 +17,6 @@ self.addEventListener('install', event => {
 
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(
-      resp =>
-        resp ||
-        fetch(event.request).then(response =>
-          event.request.method === 'GET' &&
-          process.env.NODE_ENV !== 'development'
-            ? caches.open('v1').then(cache => {
-                cache.put(event.request, response.clone())
-                return response
-              })
-            : response
-        )
-    )
+    caches.match(event.request).then(resp => resp || fetch(event.request))
   )
 })
