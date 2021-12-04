@@ -12,16 +12,6 @@ const Landing = () => {
     preferences: { biometricsAuth },
   } = usePreferences()
 
-  useEffect(() => {
-    const auth = async () => {
-      try {
-        await checkBiometrics()
-        push('/dashboard')
-      } catch {}
-    }
-    if (biometricsAuth) auth()
-  }, [push, biometricsAuth])
-
   return (
     <>
       <Head>

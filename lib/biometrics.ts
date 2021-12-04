@@ -4,38 +4,35 @@ import { addCryptoAsset, getCryptoAsset } from './db/cryptoAssets'
 
 // with help from the incredible https://webauthn.guide/#authentication
 
-export const registerBiometrics = async () => {
-  const challenge = await getCryptoAsset('challenge')
-  if (challenge === undefined) throw new Error('challenge_not_found')
-
-  const createCredentialDefaultArgs: CredentialCreationOptions = {
-    publicKey: {
-      rp: { name: 'biometrics' },
-      user: {
-        displayName: 'user',
-        name: 'user',
-        id: new Uint8Array(),
-      },
-      pubKeyCredParams: [
-        {
-          type: 'public-key',
-          alg: -7,
-        },
-      ],
-      timeout: 30000,
-      challenge: challenge.cryptoAsset,
-      attestation: 'direct',
-      authenticatorSelection: {
-        authenticatorAttachment: 'platform',
-        userVerification: 'required',
-      },
+export const createCredentialDefaultArgs = (
+  challenge: Uint8Array
+): CredentialCreationOptions => ({
+  publicKey: {
+    rp: { name: 'biometrics' },
+    user: {
+      displayName: 'user',
+      name: 'user',
+      id: new Uint8Array(),
     },
-  }
+    pubKeyCredParams: [
+      {
+        type: 'public-key',
+        alg: -7,
+      },
+    ],
+    timeout: 30000,
+    challenge,
+    attestation: 'none',
+    authenticatorSelection: {
+      authenticatorAttachment: 'platform',
+      userVerification: 'required',
+    },
+  },
+})
 
-  const credential = await navigator.credentials.create(
-    createCredentialDefaultArgs
-  )
-
+export const registerBiometrics = async (challenge: Uint8Array) => {
+  const args = createCredentialDefaultArgs(challenge!)
+  const credential = await navigator.credentials.create(args)
   const { authData } = cbor.decode(
     // @ts-expect-error ts hasn't implemented
     credential!.response.attestationObject
@@ -48,24 +45,24 @@ export const registerBiometrics = async () => {
   )
   const credentialIdLength = dataView.getUint16(0)
   const credentialId = authData.slice(55, 55 + credentialIdLength)
-  await addCryptoAsset('credentialId', credentialId)
+  addCryptoAsset('credentialId', credentialId)
+  return credentialId as Uint8Array
 }
 
-export const checkBiometrics = async () => {
-  const [challenge, credentialId] = await Promise.all([
-    getCryptoAsset('challenge'),
-    getCryptoAsset('credentialId'),
-  ])
-  if (challenge === undefined) throw new Error('challenge_not_found')
-  if (credentialId === undefined) throw new Error('credentialId_not_found')
-
+export const checkBiometrics = async ({
+  challenge,
+  rawId,
+}: {
+  challenge: Uint8Array
+  rawId: Uint8Array
+}) => {
   const getCredentialParams: CredentialRequestOptions = {
     publicKey: {
       timeout: 60000,
-      challenge: challenge.cryptoAsset,
+      challenge: challenge,
       allowCredentials: [
         {
-          id: credentialId.cryptoAsset,
+          id: rawId,
           transports: ['internal'],
           type: 'public-key',
         },

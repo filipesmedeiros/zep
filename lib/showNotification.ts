@@ -4,7 +4,7 @@ const showNotification = async (params: {
   tag?: string
 }) => {
   const sw = await navigator.serviceWorker.getRegistration()
-  sw?.showNotification(params.title, {
+  sw?.showNotification?.(params.title, {
     body: params.body,
     renotify: params.tag !== undefined,
     tag: params.tag,

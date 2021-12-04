@@ -195,7 +195,7 @@ const TopMenu: FC<Props> = () => {
                 aria-label="Toggle left handed mode"
                 disabled={!showPreferences}
                 className={clsx(
-                  'p-1 rounded transition-colors duration-100 w-full dark:hover:text-purple-50 bg-purple-400',
+                  'p-1 rounded transition-colors duration-100 w-full dark:hover:text-purple-50',
                   leftHanded
                     ? 'dark:text-purple-400 dark:bg-gray-900 bg-purple-50 text-purple-400 hover:text-purple-300'
                     : 'text-purple-50 dark:text-gray-900 dark:hover:text-gray-900 hover:bg-purple-300',
