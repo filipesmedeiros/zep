@@ -38,7 +38,6 @@ const useReadQrFromVideo = (onQrCodeRead: (content: string) => void) => {
         )
 
         if (qr !== null && qr.data !== '') {
-          console.log(qr)
           onQrCodeRead(qr.data)
           return
         }
