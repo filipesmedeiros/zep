@@ -44,7 +44,7 @@ const PinPad: FC<Props> = ({}) => {
   }, [currPin, push])
 
   const triggerBiometrics = async () => {
-    await checkBiometrics()
+    await checkBiometrics(new Uint8Array())
     push('/dashboard')
   }
 
