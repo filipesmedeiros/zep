@@ -10,7 +10,8 @@ const useProtectedRoutes = () => {
   const { credentialId, checking } = useCredentialId()
 
   useEffect(() => {
-    if (!checking && credentialId === undefined) replace('/welcome')
+    if (!checking && credentialId === undefined && !isWelcoming)
+      replace('/welcome')
   }, [replace, pathname, isWelcoming, credentialId, checking])
 
   return checking

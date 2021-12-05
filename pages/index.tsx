@@ -6,10 +6,10 @@ import useCheckBiometrics from '../lib/hooks/useWelcomeBiometrics'
 import showNotification from '../lib/showNotification'
 
 const Landing = () => {
-  const { push } = useRouter()
+  const { replace } = useRouter()
 
   const lazyCheck = useCheckBiometrics(valid => {
-    if (valid) push('/dashboard')
+    if (valid) replace('/dashboard')
     else
       showNotification({
         title: 'biometrics authentication failed',
