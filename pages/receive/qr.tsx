@@ -24,18 +24,18 @@ const MyQrCode: NextPage = () => {
       <Head>
         <title>zep⚡️ - my qrcode</title>
       </Head>
-      <div className="h-full flex flex-col items-center gap-7">
-        <div className="flex items-center w-full gap-2">
+      <div className="h-full flex flex-col items-center gap-4 xs:gap-7">
+        <header className="flex items-center w-full gap-2">
           <LoginIcon className="-rotate-child-90 dark:text-purple-50 h-7 xs:h-10 text-gray-900 translate-x-1 transition-colors" />
           <h1 className="text-3xl sm:text-5xl">receive</h1>
-        </div>
+        </header>
 
         <canvas
-          className="rounded shadow xs:!w-64 xs:!h-64 sm:!w-80 sm:!h-80"
+          className="rounded shadow !w-40 !h-40 xs:!w-64 xs:!h-64 sm:!w-80 sm:!h-80"
           ref={canvasRef}
         />
 
-        <div className="flex flex-col items-center gap-3">
+        <div className="flex flex-col items-center gap-1 xs:gap-3">
           <span className="text-xl transition-colors">optional amount</span>
           <XnoInput value={xnoToSend} onChange={setXnoToSend} />
         </div>

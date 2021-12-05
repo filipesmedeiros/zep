@@ -77,7 +77,7 @@ const New: NextPage = () => {
       <Head>
         <title>zep⚡️ - welcome</title>
       </Head>
-      <div className="flex flex-col items-center justify-start h-full px-4 text-center gap-6 text-gray-900 dark:text-purple-50 transition-colors">
+      <div className="flex flex-col items-center justify-start h-full px-4 text-center gap-2 xs:gap-6 text-gray-900 dark:text-purple-50 transition-colors">
         <header>
           <h1 className="font-extrabold text-7xl xs:text-8xl">
             {isRegisterStep ? 1 : 2}
@@ -92,7 +92,7 @@ const New: NextPage = () => {
           </h3>
         </header>
         <button
-          className="px-5 py-2 text-xl font-bold bg-purple-400 transition-colors text-purple-50 rounded dark:bg-gray-800"
+          className="px-5 py-1 xs:py-2 text-lg xs:text-xl font-bold bg-purple-400 transition-colors text-purple-50 rounded dark:bg-gray-800"
           onClick={
             isRegisterStep ? onGenerateSeed : () => onStoreSeed(credentialId)
           }

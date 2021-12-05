@@ -3,11 +3,14 @@ import {
   DotsHorizontalIcon,
   HandIcon,
   KeyIcon,
+  LibraryIcon,
   MoonIcon,
 } from '@heroicons/react/solid'
 import clsx from 'clsx'
+import Link from 'next/link'
 import { FC, useEffect, useRef, useState } from 'react'
 
+import { useAccount } from '../lib/context/accountContext'
 import { usePreferences } from '../lib/context/preferencesContext'
 import decryptSeed from '../lib/decryptSeed'
 import useChallenge from '../lib/hooks/useChallenge'
@@ -68,6 +71,10 @@ const TopMenu: FC<Props> = () => {
     })
   }
 
+  const account = useAccount()
+
+  const canChangeRep = (account?.frontier ?? null) !== null
+
   return (
     <div
       className={clsx('flex gap-3 justify-center', {
@@ -108,19 +115,21 @@ const TopMenu: FC<Props> = () => {
                   <KeyIcon className="h-full" />
                 </button>
               </li>
+              {canChangeRep && (
+                <li>
+                  <Link href="/representative">
+                    <a
+                      aria-label="see and change you representative"
+                      className={clsx(
+                        'block p-1 rounded transition-colors duration-100 w-full hover:text-purple-400 bg-purple-400 dark:text-gray-900 text-purple-50 dark:hover:text-purple-50'
+                      )}
+                    >
+                      <LibraryIcon className="h-full" />
+                    </a>
+                  </Link>
+                </li>
+              )}
               {/* <li>
-                <button
-                  className={clsx(
-                    'p-1 rounded transition-colors duration-100 w-full hover:text-purple-400 bg-purple-400 dark:text-gray-900 text-purple-50 dark:hover:text-purple-50'
-                  )}
-                  onClick={() => {
-                    // todo
-                  }}
-                >
-                  <LibraryIcon className="h-full" />
-                </button>
-              </li>
-              <li>
                 <button
                   className={clsx(
                     'p-1 rounded transition-colors duration-100 w-full hover:text-purple-400 bg-purple-400 dark:text-gray-900 text-purple-50 dark:hover:text-purple-50'
