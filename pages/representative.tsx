@@ -1,13 +1,11 @@
-import { LibraryIcon } from '@heroicons/react/solid'
+import { CheckIcon, LibraryIcon } from '@heroicons/react/solid'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useState } from 'react'
 
 import AddressInput from '../components/AddressInput'
 import { useAccount } from '../lib/context/accountContext'
-import useChallenge from '../lib/hooks/useChallenge'
 import useChangeRepresentative from '../lib/hooks/useChangeRepresentative'
-import useCredentialId from '../lib/hooks/useCredentialId'
 import showNotification from '../lib/showNotification'
 
 const Representative: NextPage = () => {
@@ -15,8 +13,6 @@ const Representative: NextPage = () => {
   const account = useAccount()
 
   const { changeRep } = useChangeRepresentative()
-  const { challenge } = useChallenge()
-  const { credentialId } = useCredentialId()
 
   return (
     <>
@@ -50,13 +46,11 @@ const Representative: NextPage = () => {
         <section className="flex flex-col gap-2">
           <h1 className="text-3xl">change</h1>
           <form
+            className="flex flex-col items-center gap-2"
             onSubmit={async e => {
               e.preventDefault()
               if (representativeAddr !== '') {
-                await changeRep(representativeAddr, {
-                  challenge: challenge!,
-                  rawId: credentialId!,
-                })
+                await changeRep(representativeAddr)
                 showNotification({
                   title: 'changed representative',
                   body: `you just changed your representative to ${representativeAddr}`,
@@ -70,6 +64,15 @@ const Representative: NextPage = () => {
               onChange={setRepresentativeAddr}
               representative
             />
+
+            <button
+              type="submit"
+              aria-label="Trigger biometrics authentication"
+              className="hidden xs:flex p-3 items-center dark:bg-gray-800 bg-purple-50 mb-3 rounded shadow hover:cursor-pointer"
+            >
+              confirm
+              <CheckIcon className="h-7 text-gray-900 dark:text-purple-50" />
+            </button>
           </form>
         </section>
       </div>

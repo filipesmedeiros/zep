@@ -7,16 +7,16 @@ const decryptSeed = async (
   params: {
     challenge: Uint8Array
     rawId: Uint8Array
+    encryptedSeed: string
   },
   id: 'os' | 'pin' = 'os'
 ) => {
-  const encryptedSeed = await getEncryptedSeed(id)
   const {
     // @ts-expect-error
-    response: { signature: sig }
+    response: { signature: sig },
   } = await checkBiometrics(params)
   const decryptedSeed = AES.decrypt(
-    encryptedSeed!.encryptedSeed,
+    params.encryptedSeed,
     sig.toString()
   ).toString(enc.Utf8)
   return decryptedSeed

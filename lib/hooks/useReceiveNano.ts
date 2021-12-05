@@ -7,11 +7,18 @@ import { useAccount, useAccounts } from '../context/accountContext'
 import { consumePrecomputedWork, getPrecomputedWork } from '../db/accounts'
 import { zeroString } from '../xno/constants'
 import receiveNano from '../xno/receiveNano'
+import useChallenge from './useChallenge'
+import useCredentialId from './useCredentialId'
+import useEncryptedSeed from './useEncryptedSeed'
 
 const useReceiveNano = () => {
   const account = useAccount()
   const { setAccount } = useAccounts()
   const [generatingWork, setGeneratingWork] = useState(false)
+
+  const { encryptedSeed } = useEncryptedSeed()
+  const { challenge } = useChallenge()
+  const { credentialId } = useCredentialId()
 
   const receive = useCallback(
     async (
@@ -28,7 +35,7 @@ const useReceiveNano = () => {
         precomputedWork !== null &&
         validateWork({
           work: precomputedWork,
-          blockHash: account.frontier ?? account.publicKey
+          blockHash: account.frontier ?? account.publicKey,
         })
       if (!isWorkValid) {
         setGeneratingWork(true)
@@ -47,24 +54,28 @@ const useReceiveNano = () => {
           representativeAddress: account.representative ?? account.address,
           frontier: account.frontier ?? zeroString,
           amountRaw: amount,
-          work: precomputedWork
+          work: precomputedWork,
         },
         account.index,
-        seedParams
+        {
+          challenge: challenge!,
+          rawId: credentialId!,
+          encryptedSeed: encryptedSeed!,
+        }
       )
 
-      const [, work] = await Promise.all([
-        consumePrecomputedWork(account.address),
-        computeWorkAsync(processResponse.hash, { send: true })
-      ])
+      consumePrecomputedWork(account.address)
+      const work = await computeWorkAsync(processResponse.hash, {
+        send: true,
+      })
       setAccount({
         ...account,
         frontier: processResponse.hash,
         balance: new Big(account.balance ?? 0).plus(new Big(amount)).toString(),
-        ...(work !== null ? { precomputedWork: work } : {})
+        ...(work !== null ? { precomputedWork: work } : {}),
       })
     },
-    [account, setAccount]
+    [account, setAccount, challenge, credentialId, encryptedSeed]
   )
 
   return { receive, generatingWork }

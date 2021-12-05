@@ -5,20 +5,21 @@ import computeWorkAsync from '../computeWorkAsync'
 import { useAccount, useAccounts } from '../context/accountContext'
 import { consumePrecomputedWork, getPrecomputedWork } from '../db/accounts'
 import changeRepresentative from '../xno/changeRepresentative'
+import useChallenge from './useChallenge'
+import useCredentialId from './useCredentialId'
+import useEncryptedSeed from './useEncryptedSeed'
 
 const useChangeRepresentative = () => {
   const account = useAccount()
   const { setAccount } = useAccounts()
   const [generatingWork, setGeneratingWork] = useState(false)
 
+  const { encryptedSeed } = useEncryptedSeed()
+  const { challenge } = useChallenge()
+  const { credentialId } = useCredentialId()
+
   const changeRep = useCallback(
-    async (
-      newRepresentative: string,
-      seedParams: {
-        challenge: Uint8Array
-        rawId: Uint8Array
-      }
-    ) => {
+    async (newRepresentative: string) => {
       if (
         account === undefined ||
         account.balance === null ||
@@ -52,7 +53,11 @@ const useChangeRepresentative = () => {
           work: precomputedWork,
         },
         account.index,
-        seedParams
+        {
+          challenge: challenge!,
+          rawId: credentialId!,
+          encryptedSeed: encryptedSeed!,
+        }
       )
 
       consumePrecomputedWork(account.address)
@@ -64,7 +69,7 @@ const useChangeRepresentative = () => {
         ...(work !== null ? { precomputedWork: work } : {}),
       })
     },
-    [account, setAccount]
+    [account, setAccount, challenge, encryptedSeed, credentialId]
   )
 
   return { changeRep, generatingWork }

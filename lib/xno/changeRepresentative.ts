@@ -12,6 +12,7 @@ const changeRepresentative = async (
   seedParams: {
     challenge: Uint8Array
     rawId: Uint8Array
+    encryptedSeed: string
   }
 ) => {
   let seed = await decryptSeed(seedParams)

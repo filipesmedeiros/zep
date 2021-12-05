@@ -16,6 +16,7 @@ import decryptSeed from '../lib/decryptSeed'
 import useChallenge from '../lib/hooks/useChallenge'
 import useClickAway from '../lib/hooks/useClickAway'
 import useCredentialId from '../lib/hooks/useCredentialId'
+import useEncryptedSeed from '../lib/hooks/useEncryptedSeed'
 import useIsWelcoming from '../lib/hooks/useIsWelcoming'
 import showNotification from '../lib/showNotification'
 
@@ -58,10 +59,12 @@ const TopMenu: FC<Props> = () => {
   const { challenge } = useChallenge()
   const { credentialId } = useCredentialId()
 
+  const { encryptedSeed } = useEncryptedSeed()
   const onCopySeed = async () => {
     const seed = await decryptSeed({
       challenge: challenge!,
       rawId: credentialId!,
+      encryptedSeed: encryptedSeed!,
     })
     await navigator.clipboard.writeText(seed)
     showNotification({

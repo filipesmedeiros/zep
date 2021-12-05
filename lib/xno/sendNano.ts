@@ -12,6 +12,7 @@ const sendNano = async (
   seedParams: {
     challenge: Uint8Array
     rawId: Uint8Array
+    encryptedSeed: string
   }
 ) => {
   let seed = await decryptSeed(seedParams)
@@ -25,8 +26,8 @@ const sendNano = async (
       action: 'process',
       json_block: 'true',
       subtype: 'send',
-      block: signedBlock
-    }
+      block: signedBlock,
+    },
   })
 
   if ('error' in processResponse) throw new Error()

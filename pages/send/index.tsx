@@ -41,13 +41,10 @@ const Send: NextPage = () => {
     if (sliderPercentage === 1) {
       const sendNano = async () => {
         backToBase()
-        await send(address as string, amount as string, {
-          challenge: challenge!,
-          rawId: credentialId!,
-        })
+        await send(address!, amount!)
         showNotification({
           title: 'sent!',
-          body: `sent Ӿ${convert(amount as string, {
+          body: `sent Ӿ${convert(amount!, {
             from: Unit.raw,
             to: Unit.Nano,
           })} to ${address}`,
