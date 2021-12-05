@@ -25,7 +25,7 @@ import fetchAccountInfo from '../../../lib/xno/fetchAccountInfo'
 const Import: NextPage = () => {
   const { push, replace } = useRouter()
 
-  const credentialId = useCredentialId()
+  const { credentialId } = useCredentialId()
   useEffect(() => {
     if (credentialId !== undefined) replace('/welcome/import')
   }, [replace, credentialId])
