@@ -39,7 +39,7 @@ let dbConnection: IDBPDatabase<Schema> | undefined = undefined
 export const openDb = async (version = 1) => {
   if (dbConnection !== undefined) return
   else {
-    dbConnection = await openDB<Schema>('Database', version, {
+    return (dbConnection = await openDB<Schema>('Database', version, {
       upgrade: db => {
         db.createObjectStore('accounts', {
           keyPath: 'index',
@@ -58,10 +58,11 @@ export const openDb = async (version = 1) => {
           autoIncrement: true,
         })
       },
-    })
+    }))
   }
 }
 
-const getDb = () => dbConnection
+const getDb = async () =>
+  dbConnection !== undefined ? dbConnection : await openDb()
 
 export default getDb

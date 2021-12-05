@@ -1,5 +1,8 @@
 import useCryptoAsset from './useCryptoAsset'
 
-const useChallenge = () => useCryptoAsset('challenge')
+const useChallenge = () => {
+  const { checking, cryptoAsset } = useCryptoAsset('challenge')
+  return { checking, challenge: cryptoAsset }
+}
 
 export default useChallenge

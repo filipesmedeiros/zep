@@ -7,16 +7,14 @@ import Layout from '../components/Layout'
 import MemCacheProvider from '../lib/context/memCacheContextProvider'
 import fetcher from '../lib/fetcher'
 import useProtectedRoutes from '../lib/hooks/useProtectedRoutes'
-import useSetupDb from '../lib/hooks/useSetupDb'
 import useSetupServiceWorker from '../lib/hooks/useSetupServiceWorker'
 import '../styles/global.css'
 
 const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
   useSetupServiceWorker()
-  const ready = useSetupDb()
-  const validatingCredential = useProtectedRoutes(!ready)
+  const checkingCredential = useProtectedRoutes()
 
-  if (validatingCredential) return null // todo
+  if (checkingCredential) return null // todo
 
   return (
     <>

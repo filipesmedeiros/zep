@@ -1,12 +1,11 @@
+const defaultTheme = require('tailwindcss/defaultTheme')
+
 module.exports = {
   mode: 'jit',
   purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
   darkMode: 'class',
   theme: {
     extend: {
-      screens: {
-        xs: '340px',
-      },
       keyframes: {
         denied: {
           '0%, 100%': { transform: 'translateX(0)' },
@@ -20,6 +19,10 @@ module.exports = {
       transitionProperty: {
         height: 'height',
       },
+    },
+    screens: {
+      xs: '340px',
+      ...defaultTheme.screens, // https://tailwindcss.com/docs/breakpoints#extending-the-default-breakpoints
     },
   },
   variants: {

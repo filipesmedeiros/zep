@@ -1,21 +1,21 @@
 import db from '.'
 import { PreferenceName, PreferenceTypes, PreferenceValue } from './types'
 
-export const addPreference = <P extends PreferenceName>(
+export const addPreference = async <P extends PreferenceName>(
   name: P,
   value: PreferenceTypes[P]
-) => db()!.add('preferences', { name, value: JSON.stringify(value) })
+) => (await db())!.add('preferences', { name, value: JSON.stringify(value) })
 
-export const putPreference = <P extends PreferenceName>(
+export const putPreference = async <P extends PreferenceName>(
   name: P,
   value: PreferenceTypes[P]
-) => db()!.put('preferences', { name, value: JSON.stringify(value) })
+) => (await db())!.put('preferences', { name, value: JSON.stringify(value) })
 
-export const removePreference = (name: PreferenceName) =>
-  db()!.delete('preferences', name)
+export const removePreference = async (name: PreferenceName) =>
+  (await db())!.delete('preferences', name)
 
-export const getPreference = <P extends PreferenceName>(name: P) =>
-  db()!
+export const getPreference = async <P extends PreferenceName>(name: P) =>
+  (await db())!
     .get('preferences', name)
     .then(pref =>
       pref?.value === undefined
@@ -23,17 +23,13 @@ export const getPreference = <P extends PreferenceName>(name: P) =>
         : (JSON.parse(pref.value) as PreferenceTypes[P])
     )
 
-export const getAllPreferences = () =>
-  db()!
-    .getAll('preferences')
-    .then(preferenceList =>
-      preferenceList.map(({ name, value }) => ({
-        name,
-        value: JSON.parse(value) as PreferenceTypes[typeof name],
-      }))
-    )
+export const getAllPreferences = async () =>
+  (await db())!.getAll('preferences').then(preferenceList =>
+    preferenceList.map(({ name, value }) => ({
+      name,
+      value: JSON.parse(value) as PreferenceTypes[typeof name],
+    }))
+  )
 
 export const hasPreference = async (name: PreferenceName) =>
-  db()!
-    .count('preferences', name)
-    .then(count => count === 1)
+  (await db())!.count('preferences', name).then(count => count === 1)

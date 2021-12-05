@@ -1,6 +1,6 @@
 import cbor from 'cbor'
 
-import { addCryptoAsset, getCryptoAsset } from './db/cryptoAssets'
+import { addCryptoAsset } from './db/cryptoAssets'
 
 // with help from the incredible https://webauthn.guide/#authentication
 
@@ -8,9 +8,9 @@ export const createCredentialDefaultArgs = (
   challenge: Uint8Array
 ): CredentialCreationOptions => ({
   publicKey: {
-    rp: { name: 'biometrics' },
+    rp: { name: 'platform-biometrics' },
     user: {
-      displayName: 'user',
+      displayName: 'me',
       name: 'user',
       id: new Uint8Array(),
     },

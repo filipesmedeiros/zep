@@ -10,6 +10,7 @@ import XnoInput from '../../components/XnoInput'
 import useReadQrFromVideo from '../../lib/hooks/useReadQrFromVideo'
 import isTxnUrl from '../../lib/xno/isTxnUrl'
 import txnUrlToParts from '../../lib/xno/txnUrlToParts'
+import xnoUrlHasAmount from '../../lib/xno/xnoUrlHasAmount'
 
 const ReadQrCode: NextPage = () => {
   const { push } = useRouter()
@@ -17,7 +18,11 @@ const ReadQrCode: NextPage = () => {
     (urlOrAddress: string) => {
       if (isTxnUrl(urlOrAddress)) {
         const { address, amount } = txnUrlToParts(urlOrAddress)
-        push(`/send?address=${address}&amount=${amount}`)
+        push(
+          `/send?address=${address}${
+            xnoUrlHasAmount(urlOrAddress) ? `&amount=${amount}` : ''
+          }`
+        )
       } else push(`/send?address=${urlOrAddress}`)
     },
     [push]

@@ -1,25 +1,29 @@
-import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import { checkBiometrics } from '../biometrics'
 import useChallenge from './useChallenge'
 import useCredentialId from './useCredentialId'
 
-const useCheckBiometrics = () => {
-  const challenge = useChallenge()
-  const credentialId = useCredentialId()
-  const { replace } = useRouter()
+const useCheckBiometrics = (onChecked: (validBiometrics: boolean) => void) => {
+  const { challenge } = useChallenge()
+  const { credentialId } = useCredentialId()
+
+  const check = useCallback(async () => {
+    try {
+      if (credentialId !== undefined && challenge !== undefined) {
+        await checkBiometrics({ challenge, rawId: credentialId })
+        onChecked(true)
+      }
+    } catch {
+      onChecked(false)
+    }
+  }, [challenge, credentialId, onChecked])
 
   useEffect(() => {
-    const check = async () => {
-      try {
-        if (credentialId !== undefined && challenge !== undefined)
-          await checkBiometrics({ challenge, rawId: credentialId })
-        replace('/dashboard')
-      } catch {}
-    }
     check()
-  }, [replace, challenge, credentialId])
+  }, [check])
+
+  return check
 }
 
 export default useCheckBiometrics

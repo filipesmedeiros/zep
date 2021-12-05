@@ -30,7 +30,10 @@ const MyQrCode: NextPage = () => {
           <h1 className="text-3xl sm:text-5xl">receive</h1>
         </div>
 
-        <canvas className="rounded shadow" ref={canvasRef} />
+        <canvas
+          className="rounded shadow xs:!w-64 xs:!h-64 sm:!w-80 sm:!h-80"
+          ref={canvasRef}
+        />
 
         <div className="flex flex-col items-center gap-3">
           <span className="text-xl transition-colors">optional amount</span>

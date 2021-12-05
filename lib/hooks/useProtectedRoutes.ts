@@ -1,30 +1,19 @@
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
-import { getCryptoAsset } from '../db/cryptoAssets'
+import useCredentialId from './useCredentialId'
 import useIsWelcoming from './useIsWelcoming'
 
-const useProtectedRoutes = (skip?: boolean) => {
+const useProtectedRoutes = () => {
   const { replace, pathname } = useRouter()
-  const [validatingCredential, setValidatingCredential] = useState(true)
   const isWelcoming = useIsWelcoming()
-  useEffect(() => {
-    if (!skip) {
-      if (isWelcoming) {
-        setValidatingCredential(false)
-        return
-      }
+  const { credentialId, checking } = useCredentialId()
 
-      const checkCredential = async () => {
-        const hasCredentialId =
-          (await getCryptoAsset('credentialId')) !== undefined
-        if (!hasCredentialId) replace('/welcome')
-        else setValidatingCredential(false)
-      }
-      checkCredential()
-    }
-  }, [replace, pathname, isWelcoming, skip])
-  return validatingCredential
+  useEffect(() => {
+    if (!checking && credentialId === undefined) replace('/welcome')
+  }, [replace, pathname, isWelcoming, credentialId, checking])
+
+  return checking
 }
 
 export default useProtectedRoutes

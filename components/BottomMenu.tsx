@@ -59,13 +59,13 @@ const BottomMenu: FC<Props> = ({ className }) => {
       {pathname !== '/dashboard' && (
         <Link href="/dashboard">
           <a
+            aria-label="go back to the dashboard"
             role="menuitem"
             className={clsx(
               'h-12 p-1 bg-purple-400 transition-colors rounded shadow hover:bg-purple-400 disabled:hover:bg-purple-400 disabled:cursor-default',
               { 'pointer-events-none': isWelcoming }
             )}
           >
-            <span className="hidden">go back to the dashboard</span>
             <HomeIcon className="h-full text-purple-50 dark:text-gray-900 transition-colors" />
           </a>
         </Link>
@@ -110,6 +110,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
         <div className={clsx('flex h-16', { 'flex-row-reverse': leftHanded })}>
           <Link href="/receive/qr">
             <a
+              aria-label="see your qrcode"
               role="navigation"
               className={clsx(
                 'bg-purple-400 transition-colors h-16 px-1 xs:px-2 w-10 xs:w-14 hover:bg-purple-400 disabled:hover:bg-purple-400 shadow disabled:cursor-default',
@@ -117,7 +118,6 @@ const BottomMenu: FC<Props> = ({ className }) => {
                 { 'pointer-events-none': isWelcoming }
               )}
             >
-              <span className="hidden">see your qrcode</span>
               <LoginIcon
                 className={
                   'h-full text-purple-50 dark:text-gray-900 transition-colors w-full -rotate-child-90'
@@ -133,6 +133,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
           </div>
           <Link href="/send/qrOrAddress">
             <a
+              aria-label="send ӾNO"
               role="navigation"
               className={clsx(
                 'bg-purple-400 transition-colors h-16 px-1 xs:px-2 w-10 xs:w-14 hover:bg-purple-400 disabled:hover:bg-purple-400 shadow disabled:cursor-default',
@@ -140,7 +141,6 @@ const BottomMenu: FC<Props> = ({ className }) => {
                 { 'pointer-events-none': isWelcoming }
               )}
             >
-              <span className="hidden">send ӾNO</span>
               <PaperAirplaneIcon className="h-full text-purple-50 dark:text-gray-900 transition-colors w-full rotate-[30deg] translate-x-1 -translate-y-0.5" />
             </a>
           </Link>
