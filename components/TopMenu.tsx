@@ -3,7 +3,7 @@ import {
   DotsHorizontalIcon,
   HandIcon,
   KeyIcon,
-  MoonIcon
+  MoonIcon,
 } from '@heroicons/react/solid'
 import clsx from 'clsx'
 import { FC, useEffect, useRef, useState } from 'react'
@@ -21,7 +21,7 @@ export interface Props {}
 const TopMenu: FC<Props> = () => {
   const {
     preferences: { darkMode, leftHanded },
-    setPreference
+    setPreference,
   } = usePreferences()
 
   // todo refactor this into a custom hook?
@@ -52,27 +52,26 @@ const TopMenu: FC<Props> = () => {
 
   const isWelcoming = useIsWelcoming()
 
-  const challenge = useChallenge()
-  const credentialId = useCredentialId()
+  const { challenge } = useChallenge()
+  const { credentialId } = useCredentialId()
 
   const onCopySeed = async () => {
     const seed = await decryptSeed({
       challenge: challenge!,
-      rawId: credentialId!
+      rawId: credentialId!,
     })
     await navigator.clipboard.writeText(seed)
     showNotification({
       title: 'seed copied to clipboard',
-      body:
-        'you just copied your seed to your clipboard, you can use it anywhere',
-      tag: 'copy-seed'
+      body: 'you just copied your seed to your clipboard, you can use it anywhere',
+      tag: 'copy-seed',
     })
   }
 
   return (
     <div
       className={clsx('flex gap-3 justify-center', {
-        'flex-row-reverse': leftHanded
+        'flex-row-reverse': leftHanded,
       })}
     >
       {!isWelcoming && (

@@ -26,8 +26,8 @@ const Register: NextPage = () => {
   const [seedInput, setSeedInput] = useState('')
   const [passphraseInputs, setpassphraseInputs] = useState<string[]>([])
 
-  const challenge = useChallenge()
-  const credentialId = useCredentialId()
+  const { challenge } = useChallenge()
+  const { credentialId } = useCredentialId()
 
   const onPaste = (passphrase: string) => {
     const words = passphrase.split(' ')

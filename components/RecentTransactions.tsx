@@ -25,7 +25,7 @@ const RecentTransactions: FC<Props> = () => {
     hasMore,
     loading: loadingHistory,
     hasHistory,
-    revalidate: refetchHistory
+    revalidate: refetchHistory,
   } = useAccountHistory()
 
   const hasReceivable =
@@ -45,8 +45,8 @@ const RecentTransactions: FC<Props> = () => {
       setRefectingHistory(false)
   }, [loadingHistory, accountHistory])
 
-  const challenge = useChallenge()
-  const crendentialId = useCredentialId()
+  const { challenge } = useChallenge()
+  const { credentialId } = useCredentialId()
 
   const onIncomingClick = async (receivable: {
     hash: string
@@ -56,7 +56,7 @@ const RecentTransactions: FC<Props> = () => {
   }) => {
     await receive(receivable.hash, receivable.amount, {
       challenge: challenge!,
-      rawId: crendentialId!
+      rawId: credentialId!,
     })
     onBlockReceived(receivable.hash)
     refetchHistory()
@@ -65,9 +65,9 @@ const RecentTransactions: FC<Props> = () => {
       title: 'received!',
       body: `received Ӿ${convert(receivable.amount, {
         from: Unit.raw,
-        to: Unit.Nano
+        to: Unit.Nano,
       })} from ${receivable.from}`,
-      tag: 'received'
+      tag: 'received',
     })
   }
 
@@ -90,7 +90,7 @@ const RecentTransactions: FC<Props> = () => {
               className={clsx(
                 'h-8 transition-transform-child origin-center-child',
                 {
-                  '-rotate-child-180': receivablesExpanded
+                  '-rotate-child-180': receivablesExpanded,
                 }
               )}
             />
@@ -117,7 +117,7 @@ const RecentTransactions: FC<Props> = () => {
                     {Intl.DateTimeFormat([], {
                       day: '2-digit',
                       month: '2-digit',
-                      year: '2-digit'
+                      year: '2-digit',
                     }).format(Number(receivable.timestamp) * 1000)}{' '}
                     - {<span className="text-xs">{receivable.from}</span>}
                   </div>
@@ -190,7 +190,7 @@ const RecentTransactions: FC<Props> = () => {
                       {Intl.DateTimeFormat([], {
                         day: '2-digit',
                         month: '2-digit',
-                        year: '2-digit'
+                        year: '2-digit',
                       }).format(Number(txn.local_timestamp) * 1000)}{' '}
                       - {<span className="text-xs">{txn.account}</span>}
                     </div>

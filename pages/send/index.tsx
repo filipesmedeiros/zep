@@ -28,8 +28,8 @@ const Send: NextPage = () => {
   )
   const [sliding, setSliding] = useState(false)
 
-  const challenge = useChallenge()
-  const crendentialId = useCredentialId()
+  const { challenge } = useChallenge()
+  const { credentialId } = useCredentialId()
 
   const backToBase = useCallback(() => {
     setStartX(0)
@@ -43,15 +43,15 @@ const Send: NextPage = () => {
         backToBase()
         await send(address as string, amount as string, {
           challenge: challenge!,
-          rawId: crendentialId!
+          rawId: credentialId!,
         })
         showNotification({
           title: 'sent!',
           body: `sent Ӿ${convert(amount as string, {
             from: Unit.raw,
-            to: Unit.Nano
+            to: Unit.Nano,
           })} to ${address}`,
-          tag: 'send'
+          tag: 'send',
         })
         push('/dashboard')
       }
@@ -66,7 +66,7 @@ const Send: NextPage = () => {
     send,
     backToBase,
     challenge,
-    crendentialId
+    credentialId,
   ])
 
   const hasQueryAmount = amount !== undefined && amount !== '' && amount !== '0'
@@ -111,7 +111,7 @@ const Send: NextPage = () => {
             className={clsx(
               'dark:bg-gray-800 bg-purple-100 rounded-2xl p-2 relative w-72 z-10 transition-all hover:cursor-pointer',
               {
-                'opacity-50': disableSlider
+                'opacity-50': disableSlider,
               }
             )}
             onMouseMove={ev => {
@@ -128,11 +128,11 @@ const Send: NextPage = () => {
               className={clsx(
                 'dark:bg-purple-50 bg-purple-400 p-2 rounded-xl w-11 z-30 transform-gpu transition-colors',
                 {
-                  'transition-all': !sliding
+                  'transition-all': !sliding,
                 }
               )}
               style={{
-                transform: `translate3d(${sliderPercentage * 228}px, 0, 0)`
+                transform: `translate3d(${sliderPercentage * 228}px, 0, 0)`,
               }}
               onTouchStart={ev => {
                 if (!disableSlider) {
@@ -167,7 +167,7 @@ const Send: NextPage = () => {
                 style={{
                   transform: `scale3d(${1 + 0.4 * sliderPercentage}, ${
                     1 + 0.4 * sliderPercentage
-                  }, 1)`
+                  }, 1)`,
                 }}
               >
                 Ӿ

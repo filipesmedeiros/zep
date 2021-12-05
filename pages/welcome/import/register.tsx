@@ -30,7 +30,7 @@ const Import: NextPage = () => {
     if (credentialId !== undefined) replace('/welcome/import')
   }, [replace, credentialId])
 
-  const challenge = useChallenge()
+  const { challenge } = useChallenge()
   const onRegisterClick = async () => {
     await registerBiometrics(challenge!)
     push('/welcome/import')

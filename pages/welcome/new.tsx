@@ -22,7 +22,7 @@ const New: NextPage = () => {
   const seedRef = useRef(wallet.generateLegacy())
   useEffect(() => {}, [])
 
-  const challenge = useChallenge()
+  const { challenge } = useChallenge()
   const [credentialId, setCredentialId] = useState<Uint8Array>()
 
   const onGenerateSeed = async () => {
