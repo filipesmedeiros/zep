@@ -4,6 +4,8 @@ body,
 html {
   font-family: Manrope;
   overflow: hidden;
+  heigh: 100%;
+  width: 100%;
 }
 
 * {
