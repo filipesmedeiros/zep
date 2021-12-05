@@ -99,7 +99,7 @@ const New: NextPage = () => {
         >
           {isRegisterStep ? 'generate' : 'store'} passphrase
         </button>
-        <p className="text-xs xs:text-xl">
+        <p className="text-xs xs:text-base sm:text-xl">
           {isRegisterStep ? (
             <b>
               store this passphrase securely (e.g. on paper): you&apos;ll need
