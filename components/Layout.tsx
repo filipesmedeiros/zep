@@ -20,7 +20,7 @@ const Layout: FC<Props> = ({ children }) => {
   useListenToColorMedia()
 
   return (
-    <div className="relative flex flex-col w-screen h-screen gap-4 px-5 pt-4 pb-4 dark:text-purple-50 bg-white dark:bg-gray-900 transition-colors">
+    <div className="relative flex flex-col w-full h-full fixed gap-4 px-5 pt-4 pb-4 dark:text-purple-50 bg-white dark:bg-gray-900 transition-colors">
       <header
         className={clsx('flex justify-between items-center', {
           'flex-row-reverse': leftHanded,
