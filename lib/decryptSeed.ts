@@ -1,7 +1,6 @@
 import { AES, enc } from 'crypto-js'
 
 import { checkBiometrics } from './biometrics'
-import { getEncryptedSeed } from './db/encryptedSeeds'
 
 const decryptSeed = async (
   params: {
@@ -19,7 +18,7 @@ const decryptSeed = async (
     params.encryptedSeed,
     sig.toString()
   ).toString(enc.Utf8)
-  return decryptedSeed
+  return decryptedSeed.toLocaleUpperCase()
 }
 
 export default decryptSeed

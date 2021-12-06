@@ -3,7 +3,7 @@ import clsx from 'clsx'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import AddressInput from '../../components/AddressInput'
 import XnoInput from '../../components/XnoInput'
@@ -30,6 +30,12 @@ const ReadQrCode: NextPage = () => {
   const { videoLive, videoRef } = useReadQrFromVideo(onQrCodeRead)
 
   const [address, setAddress] = useState('')
+  const formRef = useRef<HTMLFormElement>(null)
+
+  useEffect(() => {
+    if (address !== '' && formRef.current !== null)
+      formRef.current.requestSubmit()
+  }, [address, formRef])
 
   return (
     <>
@@ -53,6 +59,7 @@ const ReadQrCode: NextPage = () => {
         <div className="flex flex-col justify-self-end items-center gap-2 text-gray-900 dark:text-purple-50">
           <span className="text-2xl">or</span>
           <form
+            ref={formRef}
             onSubmit={e => {
               e.preventDefault()
               if (address !== '') push(`/send?address=${address}`)

@@ -88,7 +88,7 @@ const RecentTransactions: FC<Props> = () => {
             </span>
             <ChevronUpIcon
               className={clsx(
-                'h-8 transition-transform-child origin-center-child',
+                'h-8 motion-safe:transition-transform-child origin-center-child',
                 {
                   '-rotate-child-180': receivablesExpanded,
                 }
@@ -97,7 +97,7 @@ const RecentTransactions: FC<Props> = () => {
           </div>
           <ol
             className={clsx(
-              'flex flex-col gap-3 w-full overflow-auto transition-all duration-300 px-1',
+              'flex flex-col gap-3 w-full overflow-auto motion-safe:transition-all motion-safe:duration-300 px-1',
               receivablesExpanded ? 'max-h-32 pb-1' : 'max-h-0'
             )}
           >
@@ -159,10 +159,10 @@ const RecentTransactions: FC<Props> = () => {
         </div>
         {initialLoadingHistory || refetchingHistory ? (
           <ul className="flex flex-col w-full overflow-auto px-0.5 pb-0.5 gap-2">
-            <li className="bg-gray-100 dark:bg-gray-800 shadow rounded h-12 animate-pulse transition-colors" />
-            <li className="bg-gray-100 dark:bg-gray-800 shadow rounded h-12 animate-pulse transition-colors" />
-            <li className="bg-gray-100 dark:bg-gray-800 shadow rounded h-12 animate-pulse transition-colors" />
-            <li className="bg-gray-100 dark:bg-gray-800 shadow rounded h-12 animate-pulse transition-colors" />
+            <li className="bg-gray-100 dark:bg-gray-800 shadow rounded h-12 motion-safe:animate-pulse" />
+            <li className="bg-gray-100 dark:bg-gray-800 shadow rounded h-12 motion-safe:animate-pulse" />
+            <li className="bg-gray-100 dark:bg-gray-800 shadow rounded h-12 motion-safe:animate-pulse" />
+            <li className="bg-gray-100 dark:bg-gray-800 shadow rounded h-12 motion-safe:animate-pulse" />
           </ul>
         ) : hasHistory ? (
           <ol className="flex flex-col w-full overflow-auto px-0.5 pb-0.5 gap-2">

@@ -1,3 +1,4 @@
+import { KeyIcon as KeyIconOutline } from '@heroicons/react/outline'
 import {
   CogIcon,
   DotsHorizontalIcon,
@@ -19,6 +20,8 @@ import useCredentialId from '../lib/hooks/useCredentialId'
 import useEncryptedSeed from '../lib/hooks/useEncryptedSeed'
 import useIsWelcoming from '../lib/hooks/useIsWelcoming'
 import showNotification from '../lib/showNotification'
+import Button from './Button'
+import ButtonLink from './ButtonLink'
 
 export interface Props {}
 
@@ -27,11 +30,18 @@ const TopMenu: FC<Props> = () => {
     preferences: { darkMode, leftHanded },
     setPreference,
   } = usePreferences()
+  const isWelcoming = useIsWelcoming()
+
+  const account = useAccount()
+  const { challenge } = useChallenge()
+  const { credentialId } = useCredentialId()
+  const { encryptedSeed } = useEncryptedSeed()
 
   // todo refactor this into a custom hook?
   const [showPreferences, setShowPreferences] = useState(false)
-  const preferencesButtonRef = useRef<HTMLDivElement>(null)
-  useClickAway(preferencesButtonRef, () => setShowPreferences(false))
+  const preferencesButtonRef = useClickAway<HTMLDivElement>(() =>
+    setShowPreferences(false)
+  )
   const [renderPreferences, setRenderPreferences] = useState(false)
   const togglePreferences = () => {
     if (showPreferences) setShowPreferences(false)
@@ -42,8 +52,9 @@ const TopMenu: FC<Props> = () => {
   }, [renderPreferences])
 
   const [showAdvanced, setShowAdvanced] = useState(false)
-  const advancedButtonRef = useRef<HTMLDivElement>(null)
-  useClickAway(advancedButtonRef, () => setShowAdvanced(false))
+  const advancedButtonRef = useClickAway<HTMLDivElement>(() =>
+    setShowAdvanced(false)
+  )
   const [renderAdvanced, setRenderAdvanced] = useState(false)
   const advancedRef = useRef<HTMLUListElement>(null)
   const toggleAdvanced = () => {
@@ -54,27 +65,41 @@ const TopMenu: FC<Props> = () => {
     if (renderAdvanced) setShowAdvanced(true)
   }, [renderAdvanced])
 
-  const isWelcoming = useIsWelcoming()
+  const [storedSeedForCopy, setStoredSeedForCopy] = useState<string>()
 
-  const { challenge } = useChallenge()
-  const { credentialId } = useCredentialId()
-
-  const { encryptedSeed } = useEncryptedSeed()
   const onCopySeed = async () => {
     const seed = await decryptSeed({
       challenge: challenge!,
       rawId: credentialId!,
       encryptedSeed: encryptedSeed!,
     })
-    await navigator.clipboard.writeText(seed)
+
+    try {
+      await navigator.clipboard.writeText(seed)
+      showNotification({
+        title: 'seed copied to clipboard',
+        body: 'you just copied your seed to your clipboard, you can use it anywhere',
+        tag: 'copy-seed',
+      })
+    } catch {
+      showNotification({
+        title: 'click on the new button to copy seed',
+        body: 'your browser requires a new user action to copy the seed!',
+        tag: 'copy-seed',
+      })
+      setStoredSeedForCopy(seed)
+    }
+  }
+
+  const onCopySeedSecondAction = async () => {
+    await navigator.clipboard.writeText(storedSeedForCopy ?? '')
     showNotification({
       title: 'seed copied to clipboard',
       body: 'you just copied your seed to your clipboard, you can use it anywhere',
       tag: 'copy-seed',
     })
+    setStoredSeedForCopy(undefined)
   }
-
-  const account = useAccount()
 
   const canChangeRep = (account?.frontier ?? null) !== null
 
@@ -86,15 +111,13 @@ const TopMenu: FC<Props> = () => {
     >
       {!isWelcoming && (
         <div className="relative z-20" ref={advancedButtonRef}>
-          <button
-            aria-label="Open adavanced menu"
-            className={clsx(
-              'w-10 p-1 rounded bg-purple-400 shadow text-purple-50 dark:text-gray-900 hover:cursor-pointer hover:bg-purple-400 transition-colors dark:hover:text-purple-50'
-            )}
+          <Button
+            variant="primary"
             onClick={toggleAdvanced}
+            aria-label="Open adavanced menu"
           >
-            <DotsHorizontalIcon className="w-full" />
-          </button>
+            <DotsHorizontalIcon className="w-8" />
+          </Button>
           {renderAdvanced && (
             <ul
               onTransitionEnd={() => {
@@ -107,29 +130,34 @@ const TopMenu: FC<Props> = () => {
                 showAdvanced ? 'opacity-100' : 'opacity-0 -translate-y-2'
               )}
             >
-              <li>
-                <button
+              <li role="menuitem">
+                <Button
                   aria-label="Copy your nano seed to your clipboard"
-                  className={clsx(
-                    'p-1 rounded transition-colors dark:hover:text-gray-900 w-full hover:bg-purple-300 bg-purple-400 dark:text-gray-900 text-purple-50'
-                  )}
-                  onClick={onCopySeed}
+                  variant="primary"
+                  onClick={
+                    storedSeedForCopy !== undefined
+                      ? onCopySeedSecondAction
+                      : onCopySeed
+                  }
                 >
-                  <KeyIcon className="h-full" />
-                </button>
+                  {storedSeedForCopy !== undefined ? (
+                    <KeyIconOutline className="h-6" />
+                  ) : (
+                    <KeyIcon className="w-6" />
+                  )}
+                </Button>
               </li>
               {canChangeRep && (
-                <li>
-                  <Link href="/representative">
-                    <a
-                      aria-label="see and change you representative"
-                      className={clsx(
-                        'block p-1 rounded transition-colors duration-100 w-full hover:text-purple-400 bg-purple-400 dark:text-gray-900 text-purple-50 dark:hover:text-purple-50'
-                      )}
-                    >
-                      <LibraryIcon className="h-full" />
-                    </a>
-                  </Link>
+                <li role="menuitem">
+                  <ButtonLink
+                    href="/representative"
+                    aria-label="see and change you representative"
+                    variant="primary"
+                    onClick={() => setShowAdvanced(false)}
+                    className="block"
+                  >
+                    <LibraryIcon className="w-6" />
+                  </ButtonLink>
                 </li>
               )}
               {/* <li>
@@ -137,7 +165,6 @@ const TopMenu: FC<Props> = () => {
                   className={clsx(
                     'p-1 rounded transition-colors duration-100 w-full hover:text-purple-400 bg-purple-400 dark:text-gray-900 text-purple-50 dark:hover:text-purple-50'
                   )}
-                  onClick={onCopySeed}
                 >
                   <UsersIcon className="h-full" />
                 </button>
@@ -148,15 +175,13 @@ const TopMenu: FC<Props> = () => {
       )}
 
       <div className="relative z-20" ref={preferencesButtonRef}>
-        <button
-          aria-label="Open preferences menu"
-          className={clsx(
-            'w-10 p-1 rounded bg-purple-400 shadow text-purple-50 hover:cursor-pointer hover:bg-purple-400 transition-colors dark:hover:text-purple-50 dark:text-gray-900'
-          )}
+        <Button
+          variant="primary"
           onClick={togglePreferences}
+          aria-label="Open preferences menu"
         >
-          <CogIcon className="w-full" />
-        </button>
+          <CogIcon className="w-8" />
+        </Button>
         {renderPreferences && (
           <ul
             role="menu"
@@ -168,60 +193,25 @@ const TopMenu: FC<Props> = () => {
               showPreferences ? 'opacity-100' : 'opacity-0 -translate-y-2'
             )}
           >
-            {/* {!isiOS && (
-              <li role="menuitem">
-                <button
-                  disabled={!showPreferences}
-                  className={clsx(
-                    'p-1 rounded transition-colors duration-100 w-full dark:hover:text-purple-50',
-                    biometricsAuth
-                      ? 'dark:text-purple-400 dark:bg-gray-900 shadow-md hover:bg-purple-400 bg-purple-50 text-purple-400'
-                      : 'hover:text-purple-400 bg-purple-400 dark:text-gray-900 text-purple-50',
-                    showPreferences ? 'hover:cursor-pointer' : 'cursor-default'
-                  )}
-                  onClick={() => {
-                    setPreference('biometricsAuth', !biometricsAuth)
-                    setShowPreferences(false)
-                  }}
-                >
-                  <FingerPrintIcon className="h-full" />
-                </button>
-              </li>
-            )} */}
             <li role="menuitem">
-              <button
+              <Button
                 aria-label="Toggle dark mode"
-                disabled={!showPreferences}
-                className={clsx(
-                  'p-1 rounded transition-colors duration-100 w-full dark:hover:text-purple-50 hover:bg-purple-300 dark:text-purple-400 dark:bg-gray-900 bg-purple-400 text-purple-50',
-                  showPreferences ? 'hover:cursor-pointer' : 'cursor-default'
-                )}
-                onClick={() => {
-                  setPreference('darkMode', !darkMode)
-                  setShowPreferences(false)
-                }}
+                variant="primary"
+                toggledOn={darkMode}
+                onClick={() => setPreference('darkMode', !darkMode)}
               >
-                <MoonIcon className="h-full" />
-              </button>
+                <MoonIcon className="w-6" />
+              </Button>
             </li>
             <li role="menuitem">
-              <button
+              <Button
                 aria-label="Toggle left handed mode"
-                disabled={!showPreferences}
-                className={clsx(
-                  'p-1 rounded transition-colors duration-100 w-full dark:hover:text-purple-50',
-                  leftHanded
-                    ? 'dark:text-purple-400 dark:bg-gray-900 bg-purple-50 text-purple-400 hover:text-purple-300'
-                    : 'text-purple-50 dark:text-gray-900 dark:hover:text-gray-900 hover:bg-purple-300',
-                  showPreferences ? 'hover:cursor-pointer' : 'cursor-default'
-                )}
-                onClick={() => {
-                  setPreference('leftHanded', !leftHanded)
-                  setShowPreferences(false)
-                }}
+                variant="primary"
+                toggledOn={leftHanded}
+                onClick={() => setPreference('leftHanded', !leftHanded)}
               >
-                <HandIcon className="h-full" />
-              </button>
+                <HandIcon className="w-6" />
+              </Button>
             </li>
           </ul>
         )}

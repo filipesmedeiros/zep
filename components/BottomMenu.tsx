@@ -15,6 +15,8 @@ import { FC, useState } from 'react'
 import { useAccount } from '../lib/context/accountContext'
 import { usePreferences } from '../lib/context/preferencesContext'
 import useIsWelcoming from '../lib/hooks/useIsWelcoming'
+import Button from './Button'
+import ButtonLink from './ButtonLink'
 
 export interface Props {
   className?: string
@@ -24,7 +26,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
   const {
     preferences: { leftHanded },
   } = usePreferences()
-  const { push, pathname } = useRouter()
+  const { pathname } = useRouter()
   const account = useAccount()
 
   const [confirmCopyAddress, setConfirmCopyAddress] = useState(false)
@@ -36,20 +38,19 @@ const BottomMenu: FC<Props> = ({ className }) => {
     }
   }
 
-  const onShare = () => {
+  const onShare = () =>
     navigator.share({
       title: 'This is my nano address!',
       text: account?.address,
     })
-  }
 
   const isWelcoming = useIsWelcoming()
 
   return (
     <footer
-      role="menubar"
+      role="navigation"
       className={clsx(
-        'flex w-full items-end transition-opacity',
+        'flex w-full items-end transition-opacity gap-2',
         leftHanded ? 'flex-row-reverse' : 'flex-row',
         pathname === '/dashboard' ? 'justify-end' : 'justify-between',
         { 'opacity-50': isWelcoming },
@@ -57,94 +58,83 @@ const BottomMenu: FC<Props> = ({ className }) => {
       )}
     >
       {pathname !== '/dashboard' && (
-        <Link href="/dashboard">
-          <a
-            aria-label="go back to the dashboard"
-            role="menuitem"
-            className={clsx(
-              'h-12 p-1 bg-purple-400 transition-colors rounded shadow hover:bg-purple-400 disabled:hover:bg-purple-400 disabled:cursor-default',
-              { 'pointer-events-none': isWelcoming }
-            )}
-          >
-            <HomeIcon className="h-full text-purple-50 dark:text-gray-900 transition-colors" />
-          </a>
-        </Link>
+        <ButtonLink
+          href="/dashboard"
+          aria-label="go back to the dashboard"
+          variant="primary"
+          disabled={isWelcoming}
+        >
+          <HomeIcon className="w-10" />
+        </ButtonLink>
       )}
 
       <div
-        role="menuitem"
-        className={clsx(
-          'flex gap-4 xs:gap-6 items-end',
-          leftHanded ? 'flex-row-reverse' : 'flex-row'
-        )}
+        className={clsx('flex gap-4 xs:gap-6 items-end', {
+          'flex-row-reverse': leftHanded,
+        })}
       >
         {'share' in navigator ? (
-          <button
+          <Button
+            variant="primary"
             aria-label="Share your nano address"
             disabled={isWelcoming}
-            className="w-10 h-16 p-1 bg-purple-400 transition-colors rounded shadow hover:bg-purple-400 disabled:hover:bg-purple-400 disabled:cursor-default"
             onClick={onShare}
           >
-            <ShareIcon className="text-purple-50 dark:text-gray-900 transition-colors" />
-          </button>
+            <ShareIcon className="w-8 transition-colors" />
+          </Button>
         ) : (
-          <button
+          <Button
+            variant="primary"
             aria-label="Copy your nano address to the clipboard"
             disabled={isWelcoming || confirmCopyAddress}
-            className={clsx(
-              'p-1 h-16 w-10 rounded shadow transition-colors',
-              confirmCopyAddress
-                ? 'bg-purple-50'
-                : 'bg-purple-400 hover:bg-purple-400 disabled:hover:bg-purple-400 disabled:cursor-default'
-            )}
+            className={clsx({
+              '!bg-purple-50 !text-purple-400': confirmCopyAddress,
+            })}
             onClick={onCopyAddress}
           >
             {confirmCopyAddress ? (
-              <CheckIcon className="text-purple-400" />
+              <CheckIcon className="w-8" />
             ) : (
-              <DocumentDuplicateIcon className="text-purple-50 dark:text-gray-900 transition-colors" />
+              <DocumentDuplicateIcon className="w-8" />
             )}
-          </button>
+          </Button>
         )}
 
-        <div className={clsx('flex h-16', { 'flex-row-reverse': leftHanded })}>
-          <Link href="/receive/qr">
-            <a
-              aria-label="see your qrcode"
-              role="navigation"
-              className={clsx(
-                'bg-purple-400 transition-colors h-16 px-1 xs:px-2 w-10 xs:w-14 hover:bg-purple-400 disabled:hover:bg-purple-400 shadow disabled:cursor-default',
-                leftHanded ? 'rounded-r' : 'rounded-l',
-                { 'pointer-events-none': isWelcoming }
-              )}
-            >
-              <LoginIcon
-                className={
-                  'h-full text-purple-50 dark:text-gray-900 transition-colors w-full -rotate-child-90'
-                }
-              />
-            </a>
-          </Link>
+        <nav className={clsx('flex h-16', { 'flex-row-reverse': leftHanded })}>
+          <ButtonLink
+            variant="primary"
+            href="/receive/qr"
+            aria-label="see your qrcode"
+            disabled={isWelcoming}
+            className={clsx(
+              'xs:px-2 flex items-center',
+              leftHanded ? 'rounded-l-none' : 'rounded-r-none'
+            )}
+          >
+            <LoginIcon className="transition-colors stroke-2 w-10 -rotate-child-90" />
+          </ButtonLink>
+
           <div
             role="presentation"
-            className="h-16 p-1 border-t-2 border-b-2 border-purple-400 shadow"
+            className="p-1 border-t-2 border-b-2 border-purple-400 shadow w-16"
           >
-            <QrcodeIcon className="h-full text-gray-900 dark:text-purple-100 transition-colors" />
+            <QrcodeIcon className="h-full text-gray-900 dark:text-purple-100 transition-colors w-full" />
           </div>
-          <Link href="/send/qrOrAddress">
-            <a
-              aria-label="send ӾNO"
-              role="navigation"
-              className={clsx(
-                'bg-purple-400 transition-colors h-16 px-1 xs:px-2 w-10 xs:w-14 hover:bg-purple-400 disabled:hover:bg-purple-400 shadow disabled:cursor-default',
-                leftHanded ? 'rounded-l' : 'rounded-r',
-                { 'pointer-events-none': isWelcoming }
-              )}
-            >
-              <PaperAirplaneIcon className="h-full text-purple-50 dark:text-gray-900 transition-colors w-full rotate-[30deg] translate-x-1 -translate-y-0.5" />
-            </a>
-          </Link>
-        </div>
+
+          <ButtonLink
+            variant="primary"
+            href="/send/qrOrAddress"
+            aria-label="send ӾNO"
+            disabled={isWelcoming}
+            className={clsx(
+              'xs:px-2 flex items-center',
+              leftHanded ? 'rounded-r-none' : 'rounded-l-none',
+              { 'pointer-events-none': isWelcoming }
+            )}
+          >
+            <PaperAirplaneIcon className="w-10 transition-colors rotate-[30deg] translate-x-1 -translate-y-0.5" />
+          </ButtonLink>
+        </nav>
       </div>
     </footer>
   )

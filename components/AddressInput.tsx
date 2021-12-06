@@ -27,11 +27,16 @@ const AddressInput: FC<Props> = ({
         id="xno-address"
         maxLength={65}
         minLength={65}
+        autoComplete="off"
         className="bg-transparent focus:outline-none w-full"
         value={value}
         pattern="^(nano|xrb)_[13]{1}[13456789abcdefghijkmnopqrstuwxyz]{59}$"
-        onChange={({ target: { value, validity } }) => {
-          if (!validity.patternMismatch) onChange(value)
+        onChange={({ target }) => {
+          if (!target.validity.patternMismatch) onChange(target.value)
+          else {
+            target.setCustomValidity('just paste an address here!')
+            target.reportValidity()
+          }
         }}
       />
     </div>

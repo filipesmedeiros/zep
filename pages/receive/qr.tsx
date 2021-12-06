@@ -1,8 +1,9 @@
 import { LoginIcon } from '@heroicons/react/outline'
+import { Unit, convert } from 'nanocurrency'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import XnoInput from '../../components/XnoInput'
 import { useAccount } from '../../lib/context/accountContext'
@@ -19,6 +20,13 @@ const MyQrCode: NextPage = () => {
 
   const [xnoToSend, setXnoToSend] = useState('')
 
+  const hasQueryAmount = amount !== undefined && amount !== '' && amount !== '0'
+
+  useEffect(() => {
+    if (hasQueryAmount && xnoToSend === '')
+      setXnoToSend(convert(amount, { from: Unit.raw, to: Unit.Nano }))
+  }, [amount, xnoToSend, hasQueryAmount])
+
   return (
     <>
       <Head>
@@ -31,7 +39,7 @@ const MyQrCode: NextPage = () => {
         </header>
 
         <canvas
-          className="rounded shadow !w-40 !h-40 xs:!w-64 xs:!h-64 sm:!w-80 sm:!h-80"
+          className="rounded shadow !w-40 !h-40 xs:!w-48 xs:!h-48 sm:!w-80 sm:!h-80"
           ref={canvasRef}
         />
 

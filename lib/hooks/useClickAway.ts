@@ -1,9 +1,7 @@
-import { RefObject, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
-const useClickAway = <T extends HTMLElement>(
-  ref: RefObject<T>,
-  callback: () => void
-) => {
+const useClickAway = <T extends HTMLElement>(callback: () => void) => {
+  const ref = useRef<T>(null)
   useEffect(() => {
     const listener = (event: MouseEvent) => {
       if (!ref.current?.contains(event.target as Node | null)) callback()

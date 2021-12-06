@@ -37,14 +37,17 @@ const XnoInput: FC<Props> = ({ value, onChange }) => {
       <input
         name="xno-amount"
         id="xno-amount"
-        maxLength={15}
         className="bg-transparent focus:outline-none"
         value={value}
         pattern="[0-9]*[\.,]?[0-9]{0,6}"
-        step="0.000001"
         autoComplete="off"
-        onChange={({ target: { value, validity } }) => {
-          if (!validity.patternMismatch) onInputChange(value)
+        onChange={({ target }) => {
+          if (!target.validity.patternMismatch) onInputChange(target.value)
+          else {
+            console.log('lol')
+            target.setCustomValidity('input an amount in Ӿ')
+            target.reportValidity()
+          }
         }}
       />
     </div>

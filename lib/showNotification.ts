@@ -2,6 +2,7 @@ const showNotification = async (params: {
   title: string
   body: string
   tag?: string
+  actions?: NotificationAction[]
 }) => {
   const sw = await navigator.serviceWorker.getRegistration()
   sw?.showNotification?.(params.title, {
@@ -9,6 +10,7 @@ const showNotification = async (params: {
     renotify: params.tag !== undefined,
     tag: params.tag,
     icon: '/images/icon-small.png',
+    actions: params.actions,
   })
 }
 
