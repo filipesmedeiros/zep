@@ -76,7 +76,7 @@ const RecentTransactions: FC<Props> = () => {
       {hasReceivable && (
         <section className="flex flex-col w-full gap-3">
           <div
-            className="flex items-center justify-between gap-1"
+            className="flex items-center justify-between gap-1 hover:cursor-pointer"
             onClick={() => setReceivablesExpanded(prev => !prev)}
           >
             <h1 className="flex-1 text-2xl font-semibold transition-colors text-gray-900 dark:text-purple-50">
