@@ -6,9 +6,9 @@ import { useRouter } from 'next/router'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import AddressInput from '../../components/AddressInput'
-import XnoInput from '../../components/XnoInput'
 import useReadQrFromVideo from '../../lib/hooks/useReadQrFromVideo'
 import isTxnUrl from '../../lib/xno/isTxnUrl'
+import isXnoAddress from '../../lib/xno/isXnoAddress'
 import txnUrlToParts from '../../lib/xno/txnUrlToParts'
 import xnoUrlHasAmount from '../../lib/xno/xnoUrlHasAmount'
 
@@ -18,12 +18,14 @@ const ReadQrCode: NextPage = () => {
     (urlOrAddress: string) => {
       if (isTxnUrl(urlOrAddress)) {
         const { address, amount } = txnUrlToParts(urlOrAddress)
-        push(
-          `/send?address=${address}${
-            xnoUrlHasAmount(urlOrAddress) ? `&amount=${amount}` : ''
-          }`
-        )
-      } else push(`/send?address=${urlOrAddress}`)
+        push({
+          pathname: '/send',
+          query: {
+            address,
+            ...(xnoUrlHasAmount(urlOrAddress) ? { amount } : {}),
+          },
+        })
+      } else push({ pathname: '/send', query: { address: urlOrAddress } })
     },
     [push]
   )
@@ -33,7 +35,7 @@ const ReadQrCode: NextPage = () => {
   const formRef = useRef<HTMLFormElement>(null)
 
   useEffect(() => {
-    if (address !== '' && formRef.current !== null)
+    if (address !== '' && formRef.current !== null && isXnoAddress(address))
       formRef.current.requestSubmit()
   }, [address, formRef])
 
@@ -62,7 +64,8 @@ const ReadQrCode: NextPage = () => {
             ref={formRef}
             onSubmit={e => {
               e.preventDefault()
-              if (address !== '') push(`/send?address=${address}`)
+              if (address !== '')
+                push({ pathname: '/send', query: { address } })
             }}
           >
             <AddressInput value={address} onChange={setAddress} />

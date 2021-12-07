@@ -125,3 +125,13 @@ export interface WorkGenerateResponse {
   multiplier: string
   hash: string
 }
+
+export interface NanoToUsernameResponse {
+  id: string
+  status: 'Active'
+  address: string
+  namespace: string
+  expires: string
+  created: string
+  updated: string
+}
