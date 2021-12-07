@@ -7,10 +7,13 @@ import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 
 import XnoInput from '../../components/XnoInput'
+import fetcher from '../../lib/fetcher'
 import useChallenge from '../../lib/hooks/useChallenge'
 import useCredentialId from '../../lib/hooks/useCredentialId'
 import useSendNano from '../../lib/hooks/useSendNano'
 import showNotification from '../../lib/showNotification'
+import { NanoToUsernameResponse } from '../../lib/types'
+import isXnoAddress from '../../lib/xno/isXnoAddress'
 
 const Send: NextPage = () => {
   const { query, push } = useRouter()
@@ -40,8 +43,14 @@ const Send: NextPage = () => {
   useEffect(() => {
     if (sliderPercentage === 1) {
       const sendNano = async () => {
+        const finalAddress = isXnoAddress(address!)
+          ? address!
+          : await fetcher<NanoToUsernameResponse>(
+              `https://nano.to/${address}/username?json=true`
+            ).then(res => res.address)
+
         backToBase()
-        await send(address!, amount!)
+        await send(finalAddress!, amount!)
         showNotification({
           title: 'sent!',
           body: `sent Ӿ${convert(amount!, {
