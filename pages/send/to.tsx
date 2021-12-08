@@ -42,12 +42,12 @@ const ReadQrCode: NextPage = () => {
   return (
     <>
       <Head>
-        <title>zep⚡️ - read qrcode</title>
+        <title>zep⚡️ - who to send xno to?</title>
       </Head>
       <div className="flex flex-col h-full min-h-0 gap-8 pb-4">
         <span className="flex items-center gap-2">
           <PaperAirplaneIcon className=" dark:text-purple-50 h-7 xs:h-10 text-gray-900 rotate-[30deg] transition-colors translate-x-1" />
-          <h1 className="text-3xl sm:text-5xl">send</h1>
+          <h1 className="text-3xl sm:text-5xl font-medium">send</h1>
         </span>
         <video
           className={clsx('rounded flex-1 shadow-md min-h-0', {

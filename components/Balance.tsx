@@ -33,9 +33,7 @@ const Balance: FC<Props> = ({ className }) => {
     showCurrencyDash !== ShowCurrencyPreference.None && account !== undefined
 
   const showFiatBalance =
-    showCurrencyDash === ShowCurrencyPreference.Both &&
-    xnoPrice !== undefined &&
-    account !== undefined
+    showCurrencyDash === ShowCurrencyPreference.Both && account !== undefined
 
   const xnoBalance = tools.convert(account?.balance ?? '0', 'RAW', 'NANO')
   const xnoBalanceDisplay = rawToNanoDisplay(account?.balance ?? '0')
@@ -74,8 +72,13 @@ const Balance: FC<Props> = ({ className }) => {
           </span>
         </h1>
         {showFiatBalance && (
-          <h2 className="text:lg xs:text-xl transition-colors">
-            $ {(Number(xnoBalance) * xnoPrice).toFixed(2)}
+          <h2 className="text:lg xs:text-xl flex items-center gap-2 transition-colors">
+            ${' '}
+            {xnoPrice !== undefined ? (
+              (Number(xnoBalance) * xnoPrice).toFixed(2)
+            ) : (
+              <span className="bg-gray-100 dark:bg-gray-800 flex shadow rounded motion-safe:animate-pulse h-6 w-10" />
+            )}
           </h2>
         )}
       </div>
