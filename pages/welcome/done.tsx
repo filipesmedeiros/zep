@@ -2,6 +2,8 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 
+import ButtonLink from '../../components/ButtonLink'
+
 const Done: NextPage = () => (
   <>
     <Head>
@@ -15,11 +17,13 @@ const Done: NextPage = () => (
         all the buttons are now enabled and you can start using <b>zep</b> and{' '}
         <b>nano</b>!
       </h3>
-      <Link href="/dashboard">
-        <a className="px-5 py-3 text-3xl font-bold bg-purple-400 transition-colors text-purple-50 rounded dark:bg-gray-800">
-          go! <span className="hidden">to your dashboard</span>
-        </a>
-      </Link>
+      <ButtonLink
+        href="/dashboard"
+        className="!text-xl xs:!text-3xl py-1 xs:py-3 px-6"
+        aria-label="go to your dashboard"
+      >
+        go!
+      </ButtonLink>
     </header>
   </>
 )

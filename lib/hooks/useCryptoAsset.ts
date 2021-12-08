@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 
+import openDb from '../db'
 import { getCryptoAsset } from '../db/cryptoAssets'
 import { CryptoAssetId } from '../db/types'
 

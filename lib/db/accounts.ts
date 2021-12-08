@@ -14,6 +14,9 @@ export const putAccount = async (account: AccountInfoCache) =>
 export const removeAccount = async (index: number) =>
   (await db())!.delete('accounts', index)
 
+export const removeAllAccounts = async () =>
+  (await db())!.delete('accounts', IDBKeyRange.lowerBound(0))
+
 export const getAccount = async (index: number) =>
   (await db())!.get('accounts', index)
 

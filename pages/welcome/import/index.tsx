@@ -2,10 +2,9 @@ import clsx from 'clsx'
 import { wallet } from 'nanocurrency-web'
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { useRouter } from 'next/router'
 import { useState } from 'react'
 
-import MnemonicInput from '../../../components/MnemonicInput'
+import PassphraseInput from '../../../components/PassphraseInput'
 import SeedInput from '../../../components/SeedInput'
 import computeWorkAsync from '../../../lib/computeWorkAsync'
 import { useAccounts } from '../../../lib/context/accountContext'
@@ -19,7 +18,6 @@ import accountAtIndex from '../../../lib/xno/accountAtIndex'
 import fetchAccountInfo from '../../../lib/xno/fetchAccountInfo'
 
 const Register: NextPage = () => {
-  const { push } = useRouter()
   const { setAccount } = useAccounts()
   const [isPassphrase, setIsPassphrase] = useState(true)
 
@@ -83,7 +81,7 @@ const Register: NextPage = () => {
       }
     })
 
-    push('/welcome/done')
+    window.location.href = '/welcome/done'
   }
   return (
     <>
@@ -122,7 +120,7 @@ const Register: NextPage = () => {
         ) : (
           <ol className="flex w-full gap-2 overflow-x-auto">
             <li className="min-w-[150px]">
-              <MnemonicInput
+              <PassphraseInput
                 onPaste={onPaste}
                 number={1}
                 value={passphraseInputs[0] ?? ''}
@@ -138,7 +136,7 @@ const Register: NextPage = () => {
             </li>
             {new Array(24).fill(0, 0, 23).map((_, idx) => (
               <li key={idx} className="min-w-[150px]">
-                <MnemonicInput
+                <PassphraseInput
                   onPaste={onPaste}
                   number={idx + 2}
                   value={passphraseInputs[idx + 1] ?? ''}

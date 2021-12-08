@@ -1,27 +1,12 @@
-import clsx from 'clsx'
-import { wallet } from 'nanocurrency-web'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect } from 'react'
 
-import MnemonicInput from '../../../components/MnemonicInput'
-import SeedInput from '../../../components/SeedInput'
 import { registerBiometrics } from '../../../lib/biometrics'
-import computeWorkAsync from '../../../lib/computeWorkAsync'
-import { useAccounts } from '../../../lib/context/accountContext'
-import { addAccount, addPrecomputedWork } from '../../../lib/db/accounts'
-import { hasCryptoAsset } from '../../../lib/db/cryptoAssets'
-import { addEncryptedSeed } from '../../../lib/db/encryptedSeeds'
-import encryptSeed from '../../../lib/encryptSeed'
 import useChallenge from '../../../lib/hooks/useChallenge'
 import useCredentialId from '../../../lib/hooks/useCredentialId'
-import { AccountInfoCache } from '../../../lib/types'
-import accountAtIndex from '../../../lib/xno/accountAtIndex'
-import fetchAccountInfo from '../../../lib/xno/fetchAccountInfo'
 
-// todo organize this component
-// and make it so that pressing "space" will change passphrase word inputs
 const Import: NextPage = () => {
   const { push, replace } = useRouter()
 

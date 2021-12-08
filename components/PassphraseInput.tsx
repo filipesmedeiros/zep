@@ -8,13 +8,13 @@ export interface Props {
   onPaste: (text: string) => void
 }
 
-const MnemonicInput: FC<Props> = ({ value, onChange, number, onPaste }) => (
+const PassphraseInput: FC<Props> = ({ value, onChange, number, onPaste }) => (
   <div className="flex items-center w-full gap-3 text-2xl rounded transition-colors dark:bg-gray-800 bg-purple-50 focus-within:bg-purple-100 py-2 px-4 overflow-hidden dark:focus-within:bg-gray-700">
     <label htmlFor={`xno-mnemonic-word-${number}`}>
       <span className="text-gray-900 dark:text-purple-50 h-7">{number}.</span>
     </label>
     <input
-      autoFocus={number === 0}
+      autoFocus={number === 1}
       onPaste={ev => onPaste(ev.clipboardData.getData('text'))}
       name={`xno-mnemonic-word-${number}`}
       id={`xno-mnemonic-word-${number}`}
@@ -28,4 +28,4 @@ const MnemonicInput: FC<Props> = ({ value, onChange, number, onPaste }) => (
   </div>
 )
 
-export default MnemonicInput
+export default PassphraseInput

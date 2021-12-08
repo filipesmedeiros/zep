@@ -4,8 +4,25 @@ import Head from 'next/head'
 
 import Button from '../components/Button'
 import ButtonLink from '../components/ButtonLink'
+import { checkBiometrics } from '../lib/biometrics'
+import { removeAllAccounts } from '../lib/db/accounts'
+import { removeCryptoAsset } from '../lib/db/cryptoAssets'
+import { removeEncryptedSeed } from '../lib/db/encryptedSeeds'
+import useChallenge from '../lib/hooks/useChallenge'
+import useCredentialId from '../lib/hooks/useCredentialId'
 
 const Reset: NextPage = () => {
+  const { credentialId } = useCredentialId()
+  const { challenge } = useChallenge()
+  const onReset = async () => {
+    await checkBiometrics({ challenge: challenge!, rawId: credentialId! })
+    await Promise.all([
+      removeEncryptedSeed('os'),
+      removeAllAccounts(),
+      removeCryptoAsset('credentialId'),
+    ])
+    window.location.href = '/welcome'
+  }
   return (
     <>
       <Head>
@@ -33,7 +50,9 @@ const Reset: NextPage = () => {
         </h3>
 
         <div className="flex flex-col gap-2">
-          <Button variant="primary">remove wallet</Button>
+          <Button onClick={onReset} variant="primary">
+            remove wallet
+          </Button>
           <ButtonLink href="/">go back</ButtonLink>
         </div>
       </div>
