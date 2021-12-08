@@ -22,7 +22,9 @@ const Representative: NextPage = () => {
       <div className="flex-1 flex flex-col gap-6">
         <h1 className="flex items-center w-full gap-2">
           <LibraryIcon className="dark:text-purple-50 h-7 xs:h-8 text-gray-900 translate-x-1 transition-colors" />
-          <span className="text-3xl sm:text-5xl">representative</span>
+          <span className="text-3xl sm:text-5xl font-medium">
+            representative
+          </span>
         </h1>
 
         <section className="flex flex-col gap-1">

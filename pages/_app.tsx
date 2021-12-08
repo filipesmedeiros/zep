@@ -12,9 +12,9 @@ import '../styles/global.css'
 
 const MyApp: FC<AppProps> = ({ Component, pageProps }) => {
   useSetupServiceWorker()
-  const checkingCredential = useProtectedRoutes()
+  const { safeToRender } = useProtectedRoutes()
 
-  if (checkingCredential) return null // todo
+  if (!safeToRender) return null // todo
 
   return (
     <>

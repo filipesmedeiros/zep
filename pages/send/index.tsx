@@ -91,7 +91,7 @@ const Send: NextPage = () => {
       <div className="flex flex-col h-full gap-8 pb-4">
         <span className="flex items-center gap-2">
           <PaperAirplaneIcon className="transition-colors dark:text-purple-50 h-7 xs:h-10 text-gray-900 rotate-[30deg] translate-x-1" />
-          <h1 className="text-3xl sm:text-5xl">send</h1>
+          <h1 className="text-3xl sm:text-5xl font-medium">send</h1>
         </span>
         <form
           onSubmit={ev => ev.preventDefault()}

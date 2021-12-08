@@ -90,7 +90,9 @@ const BottomMenu: FC<Props> = ({ className }) => {
             className={clsx({
               '!bg-purple-50 !text-purple-400': confirmCopyAddress,
             })}
-            onClick={onCopyAddress}
+            onClick={
+              !(isWelcoming || confirmCopyAddress) ? onCopyAddress : undefined
+            }
           >
             {confirmCopyAddress ? (
               <CheckIcon className="w-8" />
@@ -123,7 +125,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
 
           <ButtonLink
             variant="primary"
-            href="/send/qrOrAddress"
+            href="/send/to"
             aria-label="send ӾNO"
             disabled={isWelcoming}
             className={clsx(

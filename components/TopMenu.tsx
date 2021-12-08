@@ -6,6 +6,7 @@ import {
   KeyIcon,
   LibraryIcon,
   MoonIcon,
+  TrashIcon,
 } from '@heroicons/react/solid'
 import clsx from 'clsx'
 import Link from 'next/link'
@@ -160,6 +161,16 @@ const TopMenu: FC<Props> = () => {
                   </ButtonLink>
                 </li>
               )}
+              <li role="menuitem">
+                <ButtonLink
+                  href="/reset"
+                  aria-label="Reset your zep wallet"
+                  variant="primary"
+                  className="block"
+                >
+                  <TrashIcon className="h-6" />
+                </ButtonLink>
+              </li>
               {/* <li>
                 <button
                   className={clsx(
