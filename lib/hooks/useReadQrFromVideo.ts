@@ -9,6 +9,11 @@ const useReadQrFromVideo = (onQrCodeRead: (content: string) => void) => {
     let stopTick = false
     let stream: MediaStream | undefined
 
+    const cleanup = () => {
+      stream?.getTracks().forEach(track => track.stop())
+      stream?.addEventListener('addtrack', track => track.track.stop())
+    }
+
     const start = async () => {
       stream = await navigator.mediaDevices.getUserMedia({
         video: {
@@ -18,6 +23,10 @@ const useReadQrFromVideo = (onQrCodeRead: (content: string) => void) => {
       video.srcObject = stream
       video.setAttribute('playsinline', 'true') // required to tell iOS safari we don't want fullscreen
       await video.play()
+      if (stopTick) {
+        cleanup()
+        return
+      }
       setVideoLive(true)
 
       video.width = video.getBoundingClientRect().width
@@ -50,10 +59,7 @@ const useReadQrFromVideo = (onQrCodeRead: (content: string) => void) => {
     start()
 
     return () => {
-      if (stream !== undefined) {
-        stream.getTracks().forEach(track => track.stop())
-        stream.addEventListener('addtrack', track => track.track.stop())
-      }
+      if (stream !== undefined) cleanup()
       stopTick = true
     }
   }, [onQrCodeRead])
