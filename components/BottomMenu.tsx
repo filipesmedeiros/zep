@@ -88,7 +88,7 @@ const BottomMenu: FC<Props> = ({ className }) => {
             aria-label="Copy your nano address to the clipboard"
             disabled={isWelcoming || confirmCopyAddress}
             className={clsx({
-              '!bg-purple-50 !text-purple-400': confirmCopyAddress,
+              '!bg-primary-50 !text-primary-400': confirmCopyAddress,
             })}
             onClick={
               !(isWelcoming || confirmCopyAddress) ? onCopyAddress : undefined
@@ -118,9 +118,9 @@ const BottomMenu: FC<Props> = ({ className }) => {
 
           <div
             role="presentation"
-            className="p-1 border-t-2 border-b-2 border-purple-400 shadow w-16"
+            className="p-1 border-t-2 border-b-2 border-primary-400 shadow w-16"
           >
-            <QrcodeIcon className="h-full text-gray-900 dark:text-purple-100 transition-colors w-full" />
+            <QrcodeIcon className="h-full text-gray-900 dark:text-primary-100 transition-colors w-full" />
           </div>
 
           <ButtonLink

@@ -83,11 +83,11 @@ const RecentTransactions: FC<Props> = () => {
             className="flex items-center justify-between gap-1 hover:cursor-pointer"
             onClick={() => setReceivablesExpanded(prev => !prev)}
           >
-            <h1 className="flex-1 text-2xl font-semibold transition-colors text-gray-900 dark:text-purple-50">
+            <h1 className="flex-1 text-2xl font-semibold transition-colors text-gray-900 dark:text-primary-50">
               incoming
             </h1>
 
-            <span className="w-6 text-base text-center dark:text-gray-900 text-purple-50 rounded-full bg-purple-400 dark:bg-purple-50">
+            <span className="w-6 text-base text-center dark:text-gray-900 text-primary-50 rounded-full bg-primary-400 dark:bg-primary-50">
               {receivableBlocks.length}
             </span>
             <ChevronUpIcon
@@ -108,7 +108,7 @@ const RecentTransactions: FC<Props> = () => {
             {receivableBlocks.map(receivable => (
               <li
                 key={receivable.hash}
-                className="flex items-center justify-between px-3 py-3 text-black border-r-4 border-yellow-400 rounded shadow bg-gray-50 transition-colors dark:hover:bg-gray-700 dark:bg-gray-800 dark:text-purple-50 gap-2"
+                className="flex items-center justify-between px-3 py-3 text-black border-r-4 border-orange-400 rounded shadow bg-gray-50 transition-colors dark:hover:bg-gray-700 dark:bg-gray-800 dark:text-primary-50 gap-2"
               >
                 <button
                   aria-label={`Receive transaction from ${
@@ -117,7 +117,7 @@ const RecentTransactions: FC<Props> = () => {
                   className="contents"
                   onClick={() => onIncomingClick(receivable)}
                 >
-                  <ClockIcon className="flex-shrink-0 w-6 text-yellow-400" />
+                  <ClockIcon className="flex-shrink-0 w-6 text-orange-400" />
 
                   <div className="overflow-hidden text-left overflow-ellipsis whitespace-nowrap">
                     {Intl.DateTimeFormat([], {
@@ -148,7 +148,7 @@ const RecentTransactions: FC<Props> = () => {
       )}
       <section className="flex flex-col flex-1 w-full min-h-0 gap-3">
         <div className="flex items-center justify-between gap-1">
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-purple-50">
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-primary-50">
             recent transactions
           </h1>
           {hasHistory && (
@@ -176,8 +176,8 @@ const RecentTransactions: FC<Props> = () => {
               <li
                 key={txn.hash}
                 className={clsx(
-                  'bg-gray-50 dark:bg-gray-800 dark:text-purple-50 shadow rounded px-3 py-3 flex items-center justify-between gap-2 text-black border-r-4 transition-colors',
-                  txn.type === 'send' ? 'border-yellow-300' : 'border-green-300'
+                  'bg-gray-50 dark:bg-gray-800 dark:text-primary-50 shadow rounded px-3 py-3 flex items-center justify-between gap-2 text-black border-r-4 transition-colors',
+                  txn.type === 'send' ? 'border-orange-400' : 'border-sky-400'
                 )}
               >
                 <Link href={`/transaction/${txn.hash}`}>
@@ -186,10 +186,10 @@ const RecentTransactions: FC<Props> = () => {
                       see {txn.hash} transaction details
                     </span>
                     {txn.type === 'send' ? (
-                      <UploadIcon className="flex-shrink-0 w-6 text-yellow-300" />
+                      <UploadIcon className="flex-shrink-0 w-6 text-orange-400" />
                     ) : (
                       <DownloadIcon
-                        className={clsx('w-6 flex-shrink-0 text-green-300')}
+                        className={clsx('w-6 flex-shrink-0 text-sky-400')}
                       />
                     )}
                     <div className="flex-1 overflow-hidden text-left overflow-ellipsis whitespace-nowrap">
@@ -225,7 +225,7 @@ const RecentTransactions: FC<Props> = () => {
             {hasMore && (
               <button
                 aria-label="Load more transactions"
-                className="px-4 py-1.5 font-bold transition-colors bg-purple-400 rounded text-purple-50 shadow dark:text-gray-900 place-self-center"
+                className="px-4 py-1.5 font-bold transition-colors bg-primary-400 rounded text-primary-50 shadow dark:text-gray-900 place-self-center"
                 onClick={loadMore}
               >
                 load more
@@ -233,7 +233,7 @@ const RecentTransactions: FC<Props> = () => {
             )}
           </ol>
         ) : (
-          <div className="pt-8 text-center text-xl text-gray-900 dark:text-purple-50">
+          <div className="pt-8 text-center text-xl text-gray-900 dark:text-primary-50">
             <p className="pb-4">no transactions yet...</p>
             <p>
               get your first nano

@@ -8,7 +8,7 @@ const Welcome: NextPage = () => {
       <Head>
         <title>zep⚡️ - welcome</title>
       </Head>
-      <div className="flex flex-col justify-center w-full h-full text-center text-gray-900 transition-colors dark:text-purple-50">
+      <div className="flex flex-col justify-center w-full h-full text-center text-gray-900 transition-colors dark:text-primary-50">
         <h1 className="mb-3 text-3xl xs:text-5xl font-extrabold">hey!</h1>
         <p className="mb-3 text-xl font-medium">
           do you already have a
@@ -18,12 +18,12 @@ const Welcome: NextPage = () => {
 
         <div className="flex flex-col justify-center w-full gap-3 mb-3 xs:mb-6">
           <Link href="/welcome/import/register">
-            <a className="px-5 py-2 text-lg font-bold text-purple-50 transition-all rounded shadow-lg bg-purple-400 dark:bg-gray-800 dark:text-purple-50 hover:bg-purple-300 dark:hover:bg-gray-800 hover:shadow-md active:shadow">
+            <a className="px-5 py-2 text-lg font-bold text-primary-50 transition-all rounded shadow-lg bg-primary-400 dark:bg-gray-800 dark:text-primary-50 hover:bg-primary-300 dark:hover:bg-gray-800 hover:shadow-md active:shadow">
               i have a passphrase/seed
             </a>
           </Link>
           <Link href="/welcome/new">
-            <a className="px-5 py-2 text-lg font-bold text-purple-50 transition-all rounded shadow-lg bg-purple-400 dark:bg-gray-800 dark:text-purple-50 hover:bg-purple-300 dark:hover:bg-gray-800 hover:shadow-md active:shadow">
+            <a className="px-5 py-2 text-lg font-bold text-primary-50 transition-all rounded shadow-lg bg-primary-400 dark:bg-gray-800 dark:text-primary-50 hover:bg-primary-300 dark:hover:bg-gray-800 hover:shadow-md active:shadow">
               what&apos;s a passphrase?
             </a>
           </Link>

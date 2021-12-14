@@ -88,7 +88,7 @@ const Register: NextPage = () => {
       <Head>
         <title>zep⚡️ - import</title>
       </Head>
-      <div className="flex flex-col items-center justify-start h-full px-4 text-center gap-6 text-gray-900 dark:text-purple-50 transition-colors">
+      <div className="flex flex-col items-center justify-start h-full px-4 text-center gap-6 text-gray-900 dark:text-primary-50 transition-colors">
         <h1 className="font-extrabold text-3xl">input your secret</h1>
         <p className="text-lg">
           store the <b>secret</b> securely in zep
@@ -97,7 +97,7 @@ const Register: NextPage = () => {
           <button
             aria-label="Use passphrase"
             className={clsx(
-              'px-4 py-1 text-lg font-bold bg-purple-400 transition-all text-purple-50 rounded dark:bg-gray-800',
+              'px-4 py-1 text-lg font-bold bg-primary-400 transition-all text-primary-50 rounded dark:bg-gray-800',
               isPassphrase ? 'scale-110' : 'opacity-80'
             )}
             onClick={() => setIsPassphrase(true)}
@@ -107,7 +107,7 @@ const Register: NextPage = () => {
           <button
             aria-label="Use seed"
             className={clsx(
-              'px-4 py-1 text-lg font-bold bg-purple-400 transition-all text-purple-50 rounded dark:bg-gray-800',
+              'px-4 py-1 text-lg font-bold bg-primary-400 transition-all text-primary-50 rounded dark:bg-gray-800',
               !isPassphrase ? 'scale-110' : 'opacity-80'
             )}
             onClick={() => setIsPassphrase(false)}
@@ -155,7 +155,7 @@ const Register: NextPage = () => {
         )}
         <button
           aria-label="Store passphrase securely on device storage"
-          className="px-5 py-2 text-xl font-bold bg-purple-400 transition-all text-purple-50 rounded dark:bg-gray-800 disabled:cursor-default disabled:opacity-60"
+          className="px-5 py-2 text-xl font-bold bg-primary-400 transition-all text-primary-50 rounded dark:bg-gray-800 disabled:cursor-default disabled:opacity-60"
           disabled={
             (seedInput === '' && !isPassphrase) ||
             (passphraseInputs.length !== 24 && isPassphrase)

@@ -7,9 +7,9 @@ export interface Props {
 }
 
 const SeedInput: FC<Props> = ({ value, onChange }) => (
-  <div className="flex items-center w-full gap-3 text-2xl rounded transition-colors dark:bg-gray-800 bg-purple-50 focus-within:bg-purple-100 py-2 px-4 overflow-hidden dark:focus-within:bg-gray-700">
+  <div className="flex items-center w-full gap-3 text-2xl rounded transition-colors dark:bg-gray-800 bg-primary-50 focus-within:bg-primary-100 py-2 px-4 overflow-hidden dark:focus-within:bg-gray-700">
     <label htmlFor="xno-seed">
-      <KeyIcon className="text-gray-900 dark:text-purple-50 h-7" />
+      <KeyIcon className="text-gray-900 dark:text-primary-50 h-7" />
     </label>
     <input
       autoFocus

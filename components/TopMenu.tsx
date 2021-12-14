@@ -128,7 +128,7 @@ const TopMenu: FC<Props> = () => {
               role="menu"
               ref={advancedRef}
               className={clsx(
-                'transition-all shadow flex flex-col gap-2 absolute w-10 bg-purple-400 p-1 rounded mt-3 hover:text-white',
+                'transition-all shadow flex flex-col gap-2 absolute w-10 bg-primary-400 p-1 rounded mt-3 hover:text-white',
                 showAdvanced ? 'opacity-100' : 'opacity-0 -translate-y-2'
               )}
             >
@@ -202,7 +202,7 @@ const TopMenu: FC<Props> = () => {
               if (!showPreferences) setRenderPreferences(false)
             }}
             className={clsx(
-              'transition-all shadow flex flex-col gap-2 absolute w-10 bg-purple-400 p-1 rounded mt-3',
+              'transition-all shadow flex flex-col gap-2 absolute w-10 bg-primary-400 p-1 rounded mt-3',
               showPreferences ? 'opacity-100' : 'opacity-0 -translate-y-2'
             )}
           >

@@ -39,7 +39,7 @@ const Balance: FC<Props> = ({ className }) => {
   const xnoBalanceDisplay = rawToNanoDisplay(account?.balance ?? '0')
 
   return (
-    <div className={clsx('dark:text-purple-50 text-gray-900 flex', className)}>
+    <div className={clsx('dark:text-primary-50 text-gray-900 flex', className)}>
       <div
         onClick={() =>
           setPreference('showCurrencyDash', nextShowCurrency(showCurrencyDash))

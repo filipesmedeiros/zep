@@ -46,7 +46,7 @@ const ReadQrCode: NextPage = () => {
       </Head>
       <div className="flex flex-col h-full min-h-0 gap-8 pb-4">
         <span className="flex items-center gap-2">
-          <PaperAirplaneIcon className=" dark:text-purple-50 h-7 xs:h-10 text-gray-900 rotate-[30deg] transition-colors translate-x-1" />
+          <PaperAirplaneIcon className=" dark:text-primary-50 h-7 xs:h-10 text-gray-900 rotate-[30deg] transition-colors translate-x-1" />
           <h1 className="text-3xl sm:text-5xl font-medium">send</h1>
         </span>
         <video
@@ -56,9 +56,9 @@ const ReadQrCode: NextPage = () => {
           ref={videoRef}
         />
         {!videoLive && (
-          <div className="w-full flex-1 h-64 rounded dark:bg-gray-800 bg-purple-50 animate-pulse"></div>
+          <div className="w-full flex-1 h-64 rounded dark:bg-gray-800 bg-primary-50 animate-pulse"></div>
         )}
-        <div className="flex flex-col justify-self-end items-center gap-2 text-gray-900 dark:text-purple-50">
+        <div className="flex flex-col justify-self-end items-center gap-2 text-gray-900 dark:text-primary-50">
           <span className="text-2xl">or</span>
           <form
             ref={formRef}

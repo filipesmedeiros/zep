@@ -30,7 +30,7 @@ const Reset: NextPage = () => {
       </Head>
       <div className="flex-1 flex flex-col gap-4">
         <h1 className="flex items-center w-full gap-2">
-          <TrashIcon className="dark:text-purple-50 h-7 xs:h-8 text-gray-900 translate-x-1 transition-colors" />
+          <TrashIcon className="dark:text-primary-50 h-7 xs:h-8 text-gray-900 translate-x-1 transition-colors" />
           <span className="text-3xl sm:text-5xl font-medium">
             remove wallet
           </span>
@@ -40,7 +40,7 @@ const Reset: NextPage = () => {
           make sure you have your seed stored securely outside zep before
           continuing, or
           <br />
-          <span className="font-extrabold text-purple-400">
+          <span className="font-extrabold text-primary-400">
             you will lose your xno!
           </span>
         </h2>

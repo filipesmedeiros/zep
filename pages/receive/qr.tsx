@@ -34,7 +34,7 @@ const MyQrCode: NextPage = () => {
       </Head>
       <div className="h-full flex flex-col items-center gap-4 xs:gap-5 sm:gap-7">
         <header className="flex items-center w-full gap-2">
-          <LoginIcon className="-rotate-child-90 dark:text-purple-50 h-7 xs:h-10 text-gray-900 translate-x-1 transition-colors" />
+          <LoginIcon className="-rotate-child-90 dark:text-primary-50 h-7 xs:h-10 text-gray-900 translate-x-1 transition-colors" />
           <h1 className="text-3xl sm:text-5xl font-medium">receive</h1>
         </header>
 

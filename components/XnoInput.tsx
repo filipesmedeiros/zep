@@ -32,7 +32,7 @@ const XnoInput: FC<Props> = ({ value, onChange }) => {
   )
 
   return (
-    <div className="flex items-center gap-3 text-2xl rounded transition-colors dark:bg-gray-800 bg-purple-50 focus-within:bg-purple-100 py-2 px-4 w-48 overflow-hidden dark:focus-within:bg-gray-700">
+    <div className="flex items-center gap-3 text-2xl rounded transition-colors dark:bg-gray-800 bg-primary-50 focus-within:bg-primary-100 py-2 px-4 w-48 overflow-hidden dark:focus-within:bg-gray-700">
       <label htmlFor="xno-amount">Ӿ</label>
       <input
         name="xno-amount"
