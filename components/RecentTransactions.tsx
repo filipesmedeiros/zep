@@ -8,6 +8,7 @@ import { FC, useEffect, useState } from 'react'
 import useAccountHistory from '../lib/hooks/useAccountHistory'
 import useAccountReceivable from '../lib/hooks/useAccountReceivable'
 import useChallenge from '../lib/hooks/useChallenge'
+import useContacts from '../lib/hooks/useContacts'
 import useCredentialId from '../lib/hooks/useCredentialId'
 import useReceiveNano from '../lib/hooks/useReceiveNano'
 import showNotification from '../lib/showNotification'
@@ -17,6 +18,9 @@ export interface Props {}
 
 const RecentTransactions: FC<Props> = () => {
   const { receive } = useReceiveNano()
+  const { data: contacts } = useContacts()
+  const findContact = (findAddress: string) =>
+    contacts?.find(({ address }) => address === findAddress)?.name
 
   const { receivableBlocks, onBlockReceived } = useAccountReceivable()
   const {
@@ -107,7 +111,9 @@ const RecentTransactions: FC<Props> = () => {
                 className="flex items-center justify-between px-3 py-3 text-black border-r-4 border-yellow-400 rounded shadow bg-gray-50 transition-colors dark:hover:bg-gray-700 dark:bg-gray-800 dark:text-purple-50 gap-2"
               >
                 <button
-                  aria-label={`Receive transaction from ${receivable.from}`}
+                  aria-label={`Receive transaction from ${
+                    findContact(receivable.from) ?? receivable.from
+                  }`}
                   className="contents"
                   onClick={() => onIncomingClick(receivable)}
                 >
@@ -192,7 +198,12 @@ const RecentTransactions: FC<Props> = () => {
                         month: '2-digit',
                         year: '2-digit',
                       }).format(Number(txn.local_timestamp) * 1000)}{' '}
-                      - {<span className="text-xs">{txn.account}</span>}
+                      -{' '}
+                      {
+                        <span className="text-xs">
+                          {findContact(txn.account) ?? txn.account}
+                        </span>
+                      }
                     </div>
                     <span className="flex-shrink-0 font-medium">
                       Ӿ{' '}
