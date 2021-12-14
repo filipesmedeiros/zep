@@ -4,6 +4,8 @@ import { consumePrecomputedWork, getAllAccounts } from './accounts'
 import type {
   AccountsKey,
   AccountsValue,
+  ContactKey,
+  ContactValue,
   CryptoAssetKey,
   CryptoAssetValue,
   EncryptedSeedKey,
@@ -32,6 +34,10 @@ interface Schema extends DBSchema {
     key: EncryptedSeedKey
     value: EncryptedSeedValue
   }
+  contacts: {
+    key: ContactKey
+    value: ContactValue
+  }
 }
 
 let dbConnection: IDBPDatabase<Schema> | undefined = undefined
@@ -54,6 +60,10 @@ export const openDb = async (version = 1) => {
         autoIncrement: true,
       })
       db.createObjectStore('preferences', {
+        keyPath: 'name',
+        autoIncrement: true,
+      })
+      db.createObjectStore('contacts', {
         keyPath: 'name',
         autoIncrement: true,
       })

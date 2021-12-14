@@ -7,6 +7,7 @@ import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 
 import XnoInput from '../../components/XnoInput'
+import { getContact } from '../../lib/db/contacts'
 import fetcher from '../../lib/fetcher'
 import useChallenge from '../../lib/hooks/useChallenge'
 import useCredentialId from '../../lib/hooks/useCredentialId'
@@ -40,14 +41,21 @@ const Send: NextPage = () => {
     setSliding(false)
   }, [setStartX, setCurrentX, setSliding])
 
+  const parseName = async (name: string) => {
+    const contact = await getContact(name)
+    if (contact !== undefined) return contact.address
+    else
+      return fetcher<NanoToUsernameResponse>(
+        `https://nano.to/${address}/username?json=true`
+      ).then(res => res.address)
+  }
+
   useEffect(() => {
     if (sliderPercentage === 1) {
       const sendNano = async () => {
         const finalAddress = isXnoAddress(address!)
           ? address!
-          : await fetcher<NanoToUsernameResponse>(
-              `https://nano.to/${address}/username?json=true`
-            ).then(res => res.address)
+          : await parseName(address!)
 
         backToBase()
         await send(finalAddress!, amount!)

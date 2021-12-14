@@ -26,6 +26,7 @@ const AddressInput: FC<Props> = ({
       id="xno-address"
       maxLength={65}
       autoComplete="off"
+      autoCorrect="off"
       className="bg-transparent focus:outline-none w-full"
       value={value}
       onChange={({ target }) => onChange(target.value)}

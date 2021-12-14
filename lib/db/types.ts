@@ -57,3 +57,13 @@ export type PreferenceKey = PreferenceName
 export type PreferenceValue = Preference
 
 export const preferenceSchema = 'name'
+
+interface Contact {
+  name: string
+  address: string
+}
+
+export type ContactKey = string
+export type ContactValue = Contact
+
+export const contactSchema = 'name'
