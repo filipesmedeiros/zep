@@ -20,13 +20,13 @@ const Layout: FC<Props> = ({ children }) => {
   useListenToColorMedia()
 
   return (
-    <div className="flex flex-col w-full h-full fixed gap-4 px-5 pt-4 pb-4 dark:text-purple-50 bg-white dark:bg-gray-900 transition-colors">
+    <div className="flex flex-col w-full h-full fixed gap-4 px-5 pt-4 pb-4 dark:text-primary-50 bg-white dark:bg-gray-900 transition-colors">
       <header
         className={clsx('flex justify-between items-center', {
           'flex-row-reverse': leftHanded,
         })}
       >
-        <div className="flex items-start text-gray-900 transition-colors dark:text-purple-100">
+        <div className="flex items-start text-gray-900 transition-colors dark:text-primary-100">
           <h1 className="text-2xl font-extrabold ">zep</h1>
           <LightningBoltIcon className="h-4" />
         </div>
@@ -35,7 +35,7 @@ const Layout: FC<Props> = ({ children }) => {
       {pathname !== '/' ? (
         <>
           <Balance />
-          <hr className="w-1/3 border-2 border-gray-900 dark:border-purple-50 rounded-l-sm rounded-r transition-colors" />
+          <hr className="w-1/3 border-2 border-gray-900 dark:border-primary-50 rounded-l-sm rounded-r transition-colors" />
           {children}
           <BottomMenu />
         </>

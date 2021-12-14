@@ -21,7 +21,7 @@ const Representative: NextPage = () => {
       </Head>
       <div className="flex-1 flex flex-col gap-6">
         <h1 className="flex items-center w-full gap-2">
-          <LibraryIcon className="dark:text-purple-50 h-7 xs:h-8 text-gray-900 translate-x-1 transition-colors" />
+          <LibraryIcon className="dark:text-primary-50 h-7 xs:h-8 text-gray-900 translate-x-1 transition-colors" />
           <span className="text-3xl sm:text-5xl font-medium">
             representative
           </span>
@@ -31,7 +31,7 @@ const Representative: NextPage = () => {
           <h1 className="text-3xl">current</h1>
           <hr className="w-4/12 rounded" />
           <h2 className="flex-1 text-lg">
-            <span className="text-purple-400">
+            <span className="text-primary-400">
               {account?.representative?.substring(0, 10)}
             </span>
             {account?.representative?.substring(10, 21)}
@@ -39,7 +39,7 @@ const Representative: NextPage = () => {
             {account?.representative?.substring(21, 42)}
             <br />
             {account?.representative?.substring(42, 56)}
-            <span className="text-purple-400 font-medium">
+            <span className="text-primary-400 font-medium">
               {account?.representative?.substring(56)}
             </span>
           </h2>
@@ -70,10 +70,10 @@ const Representative: NextPage = () => {
             <button
               type="submit"
               aria-label="Trigger biometrics authentication"
-              className="hidden xs:flex p-3 items-center dark:bg-gray-800 bg-purple-50 mb-3 rounded shadow hover:cursor-pointer"
+              className="hidden xs:flex p-3 items-center dark:bg-gray-800 bg-primary-50 mb-3 rounded shadow hover:cursor-pointer"
             >
               confirm
-              <CheckIcon className="h-7 text-gray-900 dark:text-purple-50" />
+              <CheckIcon className="h-7 text-gray-900 dark:text-primary-50" />
             </button>
           </form>
         </section>

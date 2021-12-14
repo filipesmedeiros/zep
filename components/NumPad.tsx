@@ -60,8 +60,8 @@ const NumPad: FC<Props> = ({ onNumPress, onDelete, onFingerprintPress }) => {
       {range(9).map(num => (
         <button
           className={clsx(
-            'dark:hover:bg-purple-50 hover:bg-gray-900 dark:hover:text-purple-600 hover:text-purple-50 active:bg-purple-100 transition-colors duration-100 rounded',
-            { 'bg-purple-100': activeKey === num + 1 }
+            'dark:hover:bg-primary-50 hover:bg-gray-900 dark:hover:text-primary-600 hover:text-primary-50 active:bg-primary-100 transition-colors duration-100 rounded',
+            { 'bg-primary-100': activeKey === num + 1 }
           )}
           key={num}
           onClick={() => onNumPress(num + 1)}
@@ -73,7 +73,7 @@ const NumPad: FC<Props> = ({ onNumPress, onDelete, onFingerprintPress }) => {
         <button
           onClick={onFingerprintPress}
           className={clsx(
-            'flex justify-center items-center dark:hover:bg-purple-50 hover:bg-gray-900 dark:hover:text-purple-600 hover:text-purple-50 active:bg-purple-100 transition-colors duration-100 rounded'
+            'flex justify-center items-center dark:hover:bg-primary-50 hover:bg-gray-900 dark:hover:text-primary-600 hover:text-primary-50 active:bg-primary-100 transition-colors duration-100 rounded'
           )}
         >
           <FingerPrintIcon className="w-7" />
@@ -81,8 +81,8 @@ const NumPad: FC<Props> = ({ onNumPress, onDelete, onFingerprintPress }) => {
       )}
       <button
         className={clsx(
-          'dark:hover:bg-purple-50 hover:bg-gray-900 dark:hover:text-purple-600 hover:text-purple-50 active:bg-purple-100 transition-colors duration-100 rounded',
-          { 'bg-purple-100': activeKey === 0, 'col-start-2': biometricsAuth }
+          'dark:hover:bg-primary-50 hover:bg-gray-900 dark:hover:text-primary-600 hover:text-primary-50 active:bg-primary-100 transition-colors duration-100 rounded',
+          { 'bg-primary-100': activeKey === 0, 'col-start-2': biometricsAuth }
         )}
         onClick={() => onNumPress(0)}
       >
@@ -91,8 +91,8 @@ const NumPad: FC<Props> = ({ onNumPress, onDelete, onFingerprintPress }) => {
       <button
         onClick={onDelete}
         className={clsx(
-          'flex justify-center items-center dark:hover:bg-purple-50 hover:bg-gray-900 dark:hover:text-purple-600 hover:text-purple-50 active:bg-purple-100 transition-colors rounded',
-          { 'bg-purple-100': activeKey === -1 }
+          'flex justify-center items-center dark:hover:bg-primary-50 hover:bg-gray-900 dark:hover:text-primary-600 hover:text-primary-50 active:bg-primary-100 transition-colors rounded',
+          { 'bg-primary-100': activeKey === -1 }
         )}
       >
         <BackspaceIcon className="w-7" />

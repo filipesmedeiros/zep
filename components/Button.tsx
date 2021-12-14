@@ -20,10 +20,10 @@ const Button: FC<Props> = ({
       {...props}
       className={clsx(
         variant === 'neutral'
-          ? 'bg-purple-50 text-gray-900 dark:bg-gray-800 dark:text-purple-50'
+          ? 'bg-primary-50 text-gray-900 dark:bg-gray-800 dark:text-primary-50'
           : toggledOn
-          ? 'bg-purple-50 text-purple-400 dark:bg-gray-900 active:hover:bg-purple-500 active:hover:text-purple-100 dark:active:hover:text-purple-100 md:hover:bg-purple-500 md:active:hover:bg-purple-600 md:dark:hover:text-purple-50'
-          : 'bg-purple-400 text-purple-50 dark:text-gray-900 active:hover:bg-purple-500 active:hover:text-purple-100 dark:active:hover:text-purple-100 md:hover:bg-purple-500 md:active:hover:bg-purple-600 md:dark:hover:text-purple-50',
+          ? 'bg-primary-50 text-primary-400 dark:bg-gray-900 active:hover:bg-primary-500 active:hover:text-primary-100 dark:active:hover:text-primary-100 md:hover:bg-primary-500 md:active:hover:bg-primary-600 md:dark:hover:text-primary-50'
+          : 'bg-primary-400 text-primary-50 dark:text-gray-900 active:hover:bg-primary-500 active:hover:text-primary-100 dark:active:hover:text-primary-100 md:hover:bg-primary-500 md:active:hover:bg-primary-600 md:dark:hover:text-primary-50',
         'p-1 rounded transition-all shadow active:translate-y-0.5 md:hover:cursor-pointer md:disabled:hover:cursor-default text-lg xs:text-xl font-bold',
         { 'opacity-80': disabled },
         className

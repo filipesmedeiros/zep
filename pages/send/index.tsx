@@ -98,7 +98,7 @@ const Send: NextPage = () => {
       </Head>
       <div className="flex flex-col h-full gap-8 pb-4">
         <span className="flex items-center gap-2">
-          <PaperAirplaneIcon className="transition-colors dark:text-purple-50 h-7 xs:h-10 text-gray-900 rotate-[30deg] translate-x-1" />
+          <PaperAirplaneIcon className="transition-colors dark:text-primary-50 h-7 xs:h-10 text-gray-900 rotate-[30deg] translate-x-1" />
           <h1 className="text-3xl sm:text-5xl font-medium">send</h1>
         </span>
         <form
@@ -109,7 +109,7 @@ const Send: NextPage = () => {
           <span className="flex-1 text-lg text-center">
             <span className="text-extrabold">to</span>
             <br />
-            <span className="text-purple-400 font-medium">
+            <span className="text-primary-400 font-medium">
               {address?.substring(0, 10)}
             </span>
             {address?.substring(10, 21)}
@@ -117,13 +117,13 @@ const Send: NextPage = () => {
             {address?.substring(21, 42)}
             <br />
             {address?.substring(42, 56)}
-            <span className="text-purple-400 font-medium">
+            <span className="text-primary-400 font-medium">
               {address?.substring(56)}
             </span>
           </span>
           <div
             className={clsx(
-              'dark:bg-gray-800 bg-purple-100 rounded-2xl p-2 relative w-72 z-10 transition-all hover:cursor-pointer',
+              'dark:bg-gray-800 bg-primary-100 rounded-2xl p-2 relative w-72 z-10 transition-all hover:cursor-pointer',
               {
                 'opacity-50': disableSlider,
               }
@@ -140,7 +140,7 @@ const Send: NextPage = () => {
           >
             <div
               className={clsx(
-                'dark:bg-purple-50 bg-purple-400 p-2 rounded-xl w-11 z-30 transform-gpu transition-colors',
+                'dark:bg-primary-50 bg-primary-400 p-2 rounded-xl w-11 z-30 transform-gpu transition-colors',
                 {
                   'transition-all': !sliding,
                 }
@@ -177,7 +177,7 @@ const Send: NextPage = () => {
               }}
             /> */}
               <span
-                className="dark:text-gray-900 text-purple-50 text-3xl font-medium flex justify-center select-none"
+                className="dark:text-gray-900 text-primary-50 text-3xl font-medium flex justify-center select-none"
                 style={{
                   transform: `scale3d(${1 + 0.4 * sliderPercentage}, ${
                     1 + 0.4 * sliderPercentage
@@ -188,7 +188,7 @@ const Send: NextPage = () => {
               </span>
             </div>
             <span
-              className="absolute dark:text-purple-50 text-purple-400 text-2xl left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none transition-colors"
+              className="absolute dark:text-primary-50 text-primary-400 text-2xl left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none transition-colors"
               style={{ opacity: 0.7 - 0.7 * sliderPercentage, zIndex: -10 }}
             >
               slide to send

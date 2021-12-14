@@ -1,3 +1,4 @@
+const colors = require('tailwindcss/colors')
 const defaultTheme = require('tailwindcss/defaultTheme')
 
 module.exports = {
@@ -9,15 +10,9 @@ module.exports = {
   darkMode: 'class',
   theme: {
     extend: {
-      keyframes: {
-        denied: {
-          '0%, 100%': { transform: 'translateX(0)' },
-          '12%, 37%, 62%, 87%': { transform: 'translateX(-3px)' },
-          '25%, 50%, 75%': { transform: 'translateX(3px)' },
-        },
-      },
-      animation: {
-        denied: 'denied 0.6s ease-in-out',
+      colors: {
+        primary: colors.rose,
+        gray: colors.neutral,
       },
       transitionProperty: {
         height: 'height',

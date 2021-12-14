@@ -9,9 +9,9 @@ export interface Props {
 }
 
 const PassphraseInput: FC<Props> = ({ value, onChange, number, onPaste }) => (
-  <div className="flex items-center w-full gap-3 text-2xl rounded transition-colors dark:bg-gray-800 bg-purple-50 focus-within:bg-purple-100 py-2 px-4 overflow-hidden dark:focus-within:bg-gray-700">
+  <div className="flex items-center w-full gap-3 text-2xl rounded transition-colors dark:bg-gray-800 bg-primary-50 focus-within:bg-primary-100 py-2 px-4 overflow-hidden dark:focus-within:bg-gray-700">
     <label htmlFor={`xno-mnemonic-word-${number}`}>
-      <span className="text-gray-900 dark:text-purple-50 h-7">{number}.</span>
+      <span className="text-gray-900 dark:text-primary-50 h-7">{number}.</span>
     </label>
     <input
       autoFocus={number === 1}

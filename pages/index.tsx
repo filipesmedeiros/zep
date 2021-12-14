@@ -28,9 +28,9 @@ const Landing = () => {
         <button
           onClick={lazyCheck}
           aria-label="Trigger biometrics authentication"
-          className="p-3 dark:bg-gray-800 bg-purple-50 mb-3 rounded shadow hover:cursor-pointer"
+          className="p-3 dark:bg-gray-800 bg-primary-50 mb-3 rounded shadow hover:cursor-pointer"
         >
-          <FingerPrintIcon className="h-16 text-gray-900 dark:text-purple-50" />
+          <FingerPrintIcon className="h-16 text-gray-900 dark:text-primary-50" />
         </button>
         <h2 className="text-2xl text-center">
           click to sign in with your biometrics
