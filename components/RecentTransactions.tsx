@@ -108,7 +108,7 @@ const RecentTransactions: FC<Props> = () => {
             {receivableBlocks.map(receivable => (
               <li
                 key={receivable.hash}
-                className="flex items-center justify-between px-3 py-3 text-black border-r-4 border-yellow-400 rounded shadow bg-gray-50 transition-colors dark:hover:bg-gray-700 dark:bg-gray-800 dark:text-primary-50 gap-2"
+                className="flex items-center justify-between px-3 py-3 text-black border-r-4 border-orange-400 rounded shadow bg-gray-50 transition-colors dark:hover:bg-gray-700 dark:bg-gray-800 dark:text-primary-50 gap-2"
               >
                 <button
                   aria-label={`Receive transaction from ${
@@ -117,7 +117,7 @@ const RecentTransactions: FC<Props> = () => {
                   className="contents"
                   onClick={() => onIncomingClick(receivable)}
                 >
-                  <ClockIcon className="flex-shrink-0 w-6 text-yellow-400" />
+                  <ClockIcon className="flex-shrink-0 w-6 text-orange-400" />
 
                   <div className="overflow-hidden text-left overflow-ellipsis whitespace-nowrap">
                     {Intl.DateTimeFormat([], {
@@ -177,7 +177,7 @@ const RecentTransactions: FC<Props> = () => {
                 key={txn.hash}
                 className={clsx(
                   'bg-gray-50 dark:bg-gray-800 dark:text-primary-50 shadow rounded px-3 py-3 flex items-center justify-between gap-2 text-black border-r-4 transition-colors',
-                  txn.type === 'send' ? 'border-yellow-300' : 'border-green-300'
+                  txn.type === 'send' ? 'border-orange-300' : 'border-sky-300'
                 )}
               >
                 <Link href={`/transaction/${txn.hash}`}>
@@ -186,10 +186,10 @@ const RecentTransactions: FC<Props> = () => {
                       see {txn.hash} transaction details
                     </span>
                     {txn.type === 'send' ? (
-                      <UploadIcon className="flex-shrink-0 w-6 text-yellow-300" />
+                      <UploadIcon className="flex-shrink-0 w-6 text-orange-300" />
                     ) : (
                       <DownloadIcon
-                        className={clsx('w-6 flex-shrink-0 text-green-300')}
+                        className={clsx('w-6 flex-shrink-0 text-sky-300')}
                       />
                     )}
                     <div className="flex-1 overflow-hidden text-left overflow-ellipsis whitespace-nowrap">
