@@ -1,10 +1,10 @@
 import db from '.'
 import { ContactValue } from './types'
 
-export const addAccount = async (contact: ContactValue) =>
+export const addContact = async (contact: ContactValue) =>
   (await db())!.add('contacts', contact)
 
-export const putAccount = async (contact: ContactValue) =>
+export const putContact = async (contact: ContactValue) =>
   (await db())!.put('contacts', contact)
 
 export const removeContact = async (name: string) =>

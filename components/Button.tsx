@@ -20,7 +20,7 @@ const Button: FC<Props> = ({
       {...props}
       className={clsx(
         variant === 'neutral'
-          ? 'bg-purple-100 text-gray-900 dark:bg-gray-800 dark:text-purple-50'
+          ? 'bg-purple-50 text-gray-900 dark:bg-gray-800 dark:text-purple-50'
           : toggledOn
           ? 'bg-purple-50 text-purple-400 dark:bg-gray-900 active:hover:bg-purple-500 active:hover:text-purple-100 dark:active:hover:text-purple-100 md:hover:bg-purple-500 md:active:hover:bg-purple-600 md:dark:hover:text-purple-50'
           : 'bg-purple-400 text-purple-50 dark:text-gray-900 active:hover:bg-purple-500 active:hover:text-purple-100 dark:active:hover:text-purple-100 md:hover:bg-purple-500 md:active:hover:bg-purple-600 md:dark:hover:text-purple-50',

@@ -7,6 +7,7 @@ import {
   LibraryIcon,
   MoonIcon,
   TrashIcon,
+  UsersIcon,
 } from '@heroicons/react/solid'
 import clsx from 'clsx'
 import Link from 'next/link'
@@ -171,15 +172,16 @@ const TopMenu: FC<Props> = () => {
                   <TrashIcon className="h-6" />
                 </ButtonLink>
               </li>
-              {/* <li>
-                <button
-                  className={clsx(
-                    'p-1 rounded transition-colors duration-100 w-full hover:text-purple-400 bg-purple-400 dark:text-gray-900 text-purple-50 dark:hover:text-purple-50'
-                  )}
+              <li role="menuitem">
+                <ButtonLink
+                  href="/contacts"
+                  aria-label="Go to your contacts"
+                  variant="primary"
+                  className="block"
                 >
-                  <UsersIcon className="h-full" />
-                </button>
-              </li> */}
+                  <UsersIcon className="h-6" />
+                </ButtonLink>
+              </li>
             </ul>
           )}
         </div>
