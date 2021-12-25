@@ -18,7 +18,7 @@ import isXnoAddress from '../../lib/xno/isXnoAddress'
 
 const Send: NextPage = () => {
   const { query, push } = useRouter()
-  const { address, amount } = query as { address?: string; amount?: string }
+  const { to, amount } = query as { to: string; amount?: string }
 
   const [xnoToSend, setXnoToSend] = useState('')
 
@@ -41,30 +41,31 @@ const Send: NextPage = () => {
     setSliding(false)
   }, [setStartX, setCurrentX, setSliding])
 
-  const parseName = async (name: string) => {
-    const contact = await getContact(name)
-    if (contact !== undefined) return contact.address
-    else
-      return fetcher<NanoToUsernameResponse>(
-        `https://nano.to/${address}/username?json=true`
-      ).then(res => res.address)
-  }
+  const [toAddress, setToAddress] = useState<string>()
+  useEffect(() => {
+    const parseName = async (name: string) => {
+      const contact = await getContact(name)
+      if (contact !== undefined) return contact.address
+      else
+        return fetcher<NanoToUsernameResponse>(
+          `https://nano.to/${to}/username?json=true`
+        ).then(res => res.address)
+    }
+
+    isXnoAddress(to) ? setToAddress(to) : parseName(to!).then(setToAddress)
+  }, [to])
 
   useEffect(() => {
     if (sliderPercentage === 1) {
       const sendNano = async () => {
-        const finalAddress = isXnoAddress(address!)
-          ? address!
-          : await parseName(address!)
-
         backToBase()
-        await send(finalAddress!, amount!)
+        await send(toAddress!, amount!)
         showNotification({
           title: 'sent!',
           body: `sent Ӿ${convert(amount!, {
             from: Unit.raw,
             to: Unit.Nano,
-          })} to ${address}`,
+          })} to ${to}`,
           tag: 'send',
         })
         push('/dashboard')
@@ -74,9 +75,10 @@ const Send: NextPage = () => {
   }, [
     sliderPercentage,
     push,
-    address,
+    to,
     amount,
     xnoToSend,
+    toAddress,
     send,
     backToBase,
     challenge,
@@ -107,19 +109,27 @@ const Send: NextPage = () => {
         >
           <XnoInput value={xnoToSend} onChange={setXnoToSend} />
           <span className="flex-1 text-lg text-center">
-            <span className="text-extrabold">to</span>
+            <span className="font-extrabold">to</span>
+            {!isXnoAddress(to) && (
+              <>
+                <br />
+                <span className="text-2xl font-bold">{to}</span>
+              </>
+            )}
             <br />
+            {!isXnoAddress(to) && <>(</>}
             <span className="text-purple-400 font-medium">
-              {address?.substring(0, 10)}
+              {toAddress?.substring(0, 10)}
             </span>
-            {address?.substring(10, 21)}
+            {toAddress?.substring(10, 21)}
             <br />
-            {address?.substring(21, 42)}
+            {toAddress?.substring(21, 42)}
             <br />
-            {address?.substring(42, 56)}
+            {toAddress?.substring(42, 56)}
             <span className="text-purple-400 font-medium">
-              {address?.substring(56)}
+              {toAddress?.substring(56)}
             </span>
+            {!isXnoAddress(to) && <>)</>}
           </span>
           <div
             className={clsx(
@@ -168,14 +178,6 @@ const Send: NextPage = () => {
                 }
               }}
             >
-              {/* <PaperAirplaneIcon
-              className="h-7 dark:text-gray-900 translate-x-0.5"
-              style={{
-                transform: `translateX(var(--tw-translate-x)) rotate(${
-                  30 + 60 * sliderPercentage
-                }deg)`,
-              }}
-            /> */}
               <span
                 className="dark:text-gray-900 text-purple-50 text-3xl font-medium flex justify-center select-none"
                 style={{

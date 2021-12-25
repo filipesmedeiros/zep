@@ -21,11 +21,11 @@ const ReadQrCode: NextPage = () => {
         push({
           pathname: '/send',
           query: {
-            address,
+            to: address,
             ...(xnoUrlHasAmount(urlOrAddress) ? { amount } : {}),
           },
         })
-      } else push({ pathname: '/send', query: { address: urlOrAddress } })
+      } else push({ pathname: '/send', query: { to: urlOrAddress } })
     },
     [push]
   )
@@ -65,7 +65,7 @@ const ReadQrCode: NextPage = () => {
             onSubmit={e => {
               e.preventDefault()
               if (address !== '')
-                push({ pathname: '/send', query: { address } })
+                push({ pathname: '/send', query: { to: address } })
             }}
           >
             <AddressInput value={address} onChange={setAddress} />

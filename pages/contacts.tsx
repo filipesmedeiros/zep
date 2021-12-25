@@ -5,24 +5,21 @@ import { FormEventHandler, useState } from 'react'
 
 import AddressInput from '../components/AddressInput'
 import Button from '../components/Button'
+import NewContactForm from '../components/NewContactForm'
 import { addContact } from '../lib/db/contacts'
 import useContacts from '../lib/hooks/useContacts'
 
 const Contacts: NextPage = () => {
-  const { data: contacts, mutate } = useContacts()
-
-  const [newContactName, setNewContactName] = useState('')
-  const [newContactAddress, setNewContactAddress] = useState('')
+  const { contacts, mutate } = useContacts()
 
   if (contacts === undefined) return null
 
-  const onAddNewContact: FormEventHandler<HTMLFormElement> = async e => {
-    e.preventDefault()
-    mutate(prev => [
-      ...(prev ?? []),
-      { name: newContactName, address: newContactAddress },
-    ])
-    await addContact({ name: newContactName, address: newContactAddress })
+  const onAddNewContact = async (contact: {
+    name: string
+    address: string
+  }) => {
+    mutate(prev => [...(prev ?? []), contact])
+    await addContact(contact)
     mutate()
   }
 
@@ -36,6 +33,7 @@ const Contacts: NextPage = () => {
           <UsersIcon className="dark:text-purple-50 h-7 xs:h-8 text-gray-900 translate-x-1 transition-colors" />
           <span className="text-3xl sm:text-5xl font-medium">contacts</span>
         </h1>
+        <NewContactForm onSubmit={onAddNewContact} />
         <ol className="flex flex-col gap-2">
           {contacts.map(contact => (
             <li
@@ -47,20 +45,6 @@ const Contacts: NextPage = () => {
             </li>
           ))}
         </ol>
-        <form onSubmit={onAddNewContact}>
-          <input
-            className="flex items-center w-full gap-3 text-2xl rounded transition-colors dark:bg-gray-800 bg-purple-50 focus-within:bg-purple-100 py-2 px-4 overflow-hidden dark:focus-within:bg-gray-700"
-            value={newContactName}
-            onChange={({ target: { value } }) => setNewContactName(value)}
-          />
-          <AddressInput
-            value={newContactAddress}
-            onChange={setNewContactAddress}
-          />
-          <Button type="submit">
-            <PlusIcon className="h-7" />
-          </Button>
-        </form>
       </div>
     </>
   )

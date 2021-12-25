@@ -1,3 +1,4 @@
+import { EyeIcon, EyeOffIcon } from '@heroicons/react/outline'
 import clsx from 'clsx'
 import { tools } from 'nanocurrency-web'
 import { FC } from 'react'
@@ -38,13 +39,15 @@ const Balance: FC<Props> = ({ className }) => {
   const xnoBalance = tools.convert(account?.balance ?? '0', 'RAW', 'NANO')
   const xnoBalanceDisplay = rawToNanoDisplay(account?.balance ?? '0')
 
+  const Eye = showXnoBalance ? EyeOffIcon : EyeIcon
+
   return (
-    <div className={clsx('dark:text-purple-50 text-gray-900 flex', className)}>
+    <div className={clsx('dark:text-purple-50 text-gray-900', className)}>
       <div
+        className="flex gap-3 items-center hover:cursor-pointer"
         onClick={() =>
           setPreference('showCurrencyDash', nextShowCurrency(showCurrencyDash))
         }
-        className="hover:cursor-pointer"
       >
         <h1 className="text-3xl xs:text-4xl">
           <span className="transition-colors">Ӿ</span>
@@ -71,17 +74,18 @@ const Balance: FC<Props> = ({ className }) => {
             )}
           </span>
         </h1>
-        {showFiatBalance && (
-          <h2 className="text:lg xs:text-xl flex items-center gap-2 transition-colors">
-            ${' '}
-            {xnoPrice !== undefined ? (
-              (Number(xnoBalance) * xnoPrice).toFixed(2)
-            ) : (
-              <span className="bg-gray-100 dark:bg-gray-800 flex shadow rounded motion-safe:animate-pulse h-6 w-10" />
-            )}
-          </h2>
-        )}
+        <Eye className="h-7" />
       </div>
+      {showFiatBalance && (
+        <h2 className="text:lg xs:text-xl flex items-center gap-2 transition-colors">
+          ${' '}
+          {xnoPrice !== undefined ? (
+            (Number(xnoBalance) * xnoPrice).toFixed(2)
+          ) : (
+            <span className="bg-gray-100 dark:bg-gray-800 flex shadow rounded motion-safe:animate-pulse h-6 w-10" />
+          )}
+        </h2>
+      )}
     </div>
   )
 }

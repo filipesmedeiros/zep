@@ -1,8 +1,8 @@
 import { LibraryIcon } from '@heroicons/react/solid'
-import { FC } from 'react'
+import { FC, InputHTMLAttributes } from 'react'
 
-// delete if not needed
-export interface Props {
+export interface Props
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
   value: string
   onChange: (value: string) => void
   representative?: boolean
@@ -12,6 +12,7 @@ const AddressInput: FC<Props> = ({
   value,
   onChange,
   representative = false,
+  ...inputProps
 }) => (
   <div className="flex items-center w-full gap-3 text-2xl rounded transition-colors dark:bg-gray-800 bg-purple-50 focus-within:bg-purple-100 py-2 px-4 overflow-hidden dark:focus-within:bg-gray-700">
     <label htmlFor="xno-address">
@@ -30,6 +31,7 @@ const AddressInput: FC<Props> = ({
       className="bg-transparent focus:outline-none w-full"
       value={value}
       onChange={({ target }) => onChange(target.value)}
+      {...inputProps}
     />
   </div>
 )

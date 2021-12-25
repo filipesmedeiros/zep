@@ -18,7 +18,7 @@ export interface Props {}
 
 const RecentTransactions: FC<Props> = () => {
   const { receive } = useReceiveNano()
-  const { data: contacts } = useContacts()
+  const { contacts } = useContacts()
   const findContact = (findAddress: string) =>
     contacts?.find(({ address }) => address === findAddress)?.name
 
@@ -29,7 +29,8 @@ const RecentTransactions: FC<Props> = () => {
     hasMore,
     loading: loadingHistory,
     hasHistory,
-    revalidate: refetchHistory,
+    refetch: refetchHistory,
+    refetching: isRefetchingHistory,
   } = useAccountHistory()
 
   const hasReceivable =
@@ -42,12 +43,6 @@ const RecentTransactions: FC<Props> = () => {
   )
 
   const initialLoadingHistory = loadingHistory && accountHistory === undefined
-
-  const [refetchingHistory, setRefectingHistory] = useState(false)
-  useEffect(() => {
-    if (!loadingHistory && accountHistory !== undefined)
-      setRefectingHistory(false)
-  }, [loadingHistory, accountHistory])
 
   const { challenge } = useChallenge()
   const { credentialId } = useCredentialId()
@@ -119,7 +114,7 @@ const RecentTransactions: FC<Props> = () => {
                 >
                   <ClockIcon className="flex-shrink-0 w-6 text-yellow-400" />
 
-                  <div className="overflow-hidden text-left overflow-ellipsis whitespace-nowrap">
+                  <div className="overflow-hidden text-left overflow-ellipsis whitespace-nowrap flex-1">
                     {Intl.DateTimeFormat([], {
                       day: '2-digit',
                       month: '2-digit',
@@ -154,16 +149,13 @@ const RecentTransactions: FC<Props> = () => {
           {hasHistory && (
             <button
               aria-label="Refresh transaction history"
-              onClick={() => {
-                setRefectingHistory(true)
-                refetchHistory()
-              }}
+              onClick={() => refetchHistory()}
             >
               <RefreshIcon className="h-6" />
             </button>
           )}
         </div>
-        {initialLoadingHistory || refetchingHistory ? (
+        {initialLoadingHistory || isRefetchingHistory ? (
           <ul className="flex flex-col w-full overflow-auto px-0.5 pb-0.5 gap-2">
             <li className="bg-gray-100 dark:bg-gray-800 shadow rounded h-12 motion-safe:animate-pulse" />
             <li className="bg-gray-100 dark:bg-gray-800 shadow rounded h-12 motion-safe:animate-pulse" />

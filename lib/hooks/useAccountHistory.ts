@@ -1,3 +1,4 @@
+import { useCallback, useState } from 'react'
 import useSWRInfinite from 'swr/infinite'
 
 import { useCurrentAccount } from '../context/accountContext'
@@ -38,13 +39,20 @@ const useAccountHistory = (pageSize = 20) => {
     accountHistory.length > 0 &&
     accountHistory[0].history !== ''
 
+  const [refetching, setRefetching] = useState(false)
+  const refetch = useCallback(() => {
+    setRefetching(true)
+    mutate().then(() => setRefetching(false))
+  }, [mutate])
+
   return {
     accountHistory,
     loadMore,
     hasMore,
     loading: isValidating,
     hasHistory,
-    revalidate: mutate,
+    refetch,
+    refetching,
   }
 }
 
