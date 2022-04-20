@@ -1,10 +1,11 @@
 import { useEffect } from 'react'
 
-import useSetup from './useSetup'
+import isiOS from '../isiOS'
 
 const useSetupNotifications = () =>
   useEffect(() => {
-    if (Notification.permission === 'default') Notification.requestPermission()
+    if (isiOS() && Notification.permission === 'default')
+      Notification.requestPermission()
   }, [])
 
 export default useSetupNotifications

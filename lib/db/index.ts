@@ -1,6 +1,5 @@
 import { DBSchema, IDBPDatabase, openDB } from 'idb'
 
-import { consumePrecomputedWork, getAllAccounts } from './accounts'
 import type {
   AccountsKey,
   AccountsValue,
