@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import { FC } from 'react'
 
 import { usePreferences } from '../lib/context/preferencesContext'
+import useIsWelcoming from '../lib/hooks/useIsWelcoming'
 import useListenToColorMedia from '../lib/hooks/useListenToColorMedia'
 import Balance from './Balance'
 import BottomMenu from './BottomMenu'
@@ -18,6 +19,8 @@ const Layout: FC<Props> = ({ children }) => {
   } = usePreferences()
 
   useListenToColorMedia()
+
+  const isWelcoming = useIsWelcoming()
 
   return (
     <div className="flex flex-col w-full h-full fixed gap-4 px-5 pt-4 pb-4 dark:text-purple-50 bg-white dark:bg-gray-900 transition-colors">
@@ -37,7 +40,7 @@ const Layout: FC<Props> = ({ children }) => {
           <Balance />
           <hr className="w-1/3 border-2 border-gray-900 dark:border-purple-50 rounded-l-sm rounded-r transition-colors" />
           {children}
-          <BottomMenu />
+          {!isWelcoming && <BottomMenu />}
         </>
       ) : (
         <main className="pt-32">{children}</main>

@@ -8,7 +8,7 @@ import showNotification from '../lib/showNotification'
 const Landing = () => {
   const { replace } = useRouter()
 
-  const lazyCheck = useCheckBiometrics(valid => {
+  const { check: lazyCheck, didFirstCheck } = useCheckBiometrics(valid => {
     if (valid) replace('/dashboard')
     else
       showNotification({
@@ -21,10 +21,10 @@ const Landing = () => {
   return (
     <>
       <Head>
-        <title>zep⚡️ - sign in</title>
+        <title>zep⚡️ - Sign in</title>
       </Head>
       <main className="flex flex-col items-center w-full h-full">
-        <h1 className="text-4xl font-medium mb-16">welcome</h1>
+        <h1 className="text-4xl font-medium mb-16">Welcome</h1>
         <button
           onClick={lazyCheck}
           aria-label="Trigger biometrics authentication"
@@ -33,7 +33,9 @@ const Landing = () => {
           <FingerPrintIcon className="h-16 text-gray-900 dark:text-purple-50" />
         </button>
         <h2 className="text-2xl text-center">
-          click to sign in with your biometrics
+          {didFirstCheck
+            ? 'Click to sign in with your biometrics'
+            : 'Signing in with your biometrics'}
         </h2>
       </main>
     </>

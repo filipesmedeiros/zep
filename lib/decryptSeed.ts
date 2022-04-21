@@ -14,6 +14,7 @@ const decryptSeed = async (
     // @ts-expect-error
     response: { signature: sig },
   } = await checkBiometrics(params)
+  console.log({ sig, seed: params.encryptedSeed })
   const decryptedSeed = AES.decrypt(
     params.encryptedSeed,
     sig.toString()

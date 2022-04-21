@@ -1,12 +1,12 @@
-import isiOS from './isiOS'
-
 const showNotification = async (params: {
   title: string
   body: string
   tag?: string
   actions?: NotificationAction[]
 }) => {
-  if (isiOS()) return
+  if (!!Notification) return
+
+  console.log('showing notification')
 
   const sw = await navigator.serviceWorker.getRegistration()
   sw?.showNotification?.(params.title, {

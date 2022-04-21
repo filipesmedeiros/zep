@@ -6,6 +6,7 @@ import { FC } from 'react'
 import { useCurrentAccount } from '../lib/context/accountContext'
 import { usePreferences } from '../lib/context/preferencesContext'
 import { ShowCurrencyPreference } from '../lib/db/types'
+import useIsWelcoming from '../lib/hooks/useIsWelcoming'
 import useXnoPrice from '../lib/hooks/useXnoPrice'
 import rawToNanoDisplay from '../lib/xno/rawToNanoDisplay'
 
@@ -38,6 +39,8 @@ const Balance: FC<Props> = ({ className }) => {
 
   const xnoBalance = tools.convert(account?.balance ?? '0', 'RAW', 'NANO')
   const xnoBalanceDisplay = rawToNanoDisplay(account?.balance ?? '0')
+
+  const isWelcoming = useIsWelcoming()
 
   const Eye = showXnoBalance ? EyeOffIcon : EyeIcon
 
@@ -74,11 +77,11 @@ const Balance: FC<Props> = ({ className }) => {
             )}
           </span>
         </h1>
-        <Eye className="h-7" />
+        {!isWelcoming && <Eye className="h-7" />}
       </div>
       {showFiatBalance && (
         <h2 className="text:lg xs:text-xl flex items-center gap-2 transition-colors">
-          ${' '}
+          €{' '}
           {xnoPrice !== undefined ? (
             (Number(xnoBalance) * xnoPrice).toFixed(2)
           ) : (

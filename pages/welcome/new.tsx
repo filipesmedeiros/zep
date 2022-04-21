@@ -1,6 +1,7 @@
 import { wallet } from 'nanocurrency-web'
 import type { NextPage } from 'next'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 
 import { registerBiometrics } from '../../lib/biometrics'
@@ -16,9 +17,9 @@ import accountAtIndex from '../../lib/xno/accountAtIndex'
 
 const New: NextPage = () => {
   const { setAccount } = useAccounts()
+  const { push } = useRouter()
 
   const seedRef = useRef(wallet.generateLegacy())
-  useEffect(() => {}, [])
 
   const { challenge } = useChallenge()
   const [credentialId, setCredentialId] = useState<Uint8Array>()
@@ -66,7 +67,7 @@ const New: NextPage = () => {
     })
     await addEncryptedSeed('os', encryptedSeed)
 
-    window.location.href = '/welcome/done'
+    push('/welcome/done')
   }
 
   const isRegisterStep = credentialId === undefined
